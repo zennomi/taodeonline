@@ -1,0 +1,61 @@
+extends ../layouts/common.pug
+block stylesheet
+    link(rel="stylesheet", href="/css/upload-image-imgur.css")
+block script-header
+    script(src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1569993029/imgur.js")
+block content
+    h1.h3 Add question
+    h5 Upload image
+        .d-flex.justify-content-center
+            .row
+                .col-md-12
+                    .dropzone.uploadfuzone.fuzone
+                        .row
+                            .col-md-8
+                                .fu-text
+                                span
+                                    i.fa.fa-picture-o
+                                    |  Click here or drop file to upload
+                            .col-md-4
+                                .snippet_image_div  
+                        input.input(type='file', accept='image/*')
+                .status
+                .text-center
+                    span.imgur-link
+
+    form#form-question(action="/questions/create" method="POST")
+        .form-group.mb-2
+            label.h5 Question
+            textarea(name="question_content")
+        .form-row.row-cols-2
+            .col
+                h5.d-inline.mr-2 Choice 1
+                .form-check.form-check-inline
+                    input#answer0.form-check-input(type="radio", name="answer_true[]" value=0 required)
+                    label.form-check-label(for="answer0") Đúng
+                textarea(name="answer_content[0]")
+            .col
+                h5.d-inline.mr-2 Choice 2
+                .form-check.form-check-inline
+                    input#answer1.form-check-input(type="radio", name="answer_true[]" value=1)
+                    label.form-check-label(for="answer1") Đúng
+                textarea(name="answer_content[1]")
+            .col
+                h5.d-inline.mr-2 Choice 3
+                .form-check.form-check-inline
+                    input#answer2.form-check-input(type="radio", name="answer_true[]" value=2)
+                    label.form-check-label(for="answer2") Đúng
+                textarea(name="answer_content[2]")
+            .col
+                h5.d-inline.mr-2 Choice 4
+                .form-check.form-check-inline
+                    input#answer3.form-check-input(type="radio", name="answer_true[]" value=3)
+                    label.form-check-label(for="answer3") Đúng
+                textarea(name="answer_content[3]")
+        .form-group.mb-2
+            label.h5 Detailed Answer
+            textarea(name="detailed_answer")
+        button.btn.btn-primary(type="submit") Save
+block script-footer
+    script(src="/js/create-answer.js")
+    script(src="/js/upload-image-imgur.js")

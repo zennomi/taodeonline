@@ -1,0 +1,185 @@
+extends ../layouts/common.pug
+block stylesheet
+    style.
+        .sortable {
+            display: block;
+        }
+        .sortable > div {
+        margin: 5px 0;
+        display: block;
+        padding: 10px;
+        border-radius: 4px;
+        cursor: move;
+        background: #fff;
+        }
+        .sortable > div:hover {
+            background: #ffffe0;
+        }
+        .sortable > div.active {
+            background: #ccc;
+        }
+        .sortable > div.dragging {
+            background: #e0ffff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            opacity: 0.5;
+        }
+mixin table4x1(q)
+    table(style="width: 451pt;")
+        tr
+            td 
+                b A. 
+                | !{q.choices[0].content}
+            td 
+                b B. 
+                | !{q.choices[1].content}
+            td 
+                b C. 
+                | !{q.choices[2].content}
+            td 
+                b D. 
+                | !{q.choices[3].content}
+mixin table2x2(q)
+    table(style="width: 451pt;")
+        tr
+            td.w-50
+                b A. 
+                | !{q.choices[0].content}
+            td.w-50
+                b B. 
+                | !{q.choices[1].content}
+        tr
+            td.w-50
+                b C. 
+                | !{q.choices[2].content}
+            td.w-50
+                b D. 
+                | !{q.choices[3].content}
+mixin table1x4(q)
+    table(style="width: 451pt;")
+        tr
+            td 
+                b A. 
+                | !{q.choices[0].content}
+        tr
+            td 
+                b B. 
+                | !{q.choices[1].content}
+                td 
+        tr
+            td 
+                b C. 
+                | !{q.choices[2].content}
+        tr
+            td 
+                b D. 
+                | !{q.choices[3].content}
+block script-header
+    style.
+        body {
+            font-family: "Times New Roman";
+            font-size: 12pt;
+            background: #AAFFA9;  /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #11FFBD, #AAFFA9);  /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #11FFBD, #AAFFA9); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+
+        }
+        .question-wrap > p {
+            margin-bottom: 0;
+        }
+        #list-1 {
+            height: 100vh;
+        }
+        #list-2 {
+            background: white;
+        }
+    script(type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
+    script(type="text/x-mathjax-config").
+        MathJax.Hub.Config({
+        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+        });
+    script(src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+
+block outofcontent
+    .row.row-cols-2.no-gutters
+        .col#list-2.sortable
+            each q, i in unmatchedQuestions
+                div(id="item-"+q._id)
+                    b.order(data-key=q.getTrueChoice()) Câu #{i+1}: 
+                    span.remove
+                        a.badge.badge-success(href="/questions/"+q._id) Sửa
+                        |  
+                    | !{q.question}
+                    br
+                    if q.getMaxLengthChoice() < 10
+                        +table4x1(q)
+                    else if q.getMaxLengthChoice() < 100
+                        +table2x2(q)
+                    else
+                        +table1x4(q)
+                hr
+        .col.p-1(style="width: 451pt; height: 100vh; overflow: scroll; position: fixed; top: 0; right: 0;")
+            button.btn.btn-primary(id="btn-export" onclick="downloadDocx();") Download File Docx
+            #source-html
+                #list-1.sortable
+                    each q, i in matchedQuestions
+                        div(id="item-"+q._id)
+                            b.order(data-key=q.getTrueChoice()) Câu #{i+1}: 
+                            span.remove
+                                a.badge.badge-success(href="/questions/"+q._id) Sửa
+                                |  
+                            | !{q.question}
+                            br
+                            if q.maxLengthAnswer < 10
+                                +table4x1(q)
+                            else if q.maxLengthAnswer < 50
+                                +table2x2(q)
+                            else
+                                +table1x4(q)
+
+block script-footer
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js")
+    script(src="/js/sortable.js")
+    script(src="/js/remove-question.js")
+    script(src="/js/mathml2latex-browser.js")
+    script(src="/js/download-docx.js")
+    script.
+        function downloadDocx() {
+            $('.remove').remove();
+            let HTML = document.getElementById("source-html").innerHTML;
+            HTML = HTML.replace(/<span class="MathJax".*(<math.*<\/math>)<\/span><\/span>/g, "$1");
+            let keyArr = [];
+            document.getElementById("source-html").querySelectorAll('.order').forEach(e => {
+                keyArr.push({questionAt: e.innerText.match(/\d+/), key: e.getAttribute("data-key")})
+            });
+            HTML+="<table style='width: 100%; border-collapse: collapse;'>";
+            let n = 0;
+            while (n <= keyArr.length) {
+                HTML+="<tr style='border: 1px solid black;'>";
+                for (let i=n; i<n+10 && i<keyArr.length; i++) {
+                    HTML+="<td style='border: 1px solid black;'>";
+                    HTML+=keyArr[i].questionAt;
+                    HTML+="</td>";
+                }
+                HTML+="</tr>";
+                HTML+="<tr style='border: 1px solid black;'>";
+                for (let i=n; i<n+10 && i<keyArr.length; i++) {
+                    HTML+="<td style='border: 1px solid black;'>";
+                    HTML+=keyArr[i].key;
+                    HTML+="</td>";
+                }
+                HTML+="</tr>";
+                n+=10;
+            }
+            HTML+="</table>"
+            console.log(HTML);
+            exportHTML(mathmlToLatex(HTML));
+        }
+            
+    

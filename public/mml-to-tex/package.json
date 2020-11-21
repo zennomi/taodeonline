@@ -1,0 +1,53 @@
+{
+  "_from": "mml-to-tex",
+  "_id": "mml-to-tex@1.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-vn+i7yawbA4v12ivjKRUeB/fHt3HXWSXW9LlPbgOlT+LzolNIKu6JdxhWq1PyGntzLC3O0U8yDHQ2a5FSB946g==",
+  "_location": "/mml-to-tex",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "mml-to-tex",
+    "name": "mml-to-tex",
+    "escapedName": "mml-to-tex",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/mml-to-tex/-/mml-to-tex-1.0.0.tgz",
+  "_shasum": "3f8f061a45bcd6f828f6995aa02d0f414f1780eb",
+  "_spec": "mml-to-tex",
+  "_where": "C:\\Users\\Admin Computer\\Desktop\\mathtype-webpage",
+  "author": {
+    "name": "Ian Lucas",
+    "email": "ianlucas_ferreira@hotmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/ianlucas/mml-to-tex/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "A basic MML to Tex conversor.",
+  "directories": {
+    "test": "tests"
+  },
+  "homepage": "https://github.com/ianlucas/mml-to-tex#readme",
+  "keywords": [
+    "tex",
+    "mml",
+    "conversor"
+  ],
+  "license": "MIT",
+  "main": "dist/mml_to_tex.js",
+  "name": "mml-to-tex",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ianlucas/mml-to-tex.git"
+  },
+  "version": "1.0.0"
+}

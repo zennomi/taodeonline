@@ -1,0 +1,21 @@
+extends ../layouts/common.pug
+block script-header
+    script(type="text/x-mathjax-config").
+        MathJax.Hub.Config({
+        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+        });
+    script(src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+    script(type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
+    
+block content
+    a.btn.btn-success(href="/questions/create") Add
+    a.btn.btn-success(href="/questions/"+question._id+"/edit") Edit
+    form(action="/questions/"+question._id+"/delete")
+        button.btn.btn-danger(type="submit") Delete
+    .mb-2
+        | !{question.question}
+    .row.row-cols-4
+        each a,j in question.choices
+            .col
+                b Đáp án #{j+1}: 
+                | !{a.content}

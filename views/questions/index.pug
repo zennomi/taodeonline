@@ -1,0 +1,44 @@
+extends ../layouts/common.pug
+block script-header
+    style.
+        body {
+            font-family: "Times New Roman";
+        }
+        .question-wrap > p {
+            margin-bottom: 0;
+        }
+        .fixed-right {
+            position: fixed;
+            bottom: 50px;
+            right: 50px;
+        }
+    script(type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
+    script(type="text/x-mathjax-config").
+        MathJax.Hub.Config({
+        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+        });
+    script(src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+block content
+    a.btn.btn-primary(href="/questions/create") Add
+    a.btn.btn-primary(href="/questions/export") Export
+    h1.h3.text-primary List of Questions
+    .fixed-right(style="")
+        a#number.btn.btn-primary.btn-lg(href="/questions/export")= numberOfQuestions
+    each q, i in questions
+        hr
+        .mb-2
+            .question-wrap.mb-1
+                a.font-weight-bold(href="/questions/"+q._id) Câu #{i+1}: 
+                a.badge.badge-success(href="/questions/"+q._id+"/edit") Sửa
+                button.btn.badge.badge-primary(onclick="addQuestion('"+q._id+"')") +
+                | !{q.question}
+            .row.row-cols-2.row-cols-md-4
+                each a,j in q.choices
+                    .col.mb-1
+                        .form-check
+                            input.form-check-input(id='ans' + j + q._id name = q._id type="radio")
+                            label.form-check-label(for='ans' + j + q._id)
+                                | !{a.content}
+block script-footer
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous")
+    script(src="/js/add-question.js")

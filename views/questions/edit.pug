@@ -1,0 +1,57 @@
+extends ../layouts/common.pug
+block stylesheet
+    link(rel="stylesheet", href="/css/upload-image-imgur.css")
+block script-header
+    script(type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
+    script(type="text/x-mathjax-config").
+        MathJax.Hub.Config({
+        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+        });
+        console.log('Hello');
+    script(src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+    script(src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1569993029/imgur.js")
+block content
+    h1.h3 Add question
+    h5 Upload image
+        .d-flex.justify-content-center
+            .row
+                .col-md-12
+                    .dropzone.uploadfuzone.fuzone
+                        .row
+                            .col-md-8
+                                .fu-text
+                                span
+                                    i.fa.fa-picture-o
+                                    |  Click here or drop file to upload
+                            .col-md-4
+                                .snippet_image_div  
+                        input.input(type='file', accept='image/*')
+                .status
+                .text-center
+                    span.imgur-link
+    h1.h3 Add question
+    form#form-question(action="/questions/"+question._id+"/edit" method="POST")
+        .form-group.mb-2
+            label.h5 Question
+            textarea(name="question_content")
+                | !{question.question}
+        .form-row.row-cols-2
+            each a, i in question.choices
+                .col
+                    h5.d-inline.mr-2 Answer #{i+1}
+                    .form-check.form-check-inline
+                        if (a.isTrue)
+                            input.form-check-input(id="answer"+i type="checkbox" name="answer_true[]" value=i checked)
+                        else
+                            input.form-check-input(id="answer"+i type="checkbox" name="answer_true[]" value=i)
+                        label.form-check-label(for="answer" + i) Đúng
+                    textarea(name="answer_content["+i+"]")
+                        | !{a.content}
+        .form-group.mb-2
+            label.h5 Detailed Answer
+            textarea(name="detailed_answer")
+                | !{question.answer}
+        button.btn.btn-primary(type="submit") Save
+block script-footer
+    script(src="/js/create-answer.js")
+    script(src="/js/upload-image-imgur.js")
