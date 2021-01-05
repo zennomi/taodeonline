@@ -25,6 +25,13 @@ block content
 
     form#form-question(action="/questions/create" method="POST")
         .form-group.mb-2
+            label Khối
+            select.form-control(name="grade")
+                option
+                option 10
+                option 11
+                option 12
+        .form-group.mb-2
             label.h5 Question
             textarea(name="question_content")
         .form-row.row-cols-2

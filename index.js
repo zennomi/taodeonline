@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const TeXToMML = require("tex-to-mml");
 
-const port = 3000;
+const port = 8080;
 app.set('views', './views');
 app.set('view engine', 'pug');
 app.use(express.static('public'));
@@ -42,7 +42,8 @@ app.post('/questions/create', async (req, res) => {
   let question = new Question({
     question: texToMathML(req.body.question_content),
     choices: [],
-    answer: texToMathML(req.body.detailed_answer)
+    answer: texToMathML(req.body.detailed_answer),
+    grade: req.body.grade ? req.body.grade : undefined
   })
 
   let truthyChoices = req.body.answer_true.map(a => Number(a));
@@ -112,6 +113,7 @@ app.post('/questions/:id/edit', async (req, res) => {
   let question = await Question.findById(req.params.id);
   question.question = texToMathML(req.body.question_content);
   question.answer = texToMathML(req.body.detailed_answer);
+  question.grade = req.body.grade ? req.body.grade : undefined;
   let truthyChoices = req.body.answer_true.map(a => Number(a));
   req.body.answer_content.forEach((ans, i) => {
     question.choices[i] = {};

@@ -13,9 +13,13 @@ block content
     form(action="/questions/"+question._id+"/delete")
         button.btn.btn-danger(type="submit") Delete
     .mb-2
+        .badge.badge-warning= question.grade
         | !{question.question}
-    .row.row-cols-4
+    .row.row-cols-4.mb-2
         each a,j in question.choices
             .col
-                b Đáp án #{j+1}: 
+                b= String.fromCharCode(65+j) +". "
                 | !{a.content}
+    .mb-2
+        span= question.getTrueChoice()
+        | !{question.answer}

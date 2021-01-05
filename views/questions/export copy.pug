@@ -108,27 +108,22 @@ block script-header
 
 block outofcontent
     .row.row-cols-2.no-gutters
-        .col.p-3
-            select.form-control#grade_query
-                option 10
-                option 11
-                option 12
-            #list-2.sortable
-                each q, i in unmatchedQuestions
-                    div(id="item-"+q._id)
-                        b.order(data-key=q.getTrueChoice()) Câu #{i+1}: 
-                        span.remove
-                            a.badge.badge-success(href="/questions/"+q._id) Sửa
-                            |  
-                        | !{q.question}
-                        br
-                        if q.getMaxLengthChoice() < 10
-                            +table4x1(q)
-                        else if q.getMaxLengthChoice() < 100
-                            +table2x2(q)
-                        else
-                            +table1x4(q)
-                    hr
+        .col#list-2.sortable
+            each q, i in unmatchedQuestions
+                div(id="item-"+q._id)
+                    b.order(data-key=q.getTrueChoice()) Câu #{i+1}: 
+                    span.remove
+                        a.badge.badge-success(href="/questions/"+q._id) Sửa
+                        |  
+                    | !{q.question}
+                    br
+                    if q.getMaxLengthChoice() < 10
+                        +table4x1(q)
+                    else if q.getMaxLengthChoice() < 100
+                        +table2x2(q)
+                    else
+                        +table1x4(q)
+                hr
         .col.p-1(style="width: 451pt; height: 100vh; overflow: scroll; position: fixed; top: 0; right: 0;")
             button.btn.btn-primary(id="btn-export" onclick="downloadDocx();") Download File Docx
             #source-html
@@ -151,7 +146,6 @@ block outofcontent
 block script-footer
     script(src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js")
     script(src="/js/sortable.js")
-    script(src="")
     script(src="/js/remove-question.js")
     script(src="/js/mathml2latex-browser.js")
     script(src="/js/download-docx.js")
