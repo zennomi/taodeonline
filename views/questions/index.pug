@@ -12,12 +12,81 @@ block script-header
             bottom: 50px;
             right: 50px;
         }
-    script(type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
-    script(type="text/x-mathjax-config").
-        MathJax.Hub.Config({
-        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
-        });
-    script(src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+    script.
+        window.MathJax = {
+        options: {
+            renderActions: {
+                addMenu: [],
+                checkLoading: []
+            }
+        },
+        loader: { load: ['[tex]/boldsymbol'] },
+        tex: {
+            inlineMath: [
+                ['$', '$'],
+                ['\\(', '\\)']
+            ],
+            displayMath: [
+                ['$$', '$$'],
+                ['\[', '\]']
+            ],
+            packages: { '[+]': ['boldsymbol'] }
+        },
+        mml: {
+            parseAs: 'xml',                     // or 'xml'
+            forceReparse: false,                 // true to serialize and re-parse all MathML
+            parseError: function (node) {        // function to process parsing errors
+                this.error(this.adaptor.textContent(node).replace(/\n.*/g, ''));
+            }
+        }
+        };
+    //- script(type="text/x-mathjax-config").
+    //-     window.MathJax = {
+    //-     options: {
+    //-         renderActions: {
+    //-             addMenu: [],
+    //-             checkLoading: []
+    //-         }
+    //-     },
+    //-     loader: { load: ['[tex]/boldsymbol'] },
+    //-     tex: {
+    //-         inlineMath: [
+    //-             ['$', '$'],
+    //-             ['\\(', '\\)']
+    //-         ],
+    //-         displayMath: [
+    //-             ['$$', '$$'],
+    //-             ['\[', '\]']
+    //-         ],
+    //-         packages: { '[+]': ['boldsymbol'] }
+    //-     },
+    //-     mml: {
+    //-         parseAs: 'xml',                     // or 'xml'
+    //-         forceReparse: false,                 // true to serialize and re-parse all MathML
+    //-         parseError: function (node) {        // function to process parsing errors
+    //-             this.error(this.adaptor.textContent(node).replace(/\n.*/g, ''));
+    //-         }
+    //-     }
+
+    //-     };
+    //-     //- MathJax.Hub.Config({
+    //-     //- tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]},
+    //-     //- showMathMenu: false
+    //-     //- });
+    //-     //- MathJax = {
+    //-     //-     options: {
+    //-     //-         enableMenu: false
+    //-     //-     }
+    //-     //- };
+    //- //script(type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
+    //- //script(src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+    script.
+        (function () {
+        let script_CHTML = document.createElement('script');
+        script_CHTML.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'; //Configure this to get the CHMTL
+        script_CHTML.async = true;
+        document.head.appendChild(script_CHTML);    //Parent Tags
+        })();
 block content
     a.btn.btn-primary(href="/questions/create") Add
     a.btn.btn-primary(href="/questions/export") Export
@@ -29,6 +98,8 @@ block content
         .mb-2
             .question-wrap.mb-1
                 a.font-weight-bold(href="/questions/"+q._id) Câu #{i+1}: 
+                if (q.)
+                a.badge.badge-success(href="/questions/"+q._id+"/edit") Sửa
                 a.badge.badge-success(href="/questions/"+q._id+"/edit") Sửa
                 button.btn.badge.badge-primary(onclick="addQuestion('"+q._id+"')") +
                 | !{q.question}
