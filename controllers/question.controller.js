@@ -23,17 +23,19 @@ module.exports.postCreate = async (req, res) => {
     res.redirect('/questions/' + question._id);
 }
 
-module.exports.index = (req, res) => {
+module.exports.index = async (req, res) => {
+    const perPage = 10;
     let indexPage = req.query.p ? Number(req.query.p)-1 : 0;
-    
-    Question.find({}, null, function (err, questions) {
+    let maxPage = await Question.countDocuments();
+    maxPage = Math.ceil(maxPage/perPage);
+    let questions = await Question.find().limit(perPage).skip(indexPage*perPage);
 
-        res.render('questions/index', {
-            questions: questions,
-            numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0,
-            currentPage: indexPage
-        });
-    }).limit(10).skip(indexPage*10);
+    res.render('questions/index', {
+        questions: questions,
+        numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0,
+        currentPage: indexPage+1,
+        maxPage: maxPage
+    });
 }
 
 module.exports.export = async (req, res) => {
@@ -69,12 +71,14 @@ module.exports.export = async (req, res) => {
 
 module.exports.view = (req, res) => {
     Question.findById(req.params.id, null, function (err, question) {
+        if (err || !question) return res.send('Error.');
         res.render('questions/view', { question })
     })
 }
 
 module.exports.edit = (req, res) => {
     Question.findById(req.params.id, null, function (err, question) {
+        if (err || !question) return res.send('Error.');
         res.render('questions/edit', { question });
     })
 }

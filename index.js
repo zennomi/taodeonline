@@ -26,115 +26,19 @@ mongoose.connect('mongodb+srv://new-user_01:25112001@cluster0.nxm48.mongodb.net/
 });
 
 const Question = require('./models/question.model');
+const Test = require('./models/test.model');
 const questionRoutes = require('./routes/questions');
+const testRoutes = require('./routes/tests.js');
 
 app.get('/', (req, res) => {
   res.render('index');
 })
-app.get('/test', (req, res) => {
-  res.render('test');
-})
+// app.get('/test', (req, res) => {
+//   res.render('test');
+// })
 
-<<<<<<< HEAD
 app.use('/questions', questionRoutes);
-=======
-app.get('/questions/create', (req, res) => {
-  res.render('questions/create');
-});
-
-app.post('/questions/create', async (req, res) => {
-  let question = new Question({
-    question: texToMathML(req.body.question_content),
-    choices: [],
-    answer: texToMathML(req.body.detailed_answer),
-    grade: req.body.grade ? req.body.grade : undefined
-  })
-
-  let truthyChoices = req.body.answer_true.map(a => Number(a));
-  req.body.answer_content.forEach((ans, i) => {
-    question.choices[i] = {};
-    question.choices[i].content = texToMathML(ans);
-    if (truthyChoices.indexOf(i) > -1) question.choices[i].isTrue = true;
-    else question.choices[i].isTrue = false;
-  })
-  await question.save();
-  res.redirect('/questions/' + question._id);
-});
-
-app.get('/questions', (req, res) => {
-  Question.find({}, null, function (err, questions) {
-    res.render('questions/index', {
-      questions: questions,
-      numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0
-    });
-  })
-})
-
-app.get('/questions/export', async (req, res) => {
-
-  let ids = req.cookies.questions ? req.cookies.questions.ids : [];
-
-  function toInlineElement(ele) {
-    // ele = ele.split("");
-    // ele.splice(0, 3);
-    // ele.splice(ele.length - 4, 4);
-    // return ele.join("");
-    return ele.replace(/<p>(.*)<\/p>/, "$1");
-  }
-
-  let matchedQuestions = await Question.find({ _id: { $in: ids } });
-  matchedQuestions.forEach(q => {
-    q.question = toInlineElement(q.question);
-    q.choices.forEach(a => {
-      a.content = toInlineElement(a.content);
-    })
-    q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
-  });
-  let unmatchedQuestions = await Question.find({ _id: { $nin: ids } });
-  unmatchedQuestions.forEach(q => {
-    q.question = toInlineElement(q.question);
-    q.choices.forEach(a => {
-      a.content = toInlineElement(a.content);
-    })
-    q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
-  });
-  res.render('questions/export', { matchedQuestions, unmatchedQuestions });
-})
-
-app.get('/questions/:id', (req, res) => {
-  Question.findById(req.params.id, null, function (err, question) {
-    res.render('questions/view', { question })
-  })
-})
-
-app.get('/questions/:id/edit', (req, res) => {
-  Question.findById(req.params.id, null, function (err, question) {
-    res.render('questions/edit', { question });
-  })
-})
-
-app.post('/questions/:id/edit', async (req, res) => {
-  let question = await Question.findById(req.params.id);
-  question.question = texToMathML(req.body.question_content);
-  question.answer = texToMathML(req.body.detailed_answer);
-  question.grade = req.body.grade ? req.body.grade : undefined;
-  let truthyChoices = req.body.answer_true.map(a => Number(a));
-  req.body.answer_content.forEach((ans, i) => {
-    question.choices[i] = {};
-    question.choices[i].content = texToMathML(ans);
-    if (truthyChoices.indexOf(i) > -1) question.choices[i].isTrue = true;
-    else question.choices[i].isTrue = false;
-  })
-  await question.save();
-  res.redirect('/questions/' + question._id);
-});
-
-app.get('/questions/:id/delete', (req, res) => {
-  Question.findByIdAndDelete(req.params.id, null, function (err, question) {
-    res.redirect('/questions');
-  })
-})
->>>>>>> f2d2287e53329264f4fb09785c747b2e9aab71d3
+app.use('/tests', testRoutes);
 
 app.post('/api/add-question', (req, res) => {
   let response = { status: 200 };
@@ -176,11 +80,27 @@ app.post('/api/remove-question', (req, res) => {
 })
 
 app.post('/api/order-question', (req, res) => {
-  console.log(req.cookies.questions);
   let response = { status: 200 };
   res.cookie('questions', { ids: req.body.order ? req.body.order : [] }, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true })
   res.json(response);
   return;
+})
+
+app.post('/api/tests/save', (req, res) => {
+  let response = { status: 200 };
+  let newTest = new Test({
+    questions: req.body.order
+  });
+  newTest.save((err, newTest) => {
+    if (err){
+      response.status = 201;
+      res.json(response);
+      return;
+    }
+    response.idNewTest = newTest._id;
+    res.json(response);
+    return;
+  })
 })
 
 app.listen(port, () => {

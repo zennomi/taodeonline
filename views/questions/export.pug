@@ -156,6 +156,9 @@ block script-footer
     script(src="/js/mathml2latex-browser.js")
     script(src="/js/download-docx.js")
     script.
+        var listObj = document.getElementById("list-1"),
+        sortable = new Sortable(listObj);
+        sortable2 = new Sortable(document.getElementById("list-2"));
         function downloadDocx() {
             $('.remove').remove();
             let HTML = document.getElementById("source-html").innerHTML;

@@ -1,0 +1,148 @@
+extends ../layouts/common.pug
+block stylesheet
+    style.
+        .sortable {
+            display: block;
+        }
+        .sortable > div {
+        margin: 5px 0;
+        display: block;
+        padding: 10px;
+        border-radius: 4px;
+        cursor: move;
+        background: #fff;
+        }
+        .sortable > div:hover {
+            background: #ffffe0;
+        }
+        .sortable > div.active {
+            background: #ccc;
+        }
+        .sortable > div.dragging {
+            background: #e0ffff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            opacity: 0.5;
+        }
+mixin table4x1(q)
+    table.w-100
+        tr
+            td 
+                b A. 
+                | !{q.choices[0].content}
+            td 
+                b B. 
+                | !{q.choices[1].content}
+            td 
+                b C. 
+                | !{q.choices[2].content}
+            td 
+                b D. 
+                | !{q.choices[3].content}
+mixin table2x2(q)
+    table.w-100
+        tr
+            td.w-50
+                b A. 
+                | !{q.choices[0].content}
+            td.w-50
+                b B. 
+                | !{q.choices[1].content}
+        tr
+            td.w-50
+                b C. 
+                | !{q.choices[2].content}
+            td.w-50
+                b D. 
+                | !{q.choices[3].content}
+mixin table1x4(q)
+    table.w-100
+        tr
+            td 
+                b A. 
+                | !{q.choices[0].content}
+        tr
+            td 
+                b B. 
+                | !{q.choices[1].content}
+                td 
+        tr
+            td 
+                b C. 
+                | !{q.choices[2].content}
+        tr
+            td 
+                b D. 
+                | !{q.choices[3].content}
+block script-header
+    style.
+        body {
+            font-family: "Times New Roman";
+            font-size: 12pt;
+            background: #AAFFA9;  /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #11FFBD, #AAFFA9);  /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #11FFBD, #AAFFA9); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+
+        }
+        .question-wrap > p {
+            margin-bottom: 0;
+        }
+    script(type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
+    script(type="text/x-mathjax-config").
+        MathJax.Hub.Config({
+        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+        });
+    script(src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+
+block content
+    #main-list.sortable
+        each q, i in matchedQuestions
+            div(id="item-"+q._id)
+                b.order(data-key=q.getTrueChoice()) Câu #{i+1}: 
+                span.remove
+                    a.badge.badge-success(href="/questions/"+q._id) Sửa
+                    |  
+                | !{q.question}
+                br
+                if q.getMaxLengthChoice() < 10
+                    +table4x1(q)
+                else if q.getMaxLengthChoice() < 100
+                    +table2x2(q)
+                else
+                    +table1x4(q)
+    button#submit.btn.btn-success Lưu
+block script-footer
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js")
+    script(src="/js/sortable.js")
+    script(src="/js/remove-question.js")
+    script(src="/js/mathml2latex-browser.js")
+    script(src="/js/download-docx.js")
+    script.
+        sortable = new Sortable(document.getElementById("main-list"));
+        document.getElementById("submit").addEventListener("click", function() {
+            fetch('/api/tests/save', {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer',
+                body: JSON.stringify({ order: sortable.toArray() })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status == 201) alert("Đã xảy ra lỗi khi lưu.");
+                    else location.href = location.origin + '/tests/'+ res.idNewTest + '/view';
+                });
+        })
+            
+    

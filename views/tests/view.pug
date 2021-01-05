@@ -12,6 +12,7 @@ block script-header
             bottom: 50px;
             right: 50px;
         }
+
     script.
         window.MathJax = {
         options: {
@@ -47,44 +48,36 @@ block script-header
         script_CHTML.async = true;
         document.head.appendChild(script_CHTML);    //Parent Tags
         })();
+    block stylesheet
+        link(rel="stylesheet" href="/css/do-the-test.css")
+
 block content
-    a.btn.btn-primary(href="/questions/create") Add
-    a.btn.btn-primary(href="/questions/export") Export
-    h1.h3.text-primary List of Questions
-    .fixed-right(style="")
-        a#number.btn.btn-primary.btn-lg(href="/questions/export")= numberOfQuestions
-    each q, i in questions
-        hr
-        .mb-2
+    h1.h3.text-primary Đề thi
+    
+    #countdown
+        #tiles
+        .labels
+            li Hours
+            li Mins
+            li Secs
+        
+    each q, i in test.questions
+        .question.mb-2(data-id=q._id)
             .question-wrap.mb-1
-                if (q.grade)
-                    a.badge.badge-success(href="#") Lớp #{q.grade}
-                a.badge.badge-success(href="/questions/"+q._id+"/edit") Sửa
-                button.btn.badge.badge-primary(onclick="addQuestion('"+q._id+"')") +
+                b Câu #{i+1}: 
                 | !{q.question}
-            .row.row-cols-2.row-cols-md-4
+            form.row.row-cols-2.row-cols-md-4.no-gutters.mb-0
                 each a,j in q.choices
                     .col.mb-1
-                        .form-check
-                            input.form-check-input(id='ans' + j + q._id name = q._id type="radio")
-                            label.form-check-label(for='ans' + j + q._id)
+                        .radio.radio-before
+                            label.radio__input
+                                input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
+                                .radio__control= String.fromCharCode(65+j)
+                            .radio__label
                                 | !{a.content}
-    nav(aria-label='Page navigation')
-        ul.pagination.justify-content-center
-            if currentPage != 1
-                li.page-item
-                    a.page-link(href='/questions?p=1')= "1"
-                li.page-item
-                    a.page-link(href='/questions?p='+(currentPage-1))= "<"
-
-                li.page-item.active
-                    a.page-link(href='/questions?p='+currentPage)= currentPage
-            if currentPage != maxPage
-                li.page-item
-                    a.page-link(href='/questions?p='+(currentPage+1))= ">"
-                li.page-item
-                    a.page-link(href='/questions?p='+maxPage)= maxPage
+        hr
+    button.btn.btn-primary#submit Nộp bài
 
 block script-footer
     script(src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous")
-    script(src="/js/add-question.js")
+    script(src="/js/do-the-test.js")

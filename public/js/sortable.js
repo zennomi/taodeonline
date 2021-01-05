@@ -181,7 +181,21 @@
             this._dragging = false;
             this._trashDragItem();
             this._container.querySelectorAll('.order').forEach((e, i) => { e.innerText = `Câu ${i + 1}: ` });
-            orderQuestions();
+            fetch('/api/order-question', {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer',
+                body: JSON.stringify({ order: this.toArray() })
+            })
+                .then(res => res.json())
+                .then(res => {
+                });
         },
 
         // on item drag/move
@@ -234,25 +248,11 @@
 
 // helper init function 
 
-    var listObj = document.getElementById("list-1"),
-        sortable = new Sortable(listObj);
-        sortable2 = new Sortable(document.getElementById("list-2"));
+    // var listObj = document.getElementById("list-1"),
+    //     sortable = new Sortable(listObj);
+    //     sortable2 = new Sortable(document.getElementById("list-2"));
 
 
 function orderQuestions() {
-    fetch('/api/order-question', {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify({ order: sortable.toArray() })
-    })
-        .then(res => res.json())
-        .then(res => {
-        });
+    
 }
