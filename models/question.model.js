@@ -8,7 +8,9 @@ const questionSchema = new Schema({
         content: String,
         isTrue: Boolean
     }],
-    answer: String
+    answer: String,
+    grade: Number,
+    tags: [String]
 });
 
 questionSchema.methods.getMaxLengthChoice = function () {

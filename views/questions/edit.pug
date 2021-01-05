@@ -32,6 +32,13 @@ block content
     h1.h3 Add question
     form#form-question(action="/questions/"+question._id+"/edit" method="POST")
         .form-group.mb-2
+            label Khối
+            select.form-control(name="grade")
+                option= question.grade
+                option 10
+                option 11
+                option 12
+        .form-group.mb-2
             label.h5 Question
             textarea(name="question_content")
                 | !{question.question}
