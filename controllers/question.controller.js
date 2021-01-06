@@ -1,6 +1,14 @@
 const Question = require("../models/question.model");
 const texToMathML = require('../ultils/mathml').texToMathML;
 
+function toInlineElement(ele) {
+    // ele = ele.split("");
+    // ele.splice(0, 3);
+    // ele.splice(ele.length - 4, 4);
+    // return ele.join("");
+    return ele.replace(/<p>(.*)<\/p>/, "$1");
+}
+
 module.exports.create = (req, res) => {
     res.render('questions/create');
 }
@@ -8,6 +16,7 @@ module.exports.create = (req, res) => {
 module.exports.postCreate = async (req, res) => {
     let question = new Question({
         question: texToMathML(req.body.question_content),
+        grade: req.body.grade ? req.body.grade : undefined,
         choices: [],
         answer: texToMathML(req.body.detailed_answer)
     })
@@ -29,7 +38,13 @@ module.exports.index = async (req, res) => {
     let maxPage = await Question.countDocuments();
     maxPage = Math.ceil(maxPage/perPage);
     let questions = await Question.find().limit(perPage).skip(indexPage*perPage);
-
+    questions.forEach(q => {
+        q.question = toInlineElement(q.question);
+        q.choices.forEach(a => {
+            a.content = toInlineElement(a.content);
+        })
+        q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
+    });
     res.render('questions/index', {
         questions: questions,
         numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0,
@@ -42,13 +57,6 @@ module.exports.export = async (req, res) => {
 
     let ids = req.cookies.questions ? req.cookies.questions.ids : [];
 
-    function toInlineElement(ele) {
-        // ele = ele.split("");
-        // ele.splice(0, 3);
-        // ele.splice(ele.length - 4, 4);
-        // return ele.join("");
-        return ele.replace(/<p>(.*)<\/p>/, "$1");
-    }
 
     let matchedQuestions = await Question.find({ _id: { $in: ids } });
     matchedQuestions.forEach(q => {
@@ -87,6 +95,7 @@ module.exports.postEdit = async (req, res) => {
     let question = await Question.findById(req.params.id);
     question.question = texToMathML(req.body.question_content);
     question.answer = texToMathML(req.body.detailed_answer);
+    question.grade = req.body.grade ? req.body.grade : undefined;
     let truthyChoices = req.body.answer_true.map(a => Number(a));
     req.body.answer_content.forEach((ans, i) => {
         question.choices[i] = {};

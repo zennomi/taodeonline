@@ -1,0 +1,36 @@
+script(src="//cdn.ckeditor.com/4.15.0/standard/ckeditor.js")
+script.
+    window.MathJax = {
+    options: {
+        renderActions: {
+            addMenu: [],
+            checkLoading: []
+        }
+    },
+    loader: { load: ['[tex]/boldsymbol'] },
+    tex: {
+        inlineMath: [
+            ['$', '$'],
+            ['\\(', '\\)']
+        ],
+        displayMath: [
+            ['$$', '$$'],
+            ['\[', '\]']
+        ],
+        packages: { '[+]': ['boldsymbol'] }
+    },
+    mml: {
+        parseAs: 'xml',                     // or 'xml'
+        forceReparse: false,                 // true to serialize and re-parse all MathML
+        parseError: function (node) {        // function to process parsing errors
+            this.error(this.adaptor.textContent(node).replace(/\n.*/g, ''));
+        }
+    }
+    };
+script.
+    (function () {
+    let script_CHTML = document.createElement('script');
+    script_CHTML.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'; //Configure this to get the CHMTL
+    script_CHTML.async = true;
+    document.head.appendChild(script_CHTML);    //Parent Tags
+    })();

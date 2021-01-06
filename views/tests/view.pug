@@ -2,7 +2,7 @@ extends ../layouts/common.pug
 block script-header
     style.
         body {
-            font-family: "Times New Roman";
+            
         }
         .question-wrap > p {
             margin-bottom: 0;
@@ -12,72 +12,76 @@ block script-header
             bottom: 50px;
             right: 50px;
         }
-
+    include ../layouts/mathjax.pug
     script.
-        window.MathJax = {
-        options: {
-            renderActions: {
-                addMenu: [],
-                checkLoading: []
-            }
-        },
-        loader: { load: ['[tex]/boldsymbol'] },
-        tex: {
-            inlineMath: [
-                ['$', '$'],
-                ['\\(', '\\)']
-            ],
-            displayMath: [
-                ['$$', '$$'],
-                ['\[', '\]']
-            ],
-            packages: { '[+]': ['boldsymbol'] }
-        },
-        mml: {
-            parseAs: 'xml',                     // or 'xml'
-            forceReparse: false,                 // true to serialize and re-parse all MathML
-            parseError: function (node) {        // function to process parsing errors
-                this.error(this.adaptor.textContent(node).replace(/\n.*/g, ''));
+        window.MathJax.startup = {
+        ready: () => {
+        MathJax.startup.defaultReady();
+        MathJax.startup.promise.then(() => {
+            var startBtn = document.getElementById('start-btn');
+            startBtn.innerHTML = "Bắt đầu làm bài";
+            startBtn.disabled = false;
+            });
             }
         }
-        };
-    script.
-        (function () {
-        let script_CHTML = document.createElement('script');
-        script_CHTML.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'; //Configure this to get the CHMTL
-        script_CHTML.async = true;
-        document.head.appendChild(script_CHTML);    //Parent Tags
-        })();
     block stylesheet
         link(rel="stylesheet" href="/css/do-the-test.css")
 
 block content
-    h1.h3.text-primary Đề thi
-    
-    #countdown
-        #tiles
-        .labels
-            li Hours
-            li Mins
-            li Secs
-        
-    each q, i in test.questions
-        .question.mb-2(data-id=q._id)
-            .question-wrap.mb-1
-                b Câu #{i+1}: 
-                | !{q.question}
-            form.row.row-cols-2.row-cols-md-4.no-gutters.mb-0
-                each a,j in q.choices
-                    .col.mb-1
-                        .radio.radio-before
-                            label.radio__input
-                                input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
-                                .radio__control= String.fromCharCode(65+j)
-                            .radio__label
-                                | !{a.content}
-        hr
-    button.btn.btn-primary#submit Nộp bài
+    .modal.fade#init-modal(tab-index=-1 data-bs-backdrop="static" data-bs-keyboard="false").text-center
+        .modal-dialog.modal-dialog-centered
+            .modal-content
+                .modal-header.justify-content-center
+                    .h1.modal-title Đề thi
+                .modal-body
+                    p Thời gian
+                    p.fs-1 40 phút
+                .modal-footer.justify-content-center
+                    button.btn.btn-primary#start-btn(type="button" data-bs-dismiss="modal" disabled)
+                        span.spinner-border.spinner-border-sm(role="status" aria-hidden="true")
+                        |   Đang chuẩn bị đề...
+
+
+    .fixed-top(aria-live="polite" aria-atomic="true")
+        .toast-container.position-absolute.top-0.end-0.p-3
+            .toast(role="alert" aria-live="assertive" aria-atomic="true")
+                .toast-header
+                    img.rounded.me-2(src="" alt="")
+                    strong.me-auto Hệ thống
+                    button.btn-close(type="button" data-bs-dismiss="toast" aria-label="Close")
+                .toast-body
+            .toast(role="alert" aria-live="assertive" aria-atomic="true")
+                .toast-header
+                    img.rounded.me-2(src="" alt="")
+                    strong.me-auto Tips
+                    button.btn-close(type="button" data-bs-dismiss="toast" aria-label="Close")
+                .toast-body
+
+    h1.text-primary.text-center Đề thi
+    .d-flex.justify-content-around
+        p Đề thi gồm #{test.questions.length} câu
+        p Thời gian 40 phút.
+    .fixed-bottom
+        .progress
+            #progress-btn.progress-bar
+    .test-wrap
+        each q, i in test.questions
+            .question.mb-2(data-id=q._id)
+                .question-wrap.mb-1
+                    b Câu #{i+1}: 
+                    | !{q.question}
+                form.row.row-cols-2.row-cols-md-4.no-gutters.mb-0
+                    each a,j in q.choices
+                        .col.mb-1
+                            .radio.radio-before
+                                label.radio__input
+                                    input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
+                                    .radio__control= String.fromCharCode(65+j)
+                                .radio__label.d-flex.align-items-center
+                                    | !{a.content}
+            hr
+        button.btn.btn-primary#submit Nộp bài
 
 block script-footer
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous")
+    script(src="/js/countdown.js")
     script(src="/js/do-the-test.js")

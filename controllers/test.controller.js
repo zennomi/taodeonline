@@ -2,7 +2,11 @@ const Test = require("../models/test.model");
 const Question = require("../models/question.model");
 
 module.exports.index = (req, res) => {
-    res.render('tests/index');
+    Test.find({}).exec((err, tests) => {
+        if (err) return res.send("Error.");
+
+        res.render('tests/index', {tests});
+    })
 }
 
 module.exports.view = (req, res) => {

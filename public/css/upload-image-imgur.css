@@ -1,17 +1,6 @@
-.mt-100 {
-    margin-top: 100px
-}
-
 body.loading .loading-modal {
     display: block
 }
-
-.title {
-    margin-right: auto;
-    margin-left: auto;
-    text-align: center
-}
-
 .info {
     margin-top: 11%
 }
@@ -33,7 +22,6 @@ body.loading .loading-modal {
 }
 
 .status {
-    border-radius: 5px;
     text-align: center;
     width: 50%;
     margin-left: auto;
@@ -55,7 +43,6 @@ body.loading .loading-modal {
     z-index: 1000;
     top: 0;
     left: 0;
-    height: 100%;
     width: 100%
 }
 
@@ -66,13 +53,8 @@ body.loading .loading-modal {
     margin-bottom: 15%
 }
 
-.img {
-    width: 100%
-}
-
 .dropzone {
     border: 4px dashed #ccc;
-    height: 200px;
     position: relative;
     margin-right: auto;
     margin-left: auto;
@@ -81,7 +63,6 @@ body.loading .loading-modal {
 
 .dropzone {
     border: 1px solid #eee !important;
-    height: 179px !important;
     position: relative;
     margin-right: auto;
     margin-left: auto;
@@ -107,9 +88,7 @@ body.loading .loading-modal {
     margin-top: 5px;
     display: inline-block;
     width: 100%;
-    min-height: 150px;
     margin-top: 20px;
-    float: left;
     cursor: pointer
 }
 
@@ -137,10 +116,7 @@ body.loading .loading-modal {
 }
 
 .imgur-upload {
-    width: 202px;
-    height: 177px;
-    border-bottom-right-radius: 7px;
-    border-top-right-radius: 9px
+    height: 200px;
 }
 
 @media screen and (min-width: 300px) and (max-width: 700px) {

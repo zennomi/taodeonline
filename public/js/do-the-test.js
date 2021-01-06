@@ -1,9 +1,19 @@
+var initModal = document.getElementById('init-modal');
+initModal.addEventListener('hidden.bs.modal', function (event) {
+    countdown();
+});
+initModal = new bootstrap.Modal(initModal, {
+    backdrop: 'static',
+    keyboard: false
+});
+initModal.show();
 
 document.querySelectorAll("input").forEach(input => {
     input.addEventListener("click", function () {
-        this.nextSibling.style["box-shadow"] = "0 0 3pt 2pt var(--primary)";
+        this.nextSibling.style["box-shadow"] = "0 0 3pt 2pt var(--bs-primary)";
     })
 });
+
 document.getElementById("submit").addEventListener("click", function () {
     let falseCounts = 0;
     let total = 0;
@@ -17,17 +27,17 @@ document.getElementById("submit").addEventListener("click", function () {
             i.disabled = true;
             i.nextSibling.style["box-shadow"] = "";
         })
-        title.innerHTML += (`<a class="badge badge-light" href="/questions/${q.dataset.id}/view" target="_blank">Đáp án chi tiết</a>`)
-        title.classList.add("badge");
+        title.innerHTML += (`<a class="btn btn-light" href="/questions/${q.dataset.id}/view" target="_blank">Đáp án chi tiết</a>`)
+        title.classList.add("btn");
         if (!checkedRadio) {
             falseCounts++;
-            title.classList.add("badge-danger");
+            title.classList.add("btn-danger");
         } else if (trueRadio.dataset.order != checkedRadio.dataset.order) {
-            title.classList.add("badge-danger");
-            checkedRadio.nextSibling.style.background = "var(--danger)";
+            title.classList.add("btn-danger");
+            checkedRadio.nextSibling.style.background = "var(--bs-danger)";
             falseCounts++;
-        } else title.classList.add("badge-success");
-        trueRadio.nextSibling.style.background = "var(--success)";
+        } else title.classList.add("btn-success");
+        trueRadio.nextSibling.style.background = "var(--bs-success)";
         trueRadio.nextSibling.style.color = "#FFF";
         trueRadio.nextSibling.style.border = "none";
     })

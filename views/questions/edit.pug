@@ -2,13 +2,8 @@ extends ../layouts/common.pug
 block stylesheet
     link(rel="stylesheet", href="/css/upload-image-imgur.css")
 block script-header
-    script(type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
-    script(type="text/x-mathjax-config").
-        MathJax.Hub.Config({
-        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
-        });
-        console.log('Hello');
-    script(src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+    script(src="//cdn.ckeditor.com/4.15.0/standard/ckeditor.js")
+    include ../layouts/mathjax.pug
     script(src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1569993029/imgur.js")
 block content
     h1.h3 Add question
@@ -42,7 +37,7 @@ block content
             label.h5 Question
             textarea(name="question_content")
                 | !{question.question}
-        .form-row.row-cols-2
+        .row.row-cols-2
             each a, i in question.choices
                 .col
                     h5.d-inline.mr-2 Answer #{i+1}

@@ -14,7 +14,8 @@ function addQuestion(id) {
     .then(res => res.json())
     .then(res => {
         if (res.status == 200) {
-            $('#number').text(Number($('#number').text())+1);
+            let number = document.getElementById('number');
+            number.innerText = Number(number.innerText)+1;
         }
         alert(res.message);
     });

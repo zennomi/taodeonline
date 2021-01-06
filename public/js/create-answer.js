@@ -45,26 +45,29 @@
     'annotation-xml'
   ];
   const options = {
-    height: 100,
-    removeButtons: 'Anchor,Styles,Specialchar',
+    // Remove the redundant buttons from toolbar groups defined above.
+    toolbar: [
+      { name: 'basicstyles', groups: ['basicstyles', 'cleanup'], items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat'] },
+      { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+      { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language' ] },
+      { name: 'insert', items: [ 'Image', 'Table', 'SpecialChar'] },
+      { name: 'wiris', items: ['ckeditor_wiris_formulaEditor'] }
+    ],
+    uiColor: 'var(--bs-light)',
+    height: 200,
     extraPlugins: 'ckeditor_wiris',
-    // For now, MathType is incompatible with CKEditor file upload plugins.
     removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser',
-    // Update the ACF configuration with MathML syntax.
     extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
   }
 
   CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://ckeditor.com/docs/ckeditor4/4.15.0/examples/assets/plugins/ckeditor_wiris/', 'plugin.js');
-  CKEDITOR.editorConfig = function( config ) {
-    // Define changes to default configuration here. For example:
-    // config.language = 'fr';
-    // config.uiColor = '#AADC6E';
-    
-    config.extraPlugins += (config.extraPlugins.length == 0 ? '' : ',') + 'ckeditor_wiris';
-    config.toolbar_Full.push({name:'wiris', items:['ckeditor_wiris_formulaEditor', 'ckeditor_wiris_formulaEditorChemistry']});
-    config.allowedContent = true;
-    config.height = '250px';
-  };
+  // CKEDITOR.editorConfig = function( config ) {
+  //   config.uiColor = '#FFF';
+
+  //   config.extraPlugins += (config.extraPlugins.length == 0 ? '' : ',') + 'ckeditor_wiris';
+  //   config.toolbar_Full.push({name:'wiris', items:['ckeditor_wiris_formulaEditor']});
+  //   config.allowedContent = true;
+  // };
   CKEDITOR.replace('question_content', options);
   CKEDITOR.replace('answer_content[0]', options);
   CKEDITOR.replace('answer_content[1]', options);
