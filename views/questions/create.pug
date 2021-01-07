@@ -1,13 +1,38 @@
 extends ../layouts/common.pug
 block stylesheet
     link(rel="stylesheet", href="/css/upload-image-imgur.css")
+    link(rel="stylesheet", href="https://unpkg.com/@yaireo/tagify/dist/tagify.css")
+    style.
+        .tags-look .tagify__dropdown__item{
+        display: inline-block;
+        border-radius: 3px;
+        padding: .3em .5em;
+        border: 1px solid #CCC;
+        background: #F3F3F3;
+        margin: .2em;
+        font-size: .85em;
+        color: black;
+        transition: 0s;
+        }
+
+        .tags-look .tagify__dropdown__item--active{
+        color: black;
+        }
+
+        .tags-look .tagify__dropdown__item:hover{
+        background: lightyellow;
+        border-color: gold;
+        }
+        .tagify--noTags {
+            height: 3rem;
+        }
 block script-header
     script(src="//cdn.ckeditor.com/4.15.0/standard/ckeditor.js")
     script(src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1569993029/imgur.js")
 
 block content
     h1.h3 Thêm câu hỏi
-    .accordion#accordionMain
+    .accordion#accordionMain.mb-2.shadow-sm
         .accordion-item
             .accordion-header
                 button.accordion-button.collapsed(type="button" data-bs-toggle="collapse" data-bs-target="#accordionUpload" aria-expanded="false" aria-controls="accordionUpload" ) Tải ảnh lên
@@ -25,15 +50,33 @@ block content
                                 .status
                                 span.imgur-link
     form#form-question(action="/questions/create" method="POST")
-        .form-group.mb-2
-            select.form-control(name="grade")
-                option(value="" hidden) Chọn khối
-                option(value=10) 10
-                option(value=10) 11
-                option(value=10) 12
-        .form-group.mb-2
-            label.h5 Question
+        .d-flex.justify-content-evenly.align-items-center.p-2.mb-2.shadow-sm
+            .text-center
+                .form-check.form-check-inline
+                    input.form-check-input(type="radio" name="grade" value=10)
+                    label.form-check-label Lớp 10
+                .form-check.form-check-inline
+                    input.form-check-input(type="radio" name="grade" value=11)
+                    label.form-check-label Lớp 11
+                .form-check.form-check-inline
+                    input.form-check-input(type="radio" name="grade" value=12)
+                    label.form-check-label Lớp 12
+            div
+                .input-group.text-center
+                    input.form-control(type="number" placeholder="Mức độ khó" style="max-width: 100px")
+                    .input-group-text điểm
+
+                    
+        .p-2.mb-2.shadow-sm
+            .row
+                .col
+                    input.tagify.form-control(name='main_tags' placeholder='Thẻ chính')
+                .col
+                    input.tagify.form-control(name='side_tags' placeholder='Thẻ phụ')
+        .mb-2
+            label.h5 Câu hỏi
             textarea(name="question_content")
+        label.h5 Đáp án
         .row.row-cols-2
             .col
                 .form-check.form-check-inline
@@ -62,3 +105,6 @@ block content
 block script-footer
     script(src="/js/create-answer.js")
     script(src="/js/upload-image-imgur.js")
+    script(src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.0/dist/tagify.min.js")
+    script(src="/js/questions/init-tagify.js")
+    

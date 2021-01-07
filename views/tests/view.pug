@@ -1,9 +1,6 @@
 extends ../layouts/common.pug
 block script-header
     style.
-        body {
-            
-        }
         .question-wrap > p {
             margin-bottom: 0;
         }
@@ -66,18 +63,18 @@ block content
             #progress-btn.progress-bar
     .test-wrap
         each q, i in test.questions
-            .question.mb-2(data-id=q._id)
-                .question-wrap.mb-1
+            .question(data-id=q._id)
+                .question-wrap.MJX-TEX
                     b Câu #{i+1}: 
-                    | !{q.question}
-                form.row.row-cols-2.row-cols-md-4.no-gutters.mb-0
+                    span !{q.question}
+                form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
                     each a,j in q.choices
                         .col.mb-1
                             .radio.radio-before
                                 label.radio__input
                                     input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
                                     .radio__control= String.fromCharCode(65+j)
-                                .radio__label.d-flex.align-items-center
+                                .radio__label.d-flex.align-items-center.MJX-TEX
                                     | !{a.content}
             hr
         button.btn.btn-primary#submit Nộp bài

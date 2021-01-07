@@ -10,7 +10,7 @@ initModal.show();
 
 document.querySelectorAll("input").forEach(input => {
     input.addEventListener("click", function () {
-        this.nextSibling.style["box-shadow"] = "0 0 3pt 2pt var(--bs-primary)";
+        this.nextSibling.style["box-shadow"] = "0 0 0 2pt var(--bs-primary)";
     })
 });
 

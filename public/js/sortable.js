@@ -246,13 +246,3 @@
 });
 
 
-// helper init function 
-
-    // var listObj = document.getElementById("list-1"),
-    //     sortable = new Sortable(listObj);
-    //     sortable2 = new Sortable(document.getElementById("list-2"));
-
-
-function orderQuestions() {
-    
-}

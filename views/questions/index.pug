@@ -1,61 +1,98 @@
 extends ../layouts/common.pug
 block stylesheet
     link(rel="stylesheet", href="/css/do-the-test.css")
+    link(rel="stylesheet", href="https://unpkg.com/@yaireo/tagify/dist/tagify.css")
 block script-header
-    style.
-        body {
-            font-family: "Times New Roman";
-        }
-        .question-wrap > p {
-            margin-bottom: 0;
-        }
-        .fixed-right {
-            position: fixed;
-            bottom: 50px;
-            right: 50px;
-        }
     include ../layouts/mathjax.pug
 block content
-    a.btn.btn-primary(href="/questions/create") Add
-    a.btn.btn-primary(href="/questions/export") Export
-    h1.h3.text-primary List of Questions
-    .fixed-right(style="")
-        a#number.btn.btn-primary.btn-lg(href="/tests/create")= numberOfQuestions
-    each q, i in questions
-        hr
-        .mb-2
-            .question-wrap.mb-1
-                if (q.grade)
-                    a.badge.bg-success(href="#") Lớp #{q.grade}
-                a.btn.btn-success(href="/questions/"+q._id+"/edit") Sửa
-                button.btn.btn-primary(onclick="addQuestion('"+q._id+"')") +
-                | !{q.question}
-            form.row.row-cols-2.row-cols-md-4.no-gutters.mb-0
-                each a,j in q.choices
-                    .col.mb-1
-                        .radio.radio-before
-                            label.radio__input
-                                input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
-                                .radio__control= String.fromCharCode(65+j)
-                            .radio__label.d-flex.align-items-center
-                                span
-                                    | !{a.content}
-    nav(aria-label='Page navigation')
-        ul.pagination.justify-content-center
-            if currentPage != 1
-                li.page-item
-                    a.page-link(href='/questions?p=1')= "1"
-                li.page-item
-                    a.page-link(href='/questions?p='+(currentPage-1))= "<"
+    .mb-2
+        a.btn.btn-primary(href="/questions/create") Add
+        a.btn.btn-primary(href="/questions/export") Export
+        a#number.btn.btn-primary(href="/tests/create")= numberOfQuestions
 
-                li.page-item.active
-                    a.page-link(href='/questions?p='+currentPage)= currentPage
-            if currentPage != maxPage
-                li.page-item
-                    a.page-link(href='/questions?p='+(currentPage+1))= ">"
-                li.page-item
-                    a.page-link(href='/questions?p='+maxPage)= maxPage
+    .mb-2
+        form(action="/questions" method="GET")
+            .row.mb-1
+                .col-3
+                    input.form-control(name="query" type="text" placeholder="Cụm từ tìm kiếm" value=handledQuery.query)
+                        
+                .col
+                    input.tagify.form-control.h-100(name="tags" type="text" placeholder="Chủ đề" value=handledQuery.tags)
+                .col-1
+                    select.form-select(name="grade")
+                        if handledQuery.grade
+                            option(value=handledQuery.grade hidden)= handledQuery.grade
+                        else
+                            option(value="" hidden) Khối
+                        option 10
+                        option 11
+                        option 12
+                        option(value="") Trống
+                .col-2
+                    select.form-select(name="sort")
+                        option(value="" hidden) Sắp xếp theo
+                        option(value=1) Mới nhất
+                        option(value=2) Cũ nhất
+                        option(value=3) Dễ nhất
+                        option(value=4) Khó nhất
+            button.btn.btn-primary(type="submit") Tìm
+    each q, i in questions
+        .border-start.border-success.border-5.rounded.mb-2.p-2.shadow-sm
+            .badge.bg-success
+                a.text-decoration-none.text-reset(href="/questions/"+q._id+"/view" target="_blank") Xem
+            | &nbsp;
+            .badge.bg-success
+                a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
+            | &nbsp;
+            .badge.bg-primary
+                a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="addQuestion('"+q._id+"')") +
+            | &nbsp;
+            if (q.grade)
+                .badge.bg-danger
+                    a.text-decoration-none.text-reset(href="#" target="_blank") Lớp #{q.grade}
+                | &nbsp;
+            each tag in q.main_tags
+                .badge.bg-danger
+                    a.text-decoration-none.text-reset(href="#" target="_blank")= tag.value
+                | &nbsp;
+            each tag in q.side_tags
+                .badge.bg-warning
+                    a.text-decoration-none.text-reset(href="#" target="_blank")= tag.value
+                | &nbsp;
+            .test-wrap
+                .question-wrap.ml-2.MJX-TEX.mt-1
+                    | !{q.question}
+                
+                form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
+                    each a,j in q.choices
+                        .col.mb-1
+                            .radio.radio-before
+                                label.radio__input
+                                    input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
+                                    .radio__control= String.fromCharCode(65+j)
+                                .radio__label.d-flex.align-items-center
+                                    span.MJX-TEX
+                                        | !{a.content}
+        
+    if (maxPage > 1)
+        nav(aria-label='Page navigation')
+            ul.pagination.justify-content-center
+                if currentPage != 1
+                    li.page-item
+                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=1`)= "1"
+                    li.page-item
+                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=`+(currentPage-1))= "<"
+
+                    li.page-item.active
+                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=`+currentPage)= currentPage
+                if currentPage != maxPage
+                    li.page-item
+                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=`+(currentPage+1))= ">"
+                    li.page-item
+                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=`+maxPage)= maxPage
     script.
         document.querySelectorAll("input[type='radio']").forEach(i => {i.disabled = true});
 block script-footer
     script(src="/js/add-question.js")
+    script(src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.0/dist/tagify.min.js")
+    script(src="/js/questions/init-tagify.js")

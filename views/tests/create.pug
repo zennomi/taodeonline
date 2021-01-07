@@ -23,56 +23,7 @@ block stylesheet
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             opacity: 0.5;
         }
-mixin table4x1(q)
-    table.w-100
-        tr
-            td 
-                b A. 
-                | !{q.choices[0].content}
-            td 
-                b B. 
-                | !{q.choices[1].content}
-            td 
-                b C. 
-                | !{q.choices[2].content}
-            td 
-                b D. 
-                | !{q.choices[3].content}
-mixin table2x2(q)
-    table.w-100
-        tr
-            td.w-50
-                b A. 
-                | !{q.choices[0].content}
-            td.w-50
-                b B. 
-                | !{q.choices[1].content}
-        tr
-            td.w-50
-                b C. 
-                | !{q.choices[2].content}
-            td.w-50
-                b D. 
-                | !{q.choices[3].content}
-mixin table1x4(q)
-    table.w-100
-        tr
-            td 
-                b A. 
-                | !{q.choices[0].content}
-        tr
-            td 
-                b B. 
-                | !{q.choices[1].content}
-                td 
-        tr
-            td 
-                b C. 
-                | !{q.choices[2].content}
-        tr
-            td 
-                b D. 
-                | !{q.choices[3].content}
+    link(rel="stylesheet", href="/css/do-the-test.css")
 block script-header
     style.
         body {
@@ -93,12 +44,7 @@ block script-header
         .question-wrap > p {
             margin-bottom: 0;
         }
-    script(type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
-    script(type="text/x-mathjax-config").
-        MathJax.Hub.Config({
-        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
-        });
-    script(src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+    include ../layouts/mathjax.pug
 
 block content
     #main-list.sortable
@@ -109,22 +55,42 @@ block content
                     a.badge.badge-success(href="/questions/"+q._id) Sửa
                     |  
                 | !{q.question}
-                br
-                if q.getMaxLengthChoice() < 10
-                    +table4x1(q)
-                else if q.getMaxLengthChoice() < 100
-                    +table2x2(q)
-                else
-                    +table1x4(q)
+                form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
+                    each a,j in q.choices
+                        .col.mb-1
+                            .radio.radio-before
+                                label.radio__input
+                                    input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
+                                    .radio__control= String.fromCharCode(65+j)
+                                .radio__label.d-flex.align-items-center
+                                    | !{a.content}
     button#submit.btn.btn-success Lưu
 block script-footer
     script(src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js")
     script(src="/js/sortable.js")
     script(src="/js/remove-question.js")
-    script(src="/js/mathml2latex-browser.js")
-    script(src="/js/download-docx.js")
     script.
         sortable = new Sortable(document.getElementById("main-list"));
+        function orderQuestions() {
+        fetch('/api/order-question', {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({ order: sortable.toArray() })
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status != 200) {
+                    alert("Đã xảy ra lỗi khi lưu.");
+                }
+            });
+        }
         document.getElementById("submit").addEventListener("click", function() {
             fetch('/api/tests/save', {
                 method: 'POST',

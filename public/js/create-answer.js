@@ -45,7 +45,6 @@
     'annotation-xml'
   ];
   const options = {
-    // Remove the redundant buttons from toolbar groups defined above.
     toolbar: [
       { name: 'basicstyles', groups: ['basicstyles', 'cleanup'], items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat'] },
       { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
@@ -53,6 +52,7 @@
       { name: 'insert', items: [ 'Image', 'Table', 'SpecialChar'] },
       { name: 'wiris', items: ['ckeditor_wiris_formulaEditor'] }
     ],
+    removeButtons: '',
     uiColor: 'var(--bs-light)',
     height: 200,
     extraPlugins: 'ckeditor_wiris',
@@ -74,10 +74,4 @@
   CKEDITOR.replace('answer_content[2]', options);
   CKEDITOR.replace('answer_content[3]', options);
   CKEDITOR.replace('detailed_answer', options);
-
-  // document.getElementById('form-question').addEventListener('submit', function(e) {
-  //     e.preventDefault();
-  //     var data = CKEDITOR.instances.question_content.getData();
-  //     console.log(data);
-  // })
 }());

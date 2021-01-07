@@ -1,13 +1,9 @@
 extends ../layouts/common.pug
+block stylesheet
+    link(rel="stylesheet", href="/css/do-the-test.css")
 block script-header
-    
-    script(type="text/x-mathjax-config").
-        MathJax.Hub.Config({
-        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
-        });
-    script(src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
-    script(type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
-    
+    include ../layouts/mathjax.pug
+
 block content
     a.btn.btn-success(href="/questions/create") Add
     a.btn.btn-success(href="/questions/"+question._id+"/edit") Edit
@@ -15,12 +11,22 @@ block content
         button.btn.btn-danger(type="submit") Delete
     .mb-2
         .badge.badge-warning= question.grade
-        | !{question.question}
-    .row.row-cols-4.mb-2
-        each a,j in question.choices
-            .col
-                b= String.fromCharCode(65+j) +". "
-                | !{a.content}
+        span.MJX-TEX !{question.question}
+        form.row.row-cols-2.row-cols-md-4.no-gutters.mb-0
+            each a,j in question.choices
+                .col.mb-1
+                    .radio.radio-before
+                        label.radio__input
+                            input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
+                            .radio__control= String.fromCharCode(65+j)
+                        .radio__label.d-flex.align-items-center
+                            span.MJX-TEX
+                                | !{a.content}
     .mb-2
+        | Đáp án đúng: 
         span= question.getTrueChoice()
+        br
+        | Lời giải chi tiết:
         | !{question.answer}
+    script.
+        document.querySelectorAll("input[type='radio']").forEach(i => {i.disabled = true});

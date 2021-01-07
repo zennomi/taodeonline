@@ -18,7 +18,10 @@ module.exports.postCreate = async (req, res) => {
         question: texToMathML(req.body.question_content),
         grade: req.body.grade ? req.body.grade : undefined,
         choices: [],
-        answer: texToMathML(req.body.detailed_answer)
+        answer: texToMathML(req.body.detailed_answer),
+        main_tags: req.body.main_tags ? JSON.parse(req.body.main_tags) : undefined,
+        side_tags: req.body.side_tags ? JSON.parse(req.body.side_tags) : undefined,
+        level: req.body.level ? req.body.level : undefined
     })
 
     let truthyChoices = req.body.answer_true.map(a => Number(a));
@@ -33,11 +36,49 @@ module.exports.postCreate = async (req, res) => {
 }
 
 module.exports.index = async (req, res) => {
+    
+    // Search
+    let tagsList = req.query.tags ? JSON.parse(req.query.tags).map(t => t.value) : [];
+    let optionSearch = {
+        question: { $regex: (new RegExp(req.query.query, 'i')) },
+        grade: req.query.grade ? req.query.grade : undefined,
+        main_tags: req.query.tags ? { $elemMatch: { value: {$in: tagsList} } } : undefined
+    }
+    if (!req.query.query) delete optionSearch.question;
+    if (!req.query.grade) delete optionSearch.grade;
+    if (!req.query.tags) delete optionSearch.main_tags;
+
+    // Sort
+    let sortOption;
+    switch(Number(req.query.sort)) {
+        case 2:
+            sortOption = {_id: 1};
+            break;
+        case 3:
+            sortOption = {level: 1};
+            break;
+        case 4:
+            sortOption = {level: -1};
+            break;
+        default:
+            sortOption = {_id: -1};
+    }
+
+    // Pagination
     const perPage = 10;
     let indexPage = req.query.p ? Number(req.query.p)-1 : 0;
-    let maxPage = await Question.countDocuments();
+    let maxPage = await Question.countDocuments(optionSearch);
     maxPage = Math.ceil(maxPage/perPage);
-    let questions = await Question.find().limit(perPage).skip(indexPage*perPage);
+
+    // Handle query
+    let handledQuery = {
+        query: req.query.query ? req.query.query : "",
+        grade: req.query.grade ? req.query.grade : "",
+        tags: req.query.tags ? req.query.tags : "",
+        sort: req.query.sort ? req.query.sort : ""
+    }
+    // Main
+    let questions = await Question.find(optionSearch).limit(perPage).skip(indexPage*perPage).sort(sortOption);
     questions.forEach(q => {
         q.question = toInlineElement(q.question);
         q.choices.forEach(a => {
@@ -49,7 +90,8 @@ module.exports.index = async (req, res) => {
         questions: questions,
         numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0,
         currentPage: indexPage+1,
-        maxPage: maxPage
+        maxPage: maxPage,
+        handledQuery: handledQuery
     });
 }
 
@@ -87,6 +129,7 @@ module.exports.view = (req, res) => {
 module.exports.edit = (req, res) => {
     Question.findById(req.params.id, null, function (err, question) {
         if (err || !question) return res.send('Error.');
+        console.log(question);
         res.render('questions/edit', { question });
     })
 }
@@ -96,6 +139,9 @@ module.exports.postEdit = async (req, res) => {
     question.question = texToMathML(req.body.question_content);
     question.answer = texToMathML(req.body.detailed_answer);
     question.grade = req.body.grade ? req.body.grade : undefined;
+    question.main_tags = req.body.main_tags ? JSON.parse(req.body.main_tags) : undefined;
+    question.side_tags = req.body.side_tags ? JSON.parse(req.body.side_tags) : undefined;
+    question.level = req.body.level ? req.body.level : undefined;
     let truthyChoices = req.body.answer_true.map(a => Number(a));
     req.body.answer_content.forEach((ans, i) => {
         question.choices[i] = {};

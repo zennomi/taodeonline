@@ -33,9 +33,9 @@ const testRoutes = require('./routes/tests.js');
 app.get('/', (req, res) => {
   res.render('index');
 })
-// app.get('/test', (req, res) => {
-//   res.render('test');
-// })
+app.get('/test', (req, res) => {
+  res.render('test');
+})
 
 app.use('/questions', questionRoutes);
 app.use('/tests', testRoutes);
@@ -106,12 +106,3 @@ app.post('/api/tests/save', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
-
-function texToMathML(string) {
-  return string.replace(/\$([^$]*)\$/g, (match, m1) => {
-    return TeXToMML(m1).replace(/\n/g, "").replace(/ {2,}/g, "").replace('display="block"', "");
-  })
-  .replace(/\\\[([^[]*)\\\]/g, (match, m1) => {
-    return TeXToMML(m1).replace(/\n/g, "").replace(/ {2,}/g, "").replace('display="block"', "");
-  }).replace(/<p>&nbsp;<\/p>/g, "");
-}

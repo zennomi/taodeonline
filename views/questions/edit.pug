@@ -1,46 +1,83 @@
 extends ../layouts/common.pug
 block stylesheet
     link(rel="stylesheet", href="/css/upload-image-imgur.css")
+    link(rel="stylesheet", href="https://unpkg.com/@yaireo/tagify/dist/tagify.css")
+    style.
+        .tags-look .tagify__dropdown__item{
+        display: inline-block;
+        border-radius: 3px;
+        padding: .3em .5em;
+        border: 1px solid #CCC;
+        background: #F3F3F3;
+        margin: .2em;
+        font-size: .85em;
+        color: black;
+        transition: 0s;
+        }
+
+        .tags-look .tagify__dropdown__item--active{
+        color: black;
+        }
+
+        .tags-look .tagify__dropdown__item:hover{
+        background: lightyellow;
+        border-color: gold;
+        }
+        .tagify--noTags {
+            height: 3rem;
+        }
 block script-header
-    script(src="//cdn.ckeditor.com/4.15.0/standard/ckeditor.js")
+    script(src="//cdn.ckeditor.com/4.15.0/standard-all/ckeditor.js")
     include ../layouts/mathjax.pug
     script(src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1569993029/imgur.js")
 block content
-    h1.h3 Add question
-    h5 Upload image
-        .d-flex.justify-content-center
-            .row
-                .col-md-12
-                    .dropzone.uploadfuzone.fuzone
-                        .row
-                            .col-md-8
+    h1.h3 Sửa câu hỏi
+    .accordion#accordionMain.mb-2.shadow-sm
+        .accordion-item
+            .accordion-header
+                button.accordion-button.collapsed(type="button" data-bs-toggle="collapse" data-bs-target="#accordionUpload" aria-expanded="false" aria-controls="accordionUpload" ) Tải ảnh lên
+            .accordion-collapse.collapse#accordionUpload(data-bs-parent="#accordionMain")
+                .accordion-body
+                    h5 Tải ảnh lên
+                        .d-flex.justify-content-center
+                            .dropzone.uploadfuzone.fuzone
                                 .fu-text
-                                span
-                                    i.fa.fa-picture-o
-                                    |  Click here or drop file to upload
-                            .col-md-4
-                                .snippet_image_div  
-                        input.input(type='file', accept='image/*')
-                .status
-                .text-center
-                    span.imgur-link
-    h1.h3 Add question
+                                    span
+                                        |  Click hoặc thả ảnh vào đây
+                                input.input(type='file', accept='image/*')
+                            a.snippet_image_div
+                            .text-center
+                                .status
+                                span.imgur-link
     form#form-question(action="/questions/"+question._id+"/edit" method="POST")
+        .d-flex.justify-content-evenly.align-items-center.p-2.mb-2.shadow-sm
+            div
+                .form-group.mb-2
+                    label Khối
+                    select.form-select(name="grade")
+                        option(selected hidden)= question.grade
+                        option 10
+                        option 11
+                        option 12
+            div
+                .input-group.text-center
+                    input.form-control(name="level" type="number" placeholder="Mức độ khó" style="max-width: 100px" value= question.level)
+                    .input-group-text điểm
+        
+            
+        .p-2.mb-2.shadow-sm
+            .row
+                .col
+                    input.tagify.form-control(name='main_tags' placeholder='Thẻ chính' value= JSON.stringify(question.main_tags))
+                .col
+                    input.tagify.form-control(name='side_tags' placeholder='Thẻ phụ' value= JSON.stringify(question.side_tags))
         .form-group.mb-2
-            label Khối
-            select.form-control(name="grade")
-                option= question.grade
-                option 10
-                option 11
-                option 12
-        .form-group.mb-2
-            label.h5 Question
+            label.h5 Câu hỏi
             textarea(name="question_content")
                 | !{question.question}
         .row.row-cols-2
             each a, i in question.choices
                 .col
-                    h5.d-inline.mr-2 Answer #{i+1}
                     .form-check.form-check-inline
                         if (a.isTrue)
                             input.form-check-input(id="answer"+i type="checkbox" name="answer_true[]" value=i checked)
@@ -50,10 +87,13 @@ block content
                     textarea(name="answer_content["+i+"]")
                         | !{a.content}
         .form-group.mb-2
-            label.h5 Detailed Answer
+            label.h5 Lời giải chi tiết
             textarea(name="detailed_answer")
                 | !{question.answer}
-        button.btn.btn-primary(type="submit") Save
+        button.btn.btn-primary(type="submit") Lưu
 block script-footer
+
     script(src="/js/create-answer.js")
     script(src="/js/upload-image-imgur.js")
+    script(src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.0/dist/tagify.min.js")
+    script(src="/js/questions/init-tagify.js")
