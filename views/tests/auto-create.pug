@@ -1,0 +1,33 @@
+extends ../layouts/common.pug
+block stylesheet
+    link(rel="stylesheet", href="https://unpkg.com/@yaireo/tagify/dist/tagify.css")
+block content
+    a(href="/tests/create") Create
+    .mb-2
+        form(action="/tests/auto-create" method="POST")
+            select.form-select(name="grade")
+                option(value="" hidden) Khối
+                option 10
+                option 11
+                option 12
+                option(value="") Trống
+            .group-questions.mb-2
+                .group-part
+                    h5 Nhóm 
+                        span.order
+                        button.btn.btn-sm.btn-danger(type="button") Xóa
+                    .row.mb-1
+                        .col-6
+                            input.tagify.form-control.h-100(name="tags" type="text" placeholder="Chủ đề" required)
+                        .col-2
+                            input.form-control(name="numberOfQuestions" type="number" placeholder="Số câu" required)
+                        .col-2
+                            input.form-control(name="min_level" type="number" placeholder="Độ dễ" required)
+                        .col-2
+                            input.form-control(name="max_level" type="number" placeholder="Độ khó" required)
+            button.btn.btn-primary#add-group(type="button") Thêm nhóm
+            button.btn.btn-primary(type="submit") Tìm
+    script(src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.0/dist/tagify.min.js")
+    script(src="/js/questions/init-tagify.js")
+    script(src="/js/tests/auto-create.js")
+    

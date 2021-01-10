@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const random = require('mongoose-simple-random');
 
 const tagSchema = new Schema({
     _id: false,
@@ -31,6 +32,8 @@ questionSchema.methods.getTrueChoice = function () {
     });
     return keyArr.join(",");
 }
+
+questionSchema.plugin(random);
 
 const Question = mongoose.model('Question', questionSchema);
 

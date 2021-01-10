@@ -47,6 +47,19 @@ block script-header
     include ../layouts/mathjax.pug
 
 block content
+    .row
+        .col
+            input.form-control(name="name" type="text" placeholder="Tên đề")
+        .col
+            select.form-select(name="grade")
+                option(value="" hidden) Khối
+                option 10
+                option 11
+                option 12
+                option(value="") Trống
+        .col
+            input.form-control(name="time" type="number" value=40)
+
     #main-list.sortable
         each q, i in matchedQuestions
             div(id="item-"+q._id)
@@ -102,7 +115,11 @@ block script-footer
                 },
                 redirect: 'follow',
                 referrerPolicy: 'no-referrer',
-                body: JSON.stringify({ order: sortable.toArray() })
+                body: JSON.stringify({ 
+                    name: document.querySelector('input[name="name"]').value,
+                    time: document.querySelector('input[name="time"]').value,
+                    order: sortable.toArray()
+                 })
             })
                 .then(res => res.json())
                 .then(res => {

@@ -1,0 +1,53 @@
+[
+    {
+        "questionContent": "\n                \n                <div> <p> Trong thí nghiệm Y âng về giao thoa ánh sáng, hai khe được chiếu bằng ánh sáng gồm hai thành phần đơn sắc có bước sóng \\({\\lambda _1} = 549nm\\) và \\({\\lambda _2}\\,\\,\\,(390nm &lt; {\\lambda _2}\\, &lt; 750nm)\\). Trên màn quan sát thu được các vạch sáng là các vân sáng của hai bức xạ trên (hai vân sáng trùng nhau cũng là một vạch sáng). Trên màn xét 4 vạch sáng liên tiếp theo thứ tự là M, N, P, Q. Khoảng cách M và N; N và P; P và Q lần lượt là 2,0nm; 4,5mm; 4,5mm. Giá trị \\({\\lambda _2}\\)gần nhất với giá trị nào sau đây</p></div>\n            ",
+        "answerList": [
+            "&nbsp;398nm&nbsp; &nbsp; &nbsp; &nbsp;",
+            "&nbsp;731nm&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;",
+            "&nbsp;748nm&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;",
+            "&nbsp;391nm"
+        ],
+        "detailedAnswer": "<p>Công thức xác định vị trí vân sáng: \\({x_s} = ki = \\dfrac{{k\\lambda D}}{a}\\)</p><p><img src=\"https://img.loga.vn/image/logaimage-hd-84032.png\"> </p> <p>Do M, N, P, Q là các vạch liên tiếp và M, N là hai vạch sáng liền kề → tại M và N là vị trí hai vạch sáng của 2 bức xạ (tại M là vạch sáng của λ1, tại N là vạch sáng của λ2 hoặc ngược lại)</p> <p>→ Các trường hợp xảy ra:</p> <p>\\(\\begin{array}{l}\\left\\{ \\begin{array}{l}{i_1} = 9\\\\{i_2} = 6,5\\end{array} \\right. \\Rightarrow \\dfrac{{{\\lambda _1}}}{{{\\lambda _2}}} = \\dfrac{{18}}{{13}} \\Rightarrow {\\lambda _2} = 396nm\\\\\\left\\{ \\begin{array}{l}{i_1} = 6,5\\\\{i_2} = 9\\end{array} \\right. \\Rightarrow \\dfrac{{{\\lambda _1}}}{{{\\lambda _2}}} = \\dfrac{{13}}{{18}} \\Rightarrow {\\lambda _2} = 760nm\\\\\\left\\{ \\begin{array}{l}{i_1} = 4,5\\\\{i_2} \\ge 11\\end{array} \\right. \\Rightarrow \\dfrac{{{\\lambda _1}}}{{{\\lambda _2}}} \\le \\dfrac{9}{{22}} \\Rightarrow {\\lambda _2} \\ge 1342nm\\\\\\left\\{ \\begin{array}{l}{i_2} = 4,5\\\\{i_1} \\ge 11\\end{array} \\right. \\Rightarrow \\dfrac{{{\\lambda _2}}}{{{\\lambda _1}}} \\le \\dfrac{9}{{22}} \\Rightarrow {\\lambda _2} \\le 224,5nm\\\\ \\Rightarrow {\\lambda _2} = 396nm\\end{array}\\)</p>",
+        "answerTrue": 1,
+        "idQuestion": "136060",
+        "tags": [
+            "Vật Lý Lớp 12",
+            " Ôn Tập Vật Lý 12",
+            " Trung bình"
+        ]
+    },
+    {
+        "questionContent": "\n                \n                <div> <p>Trong một thí nghiệm Y – âng về giao thoa ánh sáng, có a = 1mm, D = 2m. Nếu chiếu đồng thời hai bức xạ đơn sắc có bước sóng λ1 = 0,6μm; λ2 = 0,5μm thì trên màn quan sát có những vị trí tại đó có vân sáng của hai bức xạ trùng nhau gọi là vân trùng. Khoảng cách ngắn nhất giữa hai vân trùng bằng</p></div>\n            ",
+        "answerList": [
+            "1,2mm&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;",
+            "&nbsp;6,0mm&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;",
+            "1,0mm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+            "12,0mm."
+        ],
+        "detailedAnswer": "<p>Công thức tính khoảng vân: </p> <p>\\(i = \\frac{{\\lambda D}}{a}\\)</p> <p>Vì có hai bức xạ nên ta có, tại vị trí có cùng lúc hai vân sáng của hai bức xạ thì:</p> <p>\\({x_M} = {k_1}.{i_1} = {k_2}.{i_2} \\Rightarrow \\frac{{{i_1}}}{{{i_2}}} = \\frac{{{\\lambda _1}}}{{{\\lambda _2}}} = \\frac{{{k_2}}}{{{k_1}}} = \\frac{a}{b}\\)</p> <p>Với \\(\\frac{a}{b}\\) là phân số tối giản thì khoảng vân trùng nhau là: \\(i' = b{i_1} = a{i_2}\\)</p><p>Khoảng vân của hai bức xạ là: </p> <p>\\(\\left\\{ \\begin{array}{l}<br>{i_1} = \\frac{{{\\lambda _1}.D}}{a} = \\frac{{0,6.2}}{1} = 1,2mm\\\\<br>{i_2} = \\frac{{{\\lambda _2}.D}}{a} = \\frac{{0,5.2}}{1} = 1mm<br>\\end{array} \\right.\\)</p> <p>Vì có hai bức xạ nên ta có, tại vị trí có cùng lúc hai vân sáng của hai bức xạ thì:</p> <p>\\({x_M} = {k_1}.{i_1} = {k_2}.{i_2} \\Rightarrow \\frac{{{i_1}}}{{{i_2}}} = \\frac{{1,2}}{1} = \\frac{6}{5}\\)</p> <p>Với \\(\\frac{6}{5}\\) là phân số tối giản thì khoảng vân trùng nhau là:</p> <p>\\(i' = 5{i_1} = 6{i_2} = 6mm\\)</p> <p>Vậy khoảng cách giữa hai vân trùng nhau liên tiếp là 6mm.</p>",
+        "answerTrue": 2,
+        "idQuestion": "136058",
+        "tags": [
+            "Vật Lý Lớp 12",
+            " Ôn Tập Vật Lý 12",
+            " Trung bình"
+        ]
+    },
+    {
+        "questionContent": "\n                \n                <div> <p>Bắn hạt prôtôn có động năng 5,5 MeV vào hạt nhân \\(_3^7Li\\) đang đứng yên, gây ra phản ứng hạt nhân \\(p + {}_3^7Li \\to 2\\alpha \\). Giả sử phản ứng không kèm theo bức xạ γ, hai hạt α có cùng động năng và bay theo hai hướng tạo với nhau góc 1600. Coi khối lượng của mỗi hạt tính theo đơn vị u gần đúng bằng số khối của nó. Năng lượng mà phản ứng tỏa ra là</p></div>\n            ",
+        "answerList": [
+            "14,6 MeV&nbsp;",
+            "10,2 MeV",
+            "17,3 MeV",
+            "20,4 MeV"
+        ],
+        "detailedAnswer": "<p>Sử dụng định luật bảo toàn điện tích và số khối để viết phương trình phản ứng hạt nhân</p> <p>Sử dụng định luật bảo toàn động lượng; định lí hàm số cos trong tam giác</p> <p>Năng lượng toả ra của phản ứng Q = Ks – Kt (Kt và Ks lần lượt là tổng động năng của các hạt trước và sau phản ứng hạt nhân. </p><p>Phương trình phản ứng hạt nhân: \\({}_1^1p + {}_3^7Li \\to 2{}_2^4He\\)</p> <p>Năng lượng toả ra của phản ứng: Q = 2Kα – Kp</p> <p>Kp = 5,5 MeV</p> <p>Định luật bảo toàn động lượng: \\(\\overrightarrow {{p_p}} = \\overrightarrow {{p_{\\alpha 1}}} + \\overrightarrow {{p_{\\alpha 2}}} \\)</p> <p><img src=\"https://img.loga.vn/image/logaimage-hd-83960.png\"></p> <p>Áp dụng định lí hàm số cos ta có:</p> <p>\\(\\eqalign{<br>& p_p^2 = p_\\alpha ^2 + p_\\alpha ^2 + 2p_\\alpha ^2.c{\\rm{os}}{160^0} \\Leftrightarrow p_p^2 = 2p_\\alpha ^2(1 + c{\\rm{os}}{160^0}) \\Leftrightarrow 2{m_p}{K_p} = 2.2{m_\\alpha }{K_\\alpha }(1 + c{\\rm{os}}{160^0}) \\cr <br>& \\Leftrightarrow {K_p} = 2.4.{K_\\alpha }(1 + c{\\rm{os}}{160^0}) \\Rightarrow {K_\\alpha } = {{{K_p}} \\over {8(1 + c{\\rm{os}}{{160}^0})}} = 11,4(MeV) \\cr} \\)</p> <p> => Năng lượng toả ra của phản ứng: Q = 17,3 (MeV)</p>",
+        "answerTrue": 3,
+        "idQuestion": "135989",
+        "tags": [
+            "Vật Lý Lớp 12",
+            " Ôn Tập Vật Lý 12",
+            " Trung bình"
+        ]
+    }
+]

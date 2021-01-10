@@ -27,7 +27,7 @@ document.getElementById("submit").addEventListener("click", function () {
             i.disabled = true;
             i.nextSibling.style["box-shadow"] = "";
         })
-        title.innerHTML += (`<a class="btn btn-light" href="/questions/${q.dataset.id}/view" target="_blank">Đáp án chi tiết</a>`)
+        title.innerHTML += (`<span class="badge bg-light"><a class="text-decoration-none" href="/questions/${q.dataset.id}/view" target="_blank">Đáp án chi tiết</a></span><br>`)
         title.classList.add("btn");
         if (!checkedRadio) {
             falseCounts++;

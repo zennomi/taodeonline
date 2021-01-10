@@ -1,10 +1,12 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const TeXToMML = require("tex-to-mml");
 
-const port = 8080;
+const port = process.env.PORT ? process.env.PORT : 8080;
 app.set('views', './views');
 app.set('view engine', 'pug');
 app.use(express.static('public'));
@@ -14,7 +16,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://new-user_01:25112001@cluster0.nxm48.mongodb.net/vlsn_2020?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
@@ -34,7 +36,35 @@ app.get('/', (req, res) => {
   res.render('index');
 })
 app.get('/test', (req, res) => {
-  res.render('test');
+  // Handle query
+  let handledQuery = {
+    query: req.query.query ? req.query.query : "",
+    grade: req.query.grade ? req.query.grade : "",
+    tags: req.query.tags ? req.query.tags : "",
+    sort: req.query.sort ? req.query.sort : ""
+  }
+  const fs = require("fs");
+  const sourceFile = "./test/3_150.json";
+  console.log('Hello');
+  fs.readFile(sourceFile, 'utf8', function (err, sourceData) {
+    if (err) return console.log(err);
+    sourceData = JSON.parse(sourceData)
+    let questions = sourceData.map(e => {
+      return {
+        question: e.questionContent,
+        choices: e.answerList.map(a => { return { content: a } }),
+        main_tags: e.tags.map(e => {return {value: e}}),
+        side_tags: []
+      }
+    })
+    res.render('questions/index', {
+      questions: questions,
+      numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0,
+      currentPage: 1,
+      maxPage: 1,
+      handledQuery: handledQuery
+    });
+  });
 })
 
 app.use('/questions', questionRoutes);
@@ -89,11 +119,14 @@ app.post('/api/order-question', (req, res) => {
 app.post('/api/tests/save', (req, res) => {
   let response = { status: 200 };
   let newTest = new Test({
-    questions: req.body.order
+    questions: req.body.order,
+    time: req.body.time,
+    name: req.body.name
   });
   newTest.save((err, newTest) => {
-    if (err){
+    if (err) {
       response.status = 201;
+      console.log(err);
       res.json(response);
       return;
     }

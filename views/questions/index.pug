@@ -49,15 +49,15 @@ block content
             | &nbsp;
             if (q.grade)
                 .badge.bg-danger
-                    a.text-decoration-none.text-reset(href="#" target="_blank") Lớp #{q.grade}
+                    a.text-decoration-none.text-reset(href="/questions?grade="+q.grade target="_blank") Lớp #{q.grade}
                 | &nbsp;
             each tag in q.main_tags
                 .badge.bg-danger
-                    a.text-decoration-none.text-reset(href="#" target="_blank")= tag.value
+                    a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
                 | &nbsp;
             each tag in q.side_tags
                 .badge.bg-warning
-                    a.text-decoration-none.text-reset(href="#" target="_blank")= tag.value
+                    a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
                 | &nbsp;
             .test-wrap
                 .question-wrap.ml-2.MJX-TEX.mt-1
