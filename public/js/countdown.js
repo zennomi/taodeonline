@@ -11,7 +11,8 @@ function notify(index, content) {
 function countdown() {
     notify(0, "Bắt đầu giờ làm bài.");
     notify(1, "Bạn có thể nhấn vào thanh thời gian để xem thời gian còn lại.");
-    var totalTimes = 40*60*1000
+    var totalTimes = Number(document.getElementById('totalTimes').innerHTML)*60*1000;
+    console.log(totalTimes);
     var progressBtn = document.getElementById('progress-btn');
     
     countDownDate = new Date().getTime() + totalTimes;
@@ -30,16 +31,21 @@ function countdown() {
         // Output the result in an element with id="demo"
         progressBtn.dataset.lefttime = minutes + " phút " + seconds + " giây";
         progressBtn.style.width = 100 - distance / totalTimes * 100 + "%";
+        document.getElementById('leftTimes').innerHTML = minutes + " phút " + seconds + " giây";
         // If the count down is over, write some text 
         if (distance < 0) {
             clearInterval(x);
-            document.getElementById("demo").innerHTML = "EXPIRED";
+            notify(0, `Hết giờ!!!`);
+            document.getElementById("submit").click();
         }
     }, 1000);
+
     progressBtn.parentNode.addEventListener("click", function() {
+        
         notify(0, `Còn ${progressBtn.dataset.lefttime}`);
     })
     document.getElementById("submit").addEventListener("click", function() {
+        progressBtn.parentNode.remove();
         clearInterval(x);
     })
 }

@@ -11,7 +11,7 @@ block content
         button.btn.btn-danger(type="submit") Delete
     .mb-2
         .badge.badge-warning= question.grade
-        span.MJX-TEX !{question.question}
+        span !{question.question}
         form.row.row-cols-2.row-cols-md-4.no-gutters.mb-0
             each a,j in question.choices
                 .col.mb-1
@@ -20,7 +20,7 @@ block content
                             input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
                             .radio__control= String.fromCharCode(65+j)
                         .radio__label.d-flex.align-items-center
-                            span.MJX-TEX
+                            span
                                 | !{a.content}
     .mb-2
         | Đáp án đúng: 

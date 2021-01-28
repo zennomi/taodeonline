@@ -1,52 +1,66 @@
 .modal-backdrop.show {
-    opacity: 0.9;
+    opacity: 0.95;
 }
+
+
+.TEX-I {
+    font-family: inherit !important;
+}
+
 .test-wrap {
     font-family: "Times New Roman";
     font-size: large;
 }
 
-.question-wrap > p {
+.question-wrap>p {
     margin-top: 5px;
     margin-bottom: 0;
 }
+
 .radio {
     display: grid;
     padding: 5px;
     grid-template-columns: min-content auto;
     grid-gap: 0.5em;
 }
+
 .radio:focus-within .radio__label {
     /* transform: scale(1.05); */
     margin-left: 2px;
 }
+
 .radio:focus-within {
     background-color: var(--bs-primary);
     color: var(--bs-light);
     border-radius: 5px;
     height: 100%;
 }
+
 .radio__label {
     line-height: 1.5;
-	transition: 180ms all ease-in-out;
+    transition: 180ms all ease-in-out;
 }
+
 .radio__input {
     display: flex;
 }
+
 .radio__input input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.radio-gradient input:checked + .radio__control {
+.radio-gradient input:checked+.radio__control {
     background: radial-gradient(currentcolor 50%, rgba(255, 0, 0, 0) 51%);
     color: white;
 }
+
 .radio-before .radio__control {
     display: grid;
     place-items: center;
 }
+
 /* .radio-before input + .radio__control::before {
     content: "";
     width: 0.5em;
@@ -56,10 +70,11 @@
     transition: 180ms transform ease-in-out;
     transform: scale(0);
 } */
-.radio-before input:checked + .radio__control {
+.radio-before input:checked+.radio__control {
     background: var(--bs-primary);
     color: #FFF;
 }
+
 .radio__control {
     display: block;
     width: 2em;
@@ -68,6 +83,7 @@
     border: 0.1em solid currentColor;
     /* transform: translateY(-0.05em); */
 }
+
 .radio__label p {
     margin: 0;
 }

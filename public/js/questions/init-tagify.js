@@ -45,7 +45,7 @@ var tagLists = [
     {value: "Công của lực điện", grade: 11, searchKeys: ""},
     {value: "Điện Thế. Hiệu Điện Thế", grade: 11, searchKeys: ""},
     {value: "Tụ Điện", grade: 11, searchKeys: ""},
-    {value: "Từ Trường", grade: 11, searchKeys: ""},
+    {value: "Từ Trường", grade: 11, searchKeys: "tt"},
     {value: "Bẫy lý thuyết", searchKeys: ""},
     {value: "Bẫy ngôn từ", searchKeys: ""},
 ];

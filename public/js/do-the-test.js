@@ -1,6 +1,17 @@
 var initModal = document.getElementById('init-modal');
 initModal.addEventListener('hidden.bs.modal', function (event) {
+    let leaveCountEle = document.getElementById('leaveTimes');
+
+    function userCheated() {
+    // The user cheated by leaving this window (e.g opening another window)
+    // Do something
+    leaveCountEle.innerHTML = Number(leaveCountEle.innerHTML) + 1;
+    notify(0, 'Bạn vừa rời khỏi khu vực làm bài thi.');
+}
+
+window.onblur = userCheated;
     countdown();
+    scrollToTop();
 });
 initModal = new bootstrap.Modal(initModal, {
     backdrop: 'static',
@@ -17,7 +28,8 @@ document.querySelectorAll("input").forEach(input => {
 document.getElementById("submit").addEventListener("click", function () {
     let falseCounts = 0;
     let total = 0;
-    document.querySelectorAll(".question").forEach(function (q) {
+    let questionArr = document.querySelectorAll(".question");
+    questionArr.forEach(function (q) {
         total++;
         let checkedRadio, trueRadio;
         let title = q.querySelector("b");
@@ -27,7 +39,6 @@ document.getElementById("submit").addEventListener("click", function () {
             i.disabled = true;
             i.nextSibling.style["box-shadow"] = "";
         })
-        title.innerHTML += (`<span class="badge bg-light"><a class="text-decoration-none" href="/questions/${q.dataset.id}/view" target="_blank">Đáp án chi tiết</a></span><br>`)
         title.classList.add("btn");
         if (!checkedRadio) {
             falseCounts++;
@@ -40,7 +51,19 @@ document.getElementById("submit").addEventListener("click", function () {
         trueRadio.nextSibling.style.background = "var(--bs-success)";
         trueRadio.nextSibling.style.color = "#FFF";
         trueRadio.nextSibling.style.border = "none";
-    })
-    alert(`${10 - falseCounts / total * 10} điểm.`);
-    this.style.display = "none";
+        title.innerHTML += (`<span class="badge bg-light"><a class="text-decoration-none" href="/questions/${q.dataset.id}/view" target="_blank">Đáp án chi tiết</a></span>`);
+        title.nextElementSibling.innerHTML = '<br>' + title.nextElementSibling.innerHTML;
+        
+    });
+
+    document.getElementById('result').innerHTML = questionArr.length - falseCounts;
+    
+    this.remove();
+    document.getElementById('resultCard').style.display = 'block';
+    scrollToTop();
 })
+
+function scrollToTop() {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+}

@@ -12,13 +12,13 @@ block content
 
     .mb-2
         form(action="/questions" method="GET")
-            .row.mb-1
-                .col-3
+            .row
+                .col-12.col-sm-4.mb-1
                     input.form-control(name="query" type="text" placeholder="Cụm từ tìm kiếm" value=handledQuery.query)
                         
-                .col
-                    input.tagify.form-control.h-100(name="tags" type="text" placeholder="Chủ đề" value=handledQuery.tags)
-                .col-1
+                .col-12.col-sm-4.mb-1
+                    input.tagify.form-control(name="tags" type="text" placeholder="Chủ đề" value=handledQuery.tags style="min-width: 38px;")
+                .col-6.col-sm-2.mb-1
                     select.form-select(name="grade")
                         if handledQuery.grade
                             option(value=handledQuery.grade hidden)= handledQuery.grade
@@ -28,7 +28,7 @@ block content
                         option 11
                         option 12
                         option(value="") Trống
-                .col-2
+                .col-6.col-sm-2.mb-1
                     select.form-select(name="sort")
                         option(value="" hidden) Sắp xếp theo
                         option(value=1) Mới nhất
@@ -60,7 +60,7 @@ block content
                     a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
                 | &nbsp;
             .test-wrap
-                .question-wrap.ml-2.MJX-TEX.mt-1
+                .question-wrap.ml-2.mt-1
                     | !{q.question}
                 
                 form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
@@ -71,7 +71,7 @@ block content
                                     input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
                                     .radio__control= String.fromCharCode(65+j)
                                 .radio__label.d-flex.align-items-center
-                                    span.MJX-TEX
+                                    span
                                         | !{a.content}
         
     if (maxPage > 1)

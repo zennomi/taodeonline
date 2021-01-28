@@ -10,6 +10,8 @@ module.exports.index = (req, res) => {
 }
 
 module.exports.view = (req, res) => {
+    let retryTimes = req.cookies.retryTimes ? Number(req.cookies.retryTimes)+1 : 1;
+    res.cookie('retryTimes', retryTimes, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true });
     Test.findById(req.params.id).populate('questions').exec((err, test) => {
         if (err || !test) return res.send('Error');
         test.questions.forEach(q => {
@@ -19,7 +21,7 @@ module.exports.view = (req, res) => {
             })
             q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
         });
-        res.render('tests/view', {test, link: `${req.hostname}${req.originalUrl}`});
+        res.render('tests/view', {test, link: `${req.hostname}${req.originalUrl}`, retryTimes});
     })
 }
 

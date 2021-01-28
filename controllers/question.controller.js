@@ -1,5 +1,6 @@
 const Question = require("../models/question.model");
 const texToMathML = require('../ultils/mathml').texToMathML;
+const entities = require("entities");
 
 function toInlineElement(ele) {
     // ele = ele.split("");
@@ -77,6 +78,7 @@ module.exports.index = async (req, res) => {
         tags: req.query.tags ? req.query.tags : "",
         sort: req.query.sort ? req.query.sort : ""
     }
+
     // Main
     let questions = await Question.find(optionSearch).limit(perPage).skip(indexPage*perPage).sort(sortOption);
     questions.forEach(q => {
@@ -86,6 +88,7 @@ module.exports.index = async (req, res) => {
         })
         q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
     });
+    console.log(questions);
     res.render('questions/index', {
         questions: questions,
         numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0,
@@ -93,6 +96,7 @@ module.exports.index = async (req, res) => {
         maxPage: maxPage,
         handledQuery: handledQuery
     });
+
 }
 
 module.exports.export = async (req, res) => {
