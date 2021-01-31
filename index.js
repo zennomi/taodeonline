@@ -4,7 +4,9 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const session  = require('express-session');
 const TeXToMML = require("tex-to-mml");
+const mongoose = require('mongoose');
 
 const port = process.env.PORT ? process.env.PORT : 8080;
 app.set('views', './views');
@@ -15,7 +17,8 @@ app.use(express.static('node_modules/@wiris/mathtype-ckeditor4'));
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-const mongoose = require('mongoose');
+app.use(session({ secret: process.env.SESSION_SECRET, key: 'sid'}));
+
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -27,48 +30,86 @@ mongoose.connect(process.env.MONGODB_URL, {
   console.log('Error occurred connecting to MongoDB Atlas');
 });
 
-const Question = require('./models/question.model');
 const Test = require('./models/test.model');
 const questionRoutes = require('./routes/questions');
-const testRoutes = require('./routes/tests.js');
+const testRoutes = require('./routes/tests');
+const authRoutes = require('./routes/auth');
+
+
+const passport = require('passport');
+const Strategy = require('passport-facebook').Strategy;
+
+
+// Configure Passport authenticated session persistence.
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
+});
+    
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
+});
+
+  
+// Configure the Facebook strategy for use by Passport.
+passport.use(new Strategy({
+    clientID: process.env['FACEBOOK_CLIENT_ID'],
+    clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
+    callbackURL: process.env['CALLBACK_URL']
+  },
+  function(accessToken, refreshToken, profile, done) {
+    process.nextTick(function () {
+      console.log(profile);
+      return done(null, profile);
+    });
+  }
+));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(function(req, res, next) {
+  if (req.isAuthenticated()) res.locals.user = req.user;
+  else res.locals.user = undefined;
+  next();
+})
 
 app.get('/', (req, res) => {
   res.render('index');
 })
-app.get('/test', (req, res) => {
-  // Handle query
-  let handledQuery = {
-    query: req.query.query ? req.query.query : "",
-    grade: req.query.grade ? req.query.grade : "",
-    tags: req.query.tags ? req.query.tags : "",
-    sort: req.query.sort ? req.query.sort : ""
-  }
-  const fs = require("fs");
-  const sourceFile = "./test/3_150.json";
-  console.log('Hello');
-  fs.readFile(sourceFile, 'utf8', function (err, sourceData) {
-    if (err) return console.log(err);
-    sourceData = JSON.parse(sourceData)
-    let questions = sourceData.map(e => {
-      return {
-        question: e.questionContent,
-        choices: e.answerList.map(a => { return { content: a } }),
-        main_tags: e.tags.map(e => {return {value: e}}),
-        side_tags: []
-      }
-    })
-    res.render('questions/index', {
-      questions: questions,
-      numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0,
-      currentPage: 1,
-      maxPage: 1,
-      handledQuery: handledQuery
-    });
-  });
-})
+// app.get('/test', (req, res) => {
+//   // Handle query
+//   let handledQuery = {
+//     query: req.query.query ? req.query.query : "",
+//     grade: req.query.grade ? req.query.grade : "",
+//     tags: req.query.tags ? req.query.tags : "",
+//     sort: req.query.sort ? req.query.sort : ""
+//   }
+//   const fs = require("fs");
+//   const sourceFile = "./test/3_150.json";
+//   console.log('Hello');
+//   fs.readFile(sourceFile, 'utf8', function (err, sourceData) {
+//     if (err) return console.log(err);
+//     sourceData = JSON.parse(sourceData)
+//     let questions = sourceData.map(e => {
+//       return {
+//         question: e.questionContent,
+//         choices: e.answerList.map(a => { return { content: a } }),
+//         main_tags: e.tags.map(e => {return {value: e}}),
+//         side_tags: []
+//       }
+//     })
+//     res.render('questions/index', {
+//       questions: questions,
+//       numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0,
+//       currentPage: 1,
+//       maxPage: 1,
+//       handledQuery: handledQuery
+//     });
+//   });
+// })
 
 app.use('/questions', questionRoutes);
 app.use('/tests', testRoutes);
+app.use('/auth', authRoutes);
 
 app.post('/api/add-question', (req, res) => {
   let response = { status: 200 };
@@ -130,6 +171,7 @@ app.post('/api/tests/save', (req, res) => {
       res.json(response);
       return;
     }
+    res.cookie('questions', { ids: [] }, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true })
     response.idNewTest = newTest._id;
     res.json(response);
     return;

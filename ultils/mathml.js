@@ -5,5 +5,9 @@ module.exports.texToMathML = (string) => {
     })
     .replace(/\\\[([^[]*)\\\]/g, (match, m1) => {
       return TeXToMML(m1).replace(/\n/g, "").replace(/ {2,}/g, "").replace('display="block"', "");
-    }).replace(/<p>&nbsp;<\/p>/g, "");
+    })
+    .replace(/\\\((.*?)\\\)/g, (match, m1) => {
+      return TeXToMML(m1).replace(/\n/g, "").replace(/ {2,}/g, "").replace('display="block"', "");
+    })
+    .replace(/<p>&nbsp;<\/p>/g, "");
   }

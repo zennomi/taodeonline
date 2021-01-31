@@ -35,6 +35,8 @@ var tagLists = [
     {value: "Thuyết lượng tử ánh sáng", grade: 12, searchKeys: ""},
     {value: "Hiện tượng quang điện trong", grade: 12, searchKeys: ""},
     {value: "Hiện tượng quang – phát quang", grade: 12, searchKeys: ""},
+    {value: "Hạt Nhân Nguyên Tử", grade: 12, searchKeys: ""},
+    {value: "Từ Vi Mô Đến Vĩ Mô", grade: 12, searchKeys: ""},
     {value: "Điện Tích. Điện Trường", grade: 11, searchKeys: ""},
     {value: "Điện Tích", grade: 11, searchKeys: ""},
     {value: "Định Luật Cu-lông", grade: 11, searchKeys: ""},

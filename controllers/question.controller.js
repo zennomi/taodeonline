@@ -88,7 +88,6 @@ module.exports.index = async (req, res) => {
         })
         q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
     });
-    console.log(questions);
     res.render('questions/index', {
         questions: questions,
         numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0,
@@ -133,13 +132,20 @@ module.exports.view = (req, res) => {
 module.exports.edit = (req, res) => {
     Question.findById(req.params.id, null, function (err, question) {
         if (err || !question) return res.send('Error.');
-        console.log(question);
+        
+            question.question = texToMathML(question.question);
+            question.choices.forEach(a => {
+                a.content = texToMathML(a.content);
+            })
+            question.maxLengthAnswer = Math.max(...question.choices.map(a => a.content.length));
+            question.answer = texToMathML(question.answer);
         res.render('questions/edit', { question });
     })
 }
 
 module.exports.postEdit = async (req, res) => {
     let question = await Question.findById(req.params.id);
+    console.log(question.question);
     question.question = texToMathML(req.body.question_content);
     question.answer = texToMathML(req.body.detailed_answer);
     question.grade = req.body.grade ? req.body.grade : undefined;

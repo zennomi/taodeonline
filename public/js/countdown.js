@@ -12,7 +12,6 @@ function countdown() {
     notify(0, "Bắt đầu giờ làm bài.");
     notify(1, "Bạn có thể nhấn vào thanh thời gian để xem thời gian còn lại.");
     var totalTimes = Number(document.getElementById('totalTimes').innerHTML)*60*1000;
-    console.log(totalTimes);
     var progressBtn = document.getElementById('progress-btn');
     
     countDownDate = new Date().getTime() + totalTimes;

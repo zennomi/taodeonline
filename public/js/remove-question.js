@@ -14,9 +14,8 @@ function removeQuestion(id) {
         .then(res => res.json())
         .then(res => {
             if (res.status == 200) {
-                console.log(this);
-                $('#item-'+id).remove();
-                orderQuestions();
+                document.getElementById('item-'+id).remove();
+                document.querySelectorAll('.order').forEach((e, i) => { e.innerText = `Câu ${i + 1}: ` });
             }
             alert(res.message);
         });

@@ -45,7 +45,6 @@ module.exports.autoCreate = (req, res) => {
 }
 
 module.exports.postAutoCreate = async (req, res) => {
-    console.log(req.body);
     let numberOfGroups = req.body.numberOfQuestions.length;
     let matchedQuestions = [];
     for (let i = 0; i < numberOfGroups; i++) {

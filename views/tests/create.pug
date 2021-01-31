@@ -27,8 +27,6 @@ block stylesheet
 block script-header
     style.
         body {
-            font-family: "Times New Roman";
-            font-size: 12pt;
             background: #AAFFA9;  /* fallback for old browsers */
             background: -webkit-linear-gradient(to right, #11FFBD, #AAFFA9);  /* Chrome 10-25, Safari 5.1-6 */
             background: linear-gradient(to right, #11FFBD, #AAFFA9); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
@@ -63,20 +61,45 @@ block content
     #main-list.sortable
         each q, i in matchedQuestions
             div(id="item-"+q._id)
-                b.order(data-key=q.getTrueChoice()) Câu #{i+1}: 
-                span.remove
-                    a.badge.badge-success(href="/questions/"+q._id) Sửa
-                    |  
-                | !{q.question}
-                form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
-                    each a,j in q.choices
-                        .col.mb-1
-                            .radio.radio-before
-                                label.radio__input
-                                    input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
-                                    .radio__control= String.fromCharCode(65+j)
-                                .radio__label.d-flex.align-items-center
-                                    | !{a.content}
+                b.order Câu #{i+1}: 
+                .badge.bg-success
+                    a.text-decoration-none.text-reset(href="/questions/"+q._id+"/view" target="_blank") Xem
+                | &nbsp;
+                .badge.bg-success
+                    a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
+                | &nbsp;
+                .badge.bg-primary
+                    a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="removeQuestion('"+q._id+"')") -
+                | &nbsp;
+                if (q.level)
+                    .badge.bg-danger
+                        a.text-decoration-none.text-reset(href="#"+q.grade target="_blank")= q.level
+                | &nbsp;
+                if (q.grade)
+                    .badge.bg-danger
+                        a.text-decoration-none.text-reset(href="/questions?grade="+q.grade target="_blank") Lớp #{q.grade}
+                    | &nbsp;
+                each tag in q.main_tags
+                    .badge.bg-danger
+                        a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
+                    | &nbsp;
+                each tag in q.side_tags
+                    .badge.bg-warning
+                        a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
+                    | &nbsp;
+
+                .test-wrap
+                    .question-wrap
+                        | !{q.question}
+                    form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
+                        each a,j in q.choices
+                            .col.mb-1
+                                .radio.radio-before
+                                    label.radio__input
+                                        input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
+                                        .radio__control= String.fromCharCode(65+j)
+                                    .radio__label.d-flex.align-items-center
+                                        | !{a.content}
     button#submit.btn.btn-success Lưu
 block script-footer
     script(src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js")

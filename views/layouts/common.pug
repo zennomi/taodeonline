@@ -36,9 +36,17 @@ html(lang="en")
                                     a.dropdown-item(href="#") Something else here
                         li.nav-item
                             a.nav-link.disabled(href="#" tabindex="-1" aria-disabled="true") Disabled
-                    form.d-flex
-                        input.form-control.me-2(type="search" placeholder="Search" aria-label="Search")
-                        button.btn.btn-outline-success(type="submit") Search
+                    .d-flex
+                        if user
+                            ul.navbar-nav.me-auto.mb-2.mb-lg-0
+                                li.nav-item.dropdown
+                                    a.nav-link.dropdown-toggle(href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false")
+                                        span= span= user.displayName
+                                    ul.dropdown-menu(aria-labelledby="navbarDropdown")
+                                        li
+                                            a.dropdown-item(href="/auth/logout") Đăng xuất
+                        else
+                            a.btn.btn-outline-success.nav-item(href="/auth/facebook") Đăng nhập
 
         .container.mt-3
             block content
