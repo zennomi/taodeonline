@@ -16,8 +16,8 @@ block content
                         td= test.time + " phút"
                         td
                             if user && user.isAdmin
-                                a.btn.btn-outline-primary Xem
+                                a.btn.btn-outline-primary(href="/tests/"+test._id+"/view") Xem
                                 |     
-                            a.btn.btn-outlinh-success Làm đề
+                            a.btn.btn-outline-success(href="/tests/"+test._id+"/do") Làm đề
 
                     

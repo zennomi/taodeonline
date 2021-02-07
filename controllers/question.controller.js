@@ -53,7 +53,7 @@ module.exports.index = async (req, res) => {
     let sortOption;
     switch(Number(req.query.sort)) {
         case 2:
-            sortOption = {_id: 1};
+            sortOption = {_id: -1};
             break;
         case 3:
             sortOption = {level: 1};
@@ -62,7 +62,7 @@ module.exports.index = async (req, res) => {
             sortOption = {level: -1};
             break;
         default:
-            sortOption = {_id: -1};
+            sortOption = {_id: 1};
     }
 
     // Pagination
