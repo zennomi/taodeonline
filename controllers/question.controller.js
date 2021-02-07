@@ -169,3 +169,63 @@ module.exports.delete = (req, res) => {
     })
 }
 
+module.exports.import = (req, res) => {
+    res.render('questions/import');
+}
+
+module.exports.postImport = (req, res) => {
+    let quesStrArr = req.body.content.replace(/&nbsp;/g,' ').replace(/\s{3,}/g,'   ').split(/<p>\s*\[&lt;br&gt;\]\s*<\/p>/);
+    let matchedQuestions = quesStrArr.map((q, i) => {
+        let parArr = Array.from(q.matchAll(/<p>.+?<\/p>/g), m => m[0]);
+        let quesContent = [];
+        let choiceList = [];
+
+        parArr.forEach((p, j) => {
+            if (isChoice(p)) {
+                if (/\s{3,}/gi.test(p)) {
+                    choiceList.push(...p.split(/\s{3,}/).filter(c => isChoice(c)));
+                } else choiceList.push(p);
+            }
+            else quesContent.push(p);
+        })
+        return {
+            question: quesContent.join('\n'),
+            choices: choiceList.map(c => {
+                let isTrue = false;
+                c = c.replace(/[ABCD]/i,'').replace(/\./,'');
+                if (/<u>\s*<\/u>/g.test(c)) {
+                    isTrue = true;
+                }
+                while (/<\w+>\s*<\/\w+>/g.test(c)) c = c.replace(/<\w+>\s*<\/\w+>/g, '');
+                return {
+                    content: c,
+                    isTrue: isTrue
+                }
+            }),
+            main_tags: [],
+            side_tags: []
+        }
+    })
+    res.cookie('questions', { importQuestions: matchedQuestions }, { expires: new Date(Date.now() + 24 * 3600), httpOnly: true })
+    res.render('tests/demo', {matchedQuestions});
+}
+
+module.exports.saveImportedQuestions = (req, res) => {
+    console.log(req.cookies.questions.importQuestions);
+    if (!req.cookies.questions.importQuestions) req.cookies.questions.importQuestions = [];
+    Question.insertMany(req.cookies.questions.importQuestions, (err, questions) => {
+        if (err) return res.send(err);
+        console.log(questions);
+        res.cookie('questions', { importQuestions: [] }, { expires: new Date(Date.now() + 24 * 3600), httpOnly: true });
+        res.cookie('questions', { ids: questions.map(q => q._id) }, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true });
+        res.redirect('/tests/create');
+    });
+}
+
+function isChoice(str) {
+    return /<strong>.*[ABCD].*\..*<\/strong>/gi.test(str);
+}
+
+function isTrueChoice(str) {
+    return /<u>.*[ABCD].*\..*<\/u>/gi.test(str);
+}

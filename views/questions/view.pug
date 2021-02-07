@@ -5,20 +5,22 @@ block script-header
     include ../layouts/mathjax.pug
 
 block content
-    a.btn.btn-success(href="/questions/create") Add
-    a.btn.btn-success(href="/questions/"+question._id+"/edit") Edit
-    form(action="/questions/"+question._id+"/delete")
-        button.btn.btn-danger(type="submit") Delete
-    .p-2.mb-2.shadow
-        .badge.bg-success
-            a.text-decoration-none.text-reset(href="/questions/"+question._id+"/view" target="_blank") Xem
-        | &nbsp;
-        .badge.bg-success
-            a.text-decoration-none.text-reset(href="/questions/"+question._id+"/edit" target="_blank") Sửa
-        | &nbsp;
-        .badge.bg-primary
-            a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="addQuestion('"+question._id+"')") +
-        | &nbsp;
+    if user && user.isAdmin
+        a.btn.btn-success(href="/questions/create") Add
+        a.btn.btn-success(href="/questions/"+question._id+"/edit") Edit
+        form(action="/questions/"+question._id+"/delete")
+            button.btn.btn-danger(type="submit") Delete
+    .p-2.mb-2.shadow-sm
+        if user && user.isAdmin
+            .badge.bg-success
+                a.text-decoration-none.text-reset(href="/questions/"+question._id+"/view" target="_blank") Xem
+            | &nbsp;
+            .badge.bg-success
+                a.text-decoration-none.text-reset(href="/questions/"+question._id+"/edit" target="_blank") Sửa
+            | &nbsp;
+            .badge.bg-primary
+                a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="addQuestion('"+question._id+"')") +
+            | &nbsp;
         if (question.grade)
             .badge.bg-danger
                 a.text-decoration-none.text-reset(href="/questions?grade="+question.grade target="_blank") Lớp #{question.grade}
@@ -40,15 +42,18 @@ block content
                             label.radio__input
                                 input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
                                 .radio__control= String.fromCharCode(65+j)
-                            .radio__label.d-flex.align-items-center
+                            .radio__label
                                 span
                                     | !{a.content}
-    .p-2.mb-2.shadow
+    .p-2.mb-2.shadow-sm
         b.text-success Đáp án đúng: 
         span= question.getTrueChoice()
         br
-        b.text-success Lời giải chi tiết:
-        p.ml-1 !{question.answer}
+        if question.answer.length > 3
+            b.text-success Lời giải chi tiết:
+            p.ml-1 !{question.answer}
+        else 
+            b.text-success Câu này chưa có lời giải chi tiết
     script.
         document.querySelectorAll("input[type='radio']").forEach(i => {i.disabled = true});
 block script-footer

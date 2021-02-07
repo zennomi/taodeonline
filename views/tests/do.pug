@@ -1,0 +1,116 @@
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous")
+        title= test.name ? test.name : "Đề thi"
+        style.
+            .question-wrap > p {
+                margin-bottom: 0;
+            }
+            .fixed-left {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+            }
+        include ../layouts/mathjax.pug
+        script.
+            window.MathJax.startup = {
+            ready: () => {
+            MathJax.startup.defaultReady();
+            MathJax.startup.promise.then(() => {
+                window.onload = function() {
+                var startBtn = document.getElementById('start-btn');
+                startBtn.innerHTML = "Bắt đầu làm bài";
+                startBtn.disabled = false;
+                }
+                
+                });
+                }
+            }
+        link(rel="stylesheet" href="/css/do-the-test.css")
+
+    body
+        span.sticky-top.side-menu(style="" onclick="toggleNav()") &#9776; Menu
+        .sidenav
+            h5 Thời gian còn lại: 
+            p#leftTime= test.time + " phút"
+            h5 Lối tắt
+            .d-flex.justify-content-around.flex-wrap
+                each q, i in test.questions
+                    a.mb-1(href="#q-"+q._id)= `Câu ${i+1}`
+
+        .container
+
+            .card#resultCard.mt-1(style="display:none;")
+                .card-header
+                    .h5 Kết quả
+                .card-body
+                    p Số câu đúng: 
+                        span#result
+                        span= "/" + test.questions.length + " câu"
+                    p Số lần rời khỏi khu vực thi: 
+                        span#leaveTimes 0
+                    p Thời điểm bắt đầu: 
+                        span= new Date()
+                    p Thời gian còn lại: 
+                        span#leftTimes
+            .modal.fade#init-modal(tab-index=-1 data-bs-backdrop="static" data-bs-keyboard="false").text-center
+                .modal-dialog.modal-dialog-centered
+                    .modal-content
+                        .modal-header.justify-content-center
+                            .h1.modal-title= test.name ? test.name : "Đề thi"
+                        .modal-body
+                            p Thời gian
+                            p.text-primary.h3= test.time ? test.time + " phút" : "40 phút"
+                            //- img#qr-image(alt="QR Code")
+                            p.h5 Chú ý
+                            p First time? Đây là lần đầu của bạn?
+                            p Hãy đọc hướng dẫn 
+                                a(href="/tests/guide" target="_blank") tại đây
+                                |  để làm đề trên web hiệu quả nhất.
+                        .modal-footer.justify-content-center
+                            button.btn.btn-primary#start-btn(type="button" data-bs-dismiss="modal" disabled)
+                                span.spinner-border.spinner-border-sm(role="status" aria-hidden="true")
+                                |   Đang chuẩn bị đề...
+
+            .fixed-top(aria-live="polite" aria-atomic="true")
+                .toast-container.position-absolute.top-0.end-0.p-3
+
+            h1.text-primary.text-center= test.name ? test.name : "Đề thi"
+            .d-flex.justify-content-around
+                p Đề thi gồm #{test.questions.length} câu.
+                p
+                    | Thời gian 
+                    span#totalTimes= test.time ? test.time : 40
+                    |  phút.
+            p Họ và tên: #{user.displayName}.
+            .fixed-bottom
+                .progress
+                    #progress-btn.progress-bar
+            .test-wrap.p-1(style="display: none;")
+                each q, i in test.questions
+                    .question(id="q-"+q._id data-id=q._id)
+                        .question-wrap
+                            b Câu #{i+1}: 
+                            span !{q.question}
+                        form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
+                            each a,j in q.choices
+                                .col.mb-1
+                                    .radio.radio-before
+                                        label.radio__input
+                                            input(type="radio" name="radio" data-id=a._id)
+                                            .radio__control= String.fromCharCode(65+j)
+                                        .radio__label
+                                            | !{a.content}
+                    hr
+                button.btn.btn-primary.mb-5#submit(onclick=`submitTest("${test._id}")`) Nộp bài
+        script(src="/bootstrap/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous")
+        script.
+            let testId = "#{test._id}";
+            let totalTimes = #{test.time*60*1000}
+        script(src="/js/tests/init-test.js")
+        script(src="/js/countdown.js")
+        script(src="/js/do-the-test.js")
+        script.
+            //- document.getElementById('qr-image').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+location.href

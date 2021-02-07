@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const session  = require('express-session');
+const session = require('express-session');
 const TeXToMML = require("tex-to-mml");
 const mongoose = require('mongoose');
 
@@ -17,7 +17,14 @@ app.use(express.static('node_modules/@wiris/mathtype-ckeditor4'));
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(session({ secret: process.env.SESSION_SECRET, key: 'sid'}));
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  key: 'sid',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 7*24*60*60*1000 }
+}));
+app.use(require('express-flash')());
 
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
@@ -31,9 +38,14 @@ mongoose.connect(process.env.MONGODB_URL, {
 });
 
 const Test = require('./models/test.model');
+const Question = require('./models/question.model');
+const Result = require('./models/result.model');
+
 const questionRoutes = require('./routes/questions');
 const testRoutes = require('./routes/tests');
 const authRoutes = require('./routes/auth');
+
+const authMiddlewares = require('./middlewares/auth.middleware');
 
 
 const passport = require('passport');
@@ -41,24 +53,29 @@ const Strategy = require('passport-facebook').Strategy;
 
 
 // Configure Passport authenticated session persistence.
-passport.serializeUser(function(user, cb) {
+passport.serializeUser(function (user, cb) {
   cb(null, user);
 });
-    
-passport.deserializeUser(function(obj, cb) {
+
+passport.deserializeUser(function (obj, cb) {
   cb(null, obj);
 });
 
-  
+
 // Configure the Facebook strategy for use by Passport.
 passport.use(new Strategy({
-    clientID: process.env['FACEBOOK_CLIENT_ID'],
-    clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
-    callbackURL: process.env['CALLBACK_URL']
-  },
-  function(accessToken, refreshToken, profile, done) {
+  clientID: process.env['FACEBOOK_CLIENT_ID'],
+  clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
+  callbackURL: process.env['CALLBACK_URL']
+},
+  function (accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-      console.log(profile);
+      let adminIds = ['1599714943551633'];
+      if (adminIds.indexOf(profile.id) > -1) {
+        profile.role = 'admin';
+        profile.isAdmin = true;
+      }
+      else profile.role = 'user';
       return done(null, profile);
     });
   }
@@ -66,8 +83,8 @@ passport.use(new Strategy({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(function(req, res, next) {
-  if (req.isAuthenticated()) res.locals.user = req.user;
+app.use(function (req, res, next) {
+  if (req.user) res.locals.user = req.user;
   else res.locals.user = undefined;
   next();
 })
@@ -75,41 +92,22 @@ app.use(function(req, res, next) {
 app.get('/', (req, res) => {
   res.render('index');
 })
-// app.get('/test', (req, res) => {
-//   // Handle query
-//   let handledQuery = {
-//     query: req.query.query ? req.query.query : "",
-//     grade: req.query.grade ? req.query.grade : "",
-//     tags: req.query.tags ? req.query.tags : "",
-//     sort: req.query.sort ? req.query.sort : ""
-//   }
-//   const fs = require("fs");
-//   const sourceFile = "./test/3_150.json";
-//   console.log('Hello');
-//   fs.readFile(sourceFile, 'utf8', function (err, sourceData) {
-//     if (err) return console.log(err);
-//     sourceData = JSON.parse(sourceData)
-//     let questions = sourceData.map(e => {
-//       return {
-//         question: e.questionContent,
-//         choices: e.answerList.map(a => { return { content: a } }),
-//         main_tags: e.tags.map(e => {return {value: e}}),
-//         side_tags: []
-//       }
-//     })
-//     res.render('questions/index', {
-//       questions: questions,
-//       numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0,
-//       currentPage: 1,
-//       maxPage: 1,
-//       handledQuery: handledQuery
-//     });
-//   });
-// })
+
 
 app.use('/questions', questionRoutes);
 app.use('/tests', testRoutes);
 app.use('/auth', authRoutes);
+
+app.get('/user', authMiddlewares.authRequire, (req, res) => {
+  res.render('users/profile');
+})
+
+app.get('/history', (req, res) => {
+  console.log(req.cookies.history);
+  if (req.flash().history) res.redirect(req.flash().history[0]);
+  else if (req.cookies.history) res.redirect(req.cookies.history);
+  else res.redirect('/');
+})
 
 app.post('/api/add-question', (req, res) => {
   let response = { status: 200 };
@@ -176,6 +174,57 @@ app.post('/api/tests/save', (req, res) => {
     res.json(response);
     return;
   })
+})
+
+app.post('/api/new-result', authMiddlewares.authRequire, (req, res) => {
+  let response = { status: 200 };
+  let newResult = new Result({
+    test_id: req.body.testId,
+    user: {
+        facebook_id: req.user.id,
+        display_name: req.user.displayName
+    },
+    leaves_area_times: 0,
+    started_time: new Date()
+});
+newResult.save((err, result) => {
+    if (err) {
+      response.status = 201;
+      return res.json(response);
+    }
+    response.resultId = result._id;
+    return res.json(response);
+})
+})
+
+app.post('/api/submit-choices', authMiddlewares.authRequire, async (req, res) => {
+  let response = { status: 200 };
+  let matchedResult = await Result.findById(req.body.resultId);
+  
+  if (!matchedResult) {
+    response.status = 201;
+    return res.json(response);
+  }
+  matchedResult.leaves_area_times = req.body.leavesAreaTimes;
+  matchedResult.choices = [...req.body.choices];
+  if (req.body.isFinished) matchedResult.finished_time = new Date();
+  matchedResult.save((err, result) => {
+    if (err) response.status = 201;
+    res.json(response);
+  })
+  return;
+})
+
+app.get('/api/tests/:id/trueChoices', authMiddlewares.authRequire, async (req, res) => {
+  let response = { status: 200 };
+  let matchedTest = await Test.findById(req.params.id).populate('questions');
+  if (!matchedTest) {
+    response.status = 201;
+    res.json(response);
+    return;
+  }
+  response.result = matchedTest.questions.map(q => q.choices.filter(c => c.isTrue)[0]._id);
+  res.json(response);
 })
 
 app.listen(port, () => {

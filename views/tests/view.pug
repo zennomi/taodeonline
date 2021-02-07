@@ -1,84 +1,43 @@
-html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous")
-        title= test.name ? test.name : "Đề thi"
-        style.
-            .question-wrap > p {
-                margin-bottom: 0;
-            }
-            .fixed-right {
-                position: fixed;
-                bottom: 50px;
-                right: 50px;
-            }
-        include ../layouts/mathjax.pug
-        script.
-            window.MathJax.startup = {
-            ready: () => {
-            MathJax.startup.defaultReady();
-            MathJax.startup.promise.then(() => {
-                var startBtn = document.getElementById('start-btn');
-                startBtn.innerHTML = "Bắt đầu làm bài";
-                startBtn.disabled = false;
-                });
-                }
-            }
-        link(rel="stylesheet" href="/css/do-the-test.css")
-
-    body
-        .container
-            .card#resultCard(style="display:none;")
-                .card-header
-                    .h5 Kết quả
-                .card-body
-                    p Số câu đúng: 
-                        span#result
-                        span= "/" + test.questions.length + " câu"
-                    p Số lần làm: #{retryTimes}
-                    p Số lần rời khỏi khu vực thi: 
-                        span#leaveTimes 0
-                    p Thời điểm bắt đầu: 
-                        span= new Date()
-                    p Thời gian còn lại: 
-                        span#leftTimes
-            .modal.fade#init-modal(tab-index=-1 data-bs-backdrop="static" data-bs-keyboard="false").text-center
-                .modal-dialog.modal-dialog-centered
-                    .modal-content
-                        .modal-header.justify-content-center
-                            .h1.modal-title= test.name ? test.name : "Đề thi"
-                        .modal-body
-                            p Thời gian
-                            p.fs-1= test.time ? test.time + " phút" : "40 phút"
-                            img#qr-image(alt="QR Code")
-                            p.h5 Chú ý
-                            ul
-                                li Chạm vào thanh thời gian nằm cuối màn hình để kiểm tra thời gian còn lại.
-                                li Mọi hành vi gian lận đều được ghi lại.
-                        .modal-footer.justify-content-center
-                            button.btn.btn-primary#start-btn(type="button" data-bs-dismiss="modal" disabled)
-                                span.spinner-border.spinner-border-sm(role="status" aria-hidden="true")
-                                |   Đang chuẩn bị đề...
-
-            .fixed-top(aria-live="polite" aria-atomic="true")
-                .toast-container.position-absolute.top-0.end-0.p-3
-                    .toast(role="alert" aria-live="assertive" aria-atomic="true")
-                        .toast-header
-                            img.rounded.me-2(src="" alt="")
-                            strong.me-auto Hệ thống
-                            button.btn-close(type="button" data-bs-dismiss="toast" aria-label="Close")
-                        .toast-body
-                    .toast(role="alert" aria-live="assertive" aria-atomic="true")
-                        .toast-header
-                            img.rounded.me-2(src="" alt="")
-                            strong.me-auto Tips
-                            button.btn-close(type="button" data-bs-dismiss="toast" aria-label="Close")
-                        .toast-body
-
-            h1.text-primary.text-center Đề thi
+extends ../layouts/common.pug
+block header
+    include ../layouts/mathjax.pug
+    link(rel="stylesheet" href="/css/do-the-test.css")
+block content
+    .row.row-cols-md-2
+        .col
+            h5.text-primary Mã QR
+            .text-center
+                img.mb-1#qr-image(alt="QR Code")
+                br
+                button#button-addon2.btn.btn-outline-primary(type="button" onclick=`copyToClipboard(window.location.origin + "/tests/${test._id}/do")`) Copy
+            h5.text-primary Thao tác
+            a.btn.btn-outline-success(href=`/tests/${test._id}/edit`) Sửa
+            |     
+            a.btn.btn-outline-danger(href=`/tests/${test._id}/delete`) Xóa
+            h5.text-primary Bảng điểm
+            .table-responsive
+                table.table
+                    thead
+                        tr
+                            th(scope="col") Tên
+                            th(scope="col") Điểm
+                            th(scope="col") BĐ
+                            th(scope="col") TG
+                            th(scope="col") Rời
+                            th(scope="col") Mốc thời gian khoanh
+                    tbody
+                        each result in results
+                            tr
+                                td= result.user.display_name
+                                td= Math.round(result.mark*100)/100
+                                td= result.started_time
+                                td= (result.finished_time) ? Math.round((result.finished_time-result.started_time)/60/1000) + " phút" : "Chưa nộp"
+                                td= result.leaves_area_times
+                                td= result.choices.map(c => (c.moment.getTime()/1000)).sort((a, b) => a-b).map(c => c+"s").join(" - ")
+        .col
+            h5.text-primary= test.name ? test.name : "Đề thi"
             .d-flex.justify-content-around
-                p Đề thi gồm #{test.questions.length} câu
+                p Đề thi gồm #{test.questions.length} câu.
                 p
                     | Thời gian 
                     span#totalTimes= test.time ? test.time : 40
@@ -86,26 +45,49 @@ html(lang="en")
             .fixed-bottom
                 .progress
                     #progress-btn.progress-bar
-            .test-wrap.p-1
+            .p-1
                 each q, i in test.questions
-                    .question(data-id=q._id)
+                    .question(id="q-"+q._id data-id=q._id)
                         .question-wrap
                             b Câu #{i+1}: 
-                            span !{q.question}
-                        form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
+                            .badge.bg-success
+                                a.text-decoration-none.text-reset(href="/questions/"+q._id+"/view" target="_blank") Xem
+                            | &nbsp;
+                            .badge.bg-success
+                                a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
+                            | &nbsp;
+                            if user && user.isAdmin
+                                .badge.bg-primary
+                                    a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="addQuestion('"+q._id+"')") +
+                            | &nbsp;
+                            if (q.grade)
+                                .badge.bg-danger
+                                    a.text-decoration-none.text-reset(href="/questions?grade="+q.grade target="_blank") Lớp #{q.grade}
+                                | &nbsp;
+                            each tag in q.main_tags
+                                .badge.bg-danger
+                                    a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
+                                | &nbsp;
+                            each tag in q.side_tags
+                                .badge.bg-warning
+                                    a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
+                                | &nbsp;
+                            br
+                            span.test-wrap !{q.question}
+                        form.test-wrap.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0
                             each a,j in q.choices
                                 .col.mb-1
                                     .radio.radio-before
                                         label.radio__input
-                                            input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
+                                            if a.isTrue
+                                                input(type="radio" name="radio" disabled checked)
+                                            else
+                                                input(type="radio" name="radio" disabled)
                                             .radio__control= String.fromCharCode(65+j)
-                                        .radio__label.d-flex.align-items-center
+                                        .radio__label
                                             | !{a.content}
                     hr
-                button.btn.btn-primary.mb-5#submit Nộp bài
-
-        script(src="/bootstrap/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous")
-        script(src="/js/countdown.js")
-        script(src="/js/do-the-test.js")
-        script.
-            document.getElementById('qr-image').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+location.href
+    script.
+        document.getElementById('qr-image').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + window.location.origin + "/tests/#{test._id}/do"
+    script(src="/js/copy.js") 
+        

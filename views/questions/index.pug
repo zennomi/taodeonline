@@ -5,9 +5,10 @@ block stylesheet
 block script-header
     include ../layouts/mathjax.pug
 block content
-    .mb-2
-        a.btn.btn-primary(href="/questions/create") Add
-        a#number.btn.btn-primary(href="/tests/create")= numberOfQuestions
+    if user && user.isAdmin
+        .mb-2
+            a.btn.btn-primary(href="/questions/create") Thêm
+            a#number.btn.btn-primary(href="/tests/create")= numberOfQuestions
 
     .mb-2
         form(action="/questions" method="GET")
@@ -43,8 +44,9 @@ block content
             .badge.bg-success
                 a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
             | &nbsp;
-            .badge.bg-primary
-                a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="addQuestion('"+q._id+"')") +
+            if user && user.isAdmin
+                .badge.bg-primary
+                    a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="addQuestion('"+q._id+"')") +
             | &nbsp;
             if (q.grade)
                 .badge.bg-danger
@@ -69,7 +71,7 @@ block content
                                 label.radio__input
                                     input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
                                     .radio__control= String.fromCharCode(65+j)
-                                .radio__label.d-flex.align-items-center
+                                .radio__label
                                     span
                                         | !{a.content}
         

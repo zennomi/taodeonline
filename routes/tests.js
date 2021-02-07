@@ -1,11 +1,17 @@
 const express = require('express');
 const controller = require('../controllers/test.controller');
-
+const authMiddlewares =require('../middlewares/auth.middleware');
 const router = express.Router();
 
 router.get('/', controller.index);
 router.get('/create', controller.create);
-router.get('/auto-create', controller.autoCreate);
-router.post('/auto-create', controller.postAutoCreate);
-router.get('/:id/view', controller.view);
+router.get('/auto-create', authMiddlewares.authRequire, controller.autoCreate);
+router.post('/auto-create', authMiddlewares.authRequire, controller.postAutoCreate);
+router.get('/guide', controller.guide);
+router.get('/:id/view', authMiddlewares.authRequire, authMiddlewares.adminRequire, controller.view);
+router.get('/:id/do', authMiddlewares.authRequire, controller.do);
+router.get('/:id/edit', authMiddlewares.authRequire, controller.edit);
+router.get('/:id/delete', authMiddlewares.authRequire, controller.delete);
+router.post('/:id/edit', authMiddlewares.authRequire, controller.postEdit);
+router.post('/:id/delete', authMiddlewares.authRequire, controller.postDelete);
 module.exports = router;

@@ -55,19 +55,12 @@
     removeButtons: '',
     uiColor: 'var(--bs-light)',
     height: 200,
-    extraPlugins: 'ckeditor_wiris',
-    removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser',
+    extraPlugins: 'ckeditor_wiris,pastebase64',
     extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
   }
 
   CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://ckeditor.com/docs/ckeditor4/4.15.0/examples/assets/plugins/ckeditor_wiris/', 'plugin.js');
-  // CKEDITOR.editorConfig = function( config ) {
-  //   config.uiColor = '#FFF';
-
-  //   config.extraPlugins += (config.extraPlugins.length == 0 ? '' : ',') + 'ckeditor_wiris';
-  //   config.toolbar_Full.push({name:'wiris', items:['ckeditor_wiris_formulaEditor']});
-  //   config.allowedContent = true;
-  // };
+  CKEDITOR.plugins.addExternal('pastebase64', '/pastebase64/', 'plugin.js');
   CKEDITOR.replace('question_content', options);
   CKEDITOR.replace('answer_content[0]', options);
   CKEDITOR.replace('answer_content[1]', options);

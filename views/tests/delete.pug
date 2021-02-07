@@ -1,0 +1,6 @@
+extends ../layouts/common.pug
+block content
+    form(action="/tests/"+test._id+"/delete" method="POST")
+        button.btn.btn-danger(type="submit") Xác nhận xóa
+        |      
+        a.btn.btn-light(href="/tests") Hủy

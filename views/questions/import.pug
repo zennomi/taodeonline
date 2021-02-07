@@ -1,0 +1,13 @@
+extends ../layouts/common.pug
+
+block script-header
+    script(src="//cdn.ckeditor.com/4.16.0/standard-all/ckeditor.js")
+
+block content
+    h1 Thêm nhiều câu hỏi
+    form(action="/questions/import" method="POST")
+        textarea(name="content")
+        button.btn.btn-primary(type="submit") Lưu
+block script-footer
+    script(src="/js/questions/import.js")
+    

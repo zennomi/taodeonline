@@ -1,0 +1,96 @@
+extends ../layouts/common.pug
+block header
+    title Hướng dẫn làm đề trên WEB
+    include ../layouts/mathjax.pug
+    link(rel="stylesheet" href="/css/do-the-test.css")
+block content
+    h1 Hướng dẫn làm đề trên web LAMDEVLSN.
+    h2 Trước khi làm bài thi
+    p Chuẩn bị bút, nháp, máy tính.
+    h2 Trong khi làm bài thi
+    p Ví dụ một câu hỏi trong đề:
+    .card
+        .card-body
+            .question-wrap
+                b Câu 69: 
+                | Anh trợ giảng Long Híp tết Tân Sửu nhuộm tóc màu gì?
+            form.test-wrap.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0
+                .col.mb-1
+                    .radio.radio-before
+                        label.radio__input
+                            input(type="radio" name="radio")
+                            .radio__control A
+                        .radio__label.d-flex.align-items-center
+                            | Màu đỏ rực
+                .col.mb-1
+                    .radio.radio-before
+                        label.radio__input
+                            input(type="radio" name="radio")
+                            .radio__control B
+                        .radio__label.d-flex.align-items-center
+                            | Màu hồng sen
+                .col.mb-1
+                    .radio.radio-before
+                        label.radio__input
+                            input(type="radio" name="radio")
+                            .radio__control C
+                        .radio__label.d-flex.align-items-center
+                            | Màu ánh xanh rêu
+                .col.mb-1
+                    .radio.radio-before
+                        label.radio__input
+                            input(type="radio" name="radio")
+                            .radio__control D
+                        .radio__label.d-flex.align-items-center
+                            | Cô Thủy bảo trừ lương nên nhuộm đen lại
+    p Chọn đáp án đúng bằng cách chạm/click vào chữ cái đáp án tương ứng.
+    p Ví dụ ta chạm/click vào ô tròn có chữ A.
+    .card
+        .card-body
+            .radio.radio-before
+                label.radio__input
+                    input(type="radio" name="radio" checked)
+                    .radio__control A
+                .radio__label.d-flex.align-items-center
+                    | Đỏ rực
+    p Kiểm tra thời gian ở nút menu góc trái trên cùng.
+    .side-menu &#9776; Menu
+    p Kiểm tra nhanh thời gian còn lại bằng thanh thời gian phía dưới cùng màn hình.
+    .progress
+        .progress-bar.w-50
+    p Kiểm tra các câu đã chọn đáp án và chuyển nhanh tới các câu đó. Câu đã chọn đáp án sẽ được in đậm.
+    p Làm xong xuôi và không còn gì vương vấn, nhấn nút nộp bài. Chờ một lúc hệ thống sẽ lưu lại kết quả và tính điểm.
+    h3 Lưu ý
+    ul
+        li Không được rời khỏi tab bài thi khi đang làm bài. Sẽ bị ghi lại lại.
+        li Tải lại bài thi sẽ bị ghi lại.
+    h2 Sau khi làm bài xong
+    p Hệ thống sẽ chấm bài.
+    p Đáp án xanh lá cây = Đáp án đúng. Đáp án đỏ = Đáp án sai.
+    .card
+        .card-body
+            form
+                .radio.radio-before
+                    label.radio__input
+                        input(type="radio" name="radio" checked disabled)
+                        .radio__control.bg-success D
+                    .radio__label.d-flex.align-items-center
+                        | Cô Thủy bảo trừ lương nên nhuộm đen lại
+            form
+                .radio.radio-before
+                    label.radio__input
+                        input(type="radio" name="radio" checked disabled)
+                        .radio__control.bg-danger A
+                    .radio__label.d-flex.align-items-center
+                        | Đỏ rực
+
+    p Điểm cao thì ngon, điểm thấp thì làm lại.
+    .card.mb-5
+        .card-body
+            .text-primary Tóm lại làm đề trên web dễ ấy mà, chỉ cần chọn đáp án đúng là xong. Chúc các bạn thi tốt <3
+
+    .text-muted Mọi liên hệ và thắc mắc vui lòng liên hệ tới 
+        a(href="https://www.facebook.com/HocLyThayQuy") Fanpage học Lý thầy Quý
+        |  hoặc trợ giảng 
+        a(href="https://www.facebook.com/ngdatuananh") Nguyễn Đăng Tuấn Anh
+        | .

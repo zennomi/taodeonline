@@ -1,0 +1,23 @@
+extends ../layouts/common.pug
+block content
+    form(action="/tests/"+test._id+"/edit" method="POST")
+        .row
+            .col-12.mb-1
+                label Tên
+                input.form-control(name="name" type="text" placeholder="Tên bài kiểm tra" value=test.name)
+            .col-12.mb-1
+                label Thời gian (phút)
+                input.form-control(name="time" type="number" placeholder="Thời gian" value=test.time)
+            .col-6.mb-1
+                label Khối
+                select.form-select(name="grade")
+                    option 10
+                    option 11
+                    option 12
+                    option(value="") Trống
+            .col-6.col-sm-2.mb-1
+                label Deadline
+                input.form-control.w-100(type="datetime-local" name="deadline" value=test.deadline.toISOString().slice(0,16))
+        button.mr-2.btn.btn-primary(type="submit") Lưu
+        |     
+        button.btn.btn-danger(type="button") Xóa

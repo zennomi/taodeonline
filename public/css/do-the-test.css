@@ -2,7 +2,6 @@
     opacity: 0.95;
 }
 
-
 .TEX-I {
     font-family: inherit !important;
 }
@@ -76,6 +75,7 @@
 }
 
 .radio__control {
+    cursor: pointer;
     display: block;
     width: 2em;
     height: 2em;
@@ -86,4 +86,53 @@
 
 .radio__label p {
     margin: 0;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    text-align: center;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 8px;
+    border: solid 2px var(--bs-light);
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--bs-primary);
+    display: block;
+    transition: 0.3s;
+
+}
+
+
+.sidenav a:hover {
+    color: var(--bs-teal);
+    background: var(--bs-light);
+}
+
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+        font-size: 18px;
+    }
+}
+
+.side-menu {
+    background: var(--bs-light);
+    cursor:pointer;
+    padding: 10px;
+    border-radius: 5px;
 }

@@ -2,40 +2,48 @@ html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title add question
+        title Vật Lý Siêu Nhẩm
         link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous")
-        
+        block header
         block stylesheet
         block script-header
         
     body
         nav.navbar.sticky-top.navbar-expand-lg.navbar-light.bg-light
             .container-fluid
-                a.navbar-brand(href="#") Navbar
+                a.navbar-brand(href="/") VLSN
                 button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
                     span.navbar-toggler-icon
                 #navbarSupportedContent.collapse.navbar-collapse
                     ul.navbar-nav.me-auto.mb-2.mb-lg-0
-                        li.nav-item
-                            a.nav-link.active(aria-current="page" href="#") Home
-                        li.nav-item
-                            a.nav-link(href="/questions") Câu hỏi
-                        li.nav-item
-                            a.nav-link(href="/tests") Đề thi
                         li.nav-item.dropdown
-                            a#navbarDropdown.nav-link.dropdown-toggle(href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false")
-                                | Dropdown
-                            ul.dropdown-menu(aria-labelledby="navbarDropdown")
+                            a#questionDropdown.nav-link.dropdown-toggle(href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false")
+                                | Câu hỏi
+                            ul.dropdown-menu(aria-labelledby="questionDropdown")
                                 li
-                                    a.dropdown-item(href="#") Action
+                                    a.dropdown-item(href="/questions") Ngân hàng câu hỏi
+                                if user && user.isAdmin
+                                    li
+                                        hr.dropdown-divider
+                                    li
+                                        a.dropdown-item(href="/questions/create") Thêm câu hỏi mới
+                                    li
+                                        a.dropdown-item(href="/questions/import") Thêm nhiều câu hỏi
+                        li.nav-item.dropdown
+                            a#testDropdown.nav-link.dropdown-toggle(href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false")
+                                | Đề thi
+                            ul.dropdown-menu(aria-labelledby="testDropdown")
                                 li
-                                    a.dropdown-item(href="#") Another action
+                                    a.dropdown-item(href="/tests") Ngân hàng đề
                                 li
-                                    hr.dropdown-divider
-                                li
-                                    a.dropdown-item(href="#") Something else here
-                        li.nav-item
-                            a.nav-link.disabled(href="#" tabindex="-1" aria-disabled="true") Disabled
+                                    a.dropdown-item(href="/tests/guide") Hướng dẫn làm đề
+                                if user && user.isAdmin
+                                    li
+                                        hr.dropdown-divider
+                                    li
+                                        a.dropdown-item(href="/tests/create") Thêm đề mới
+                                    li
+                                        a.dropdown-item(href="/tests/create") Tự tạo đề
                     .d-flex
                         if user
                             ul.navbar-nav.me-auto.mb-2.mb-lg-0
@@ -49,6 +57,8 @@ html(lang="en")
                             a.btn.btn-outline-success.nav-item(href="/auth/facebook") Đăng nhập
 
         .container.mt-3
+            if messages.warning
+                .alert.alert-primary= messages.warning
             block content
                 
         block outofcontent

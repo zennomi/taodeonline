@@ -1,6 +1,15 @@
 extends ../layouts/common.pug
 block content
-    a(href="/tests/create") Create
-    each test in tests
-        a(href="/tests/"+test._id+"/view")= test._id
-        br
+    .table-responsive
+        table.table
+            thead
+                tr
+                    th(scope="col") Tên đề
+                    th(scope="col") Số câu
+            tbody
+                each test in tests
+                    tr
+                        td
+                            a(href="/tests/"+test._id+"/view")= test.name ? test.name : "Đề kiểm tra"
+                        td= test.questions.length
+                    

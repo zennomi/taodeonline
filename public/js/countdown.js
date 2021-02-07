@@ -1,25 +1,16 @@
-var toastElList = [].slice.call(document.querySelectorAll('.toast'));
-var toastList = toastElList.map(function (toastEl) {
-  return new bootstrap.Toast(toastEl, {})
-})
-
-function notify(index, content) {
-    toastElList[index].querySelector(".toast-body").innerHTML = content;
-    toastList[index].show();
-}
-
 function countdown() {
-    notify(0, "Bắt đầu giờ làm bài.");
-    notify(1, "Bạn có thể nhấn vào thanh thời gian để xem thời gian còn lại.");
-    var totalTimes = Number(document.getElementById('totalTimes').innerHTML)*60*1000;
+
+    notify("Thời gian", "Bắt đầu giờ làm bài.");
+    notify("Tips", "Bạn có thể vào menu để xem thời gian còn lại.");
     var progressBtn = document.getElementById('progress-btn');
-    
+    let leftTimeElement = document.getElementById('leftTime');
     countDownDate = new Date().getTime() + totalTimes;
+    
     var x = setInterval(function () {
 
         // Get today's date and time
         var now = new Date().getTime();
-
+        
         // Find the distance between now and the count down date
         var distance = countDownDate - now;
 
@@ -28,21 +19,26 @@ function countdown() {
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
         // Output the result in an element with id="demo"
-        progressBtn.dataset.lefttime = minutes + " phút " + seconds + " giây";
-        progressBtn.style.width = 100 - distance / totalTimes * 100 + "%";
+        let timeStr = minutes + " phút " + seconds + " giây";
+        leftTimeElement.innerHTML = timeStr;
         document.getElementById('leftTimes').innerHTML = minutes + " phút " + seconds + " giây";
+        progressBtn.style.width = 100 - distance / totalTimes * 100 + "%";
+
         // If the count down is over, write some text 
-        if (distance < 0) {
+        if (Math.round(distance/1000) % (5*60) == 0) {
+            notify("Thời gian","Còn " + timeStr);
+            submitChoices(0);
+        }
+        if (Math.round(distance/1000) == (5*60)) {
+            notify("Nhắc nhở nho nhỏ", "Lúc này thì nên bắt đầu tô đáp án nhó. Bỏ câu khó đi mà làm người.");
+        }
+        if (distance <= 0) {
             clearInterval(x);
-            notify(0, `Hết giờ!!!`);
+            notify("Thời gian", `Hết giờ!!!`);
             document.getElementById("submit").click();
         }
     }, 1000);
 
-    progressBtn.parentNode.addEventListener("click", function() {
-        
-        notify(0, `Còn ${progressBtn.dataset.lefttime}`);
-    })
     document.getElementById("submit").addEventListener("click", function() {
         progressBtn.parentNode.remove();
         clearInterval(x);

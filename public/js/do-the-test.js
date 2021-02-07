@@ -1,81 +1,123 @@
-var initModal = document.getElementById('init-modal');
-initModal.addEventListener('hidden.bs.modal', function (event) {
-    let leaveCountEle = document.getElementById('leaveTimes');
 
-    function userCheated() {
-    // The user cheated by leaving this window (e.g opening another window)
-    // Do something
-    leaveCountEle.innerHTML = Number(leaveCountEle.innerHTML) + 1;
-    notify(0, 'Bạn vừa rời khỏi khu vực làm bài thi.');
-}
 
-window.onblur = userCheated;
-    countdown();
-    scrollToTop();
-});
-initModal = new bootstrap.Modal(initModal, {
-    backdrop: 'static',
-    keyboard: false
-});
-initModal.show();
-
-document.querySelectorAll("input").forEach(input => {
-    input.addEventListener("click", function () {
-        this.nextSibling.style["box-shadow"] = "0 0 0 2pt var(--bs-primary)";
-    })
-});
-
-document.getElementById("submit").addEventListener("click", function () {
-    let falseCounts = 0;
-    let total = 0;
-    let questionArr = document.querySelectorAll(".question");
-    questionArr.forEach(function (q) {
-        total++;
-        let checkedRadio, trueRadio;
-        let title = q.querySelector("b");
-        q.querySelectorAll("input").forEach(function (i) {
-            if (i.checked) checkedRadio = i;
-            if (i.dataset.value == '1') trueRadio = i;
-            i.disabled = true;
-            i.nextSibling.style["box-shadow"] = "";
-        })
-        title.classList.add("btn");
-        if (!checkedRadio) {
-            falseCounts++;
-            title.classList.add("btn-danger");
-        } else if (trueRadio.dataset.order != checkedRadio.dataset.order) {
-            title.classList.add("btn-danger");
-            checkedRadio.nextSibling.style.background = "var(--bs-danger)";
-            falseCounts++;
-        } else title.classList.add("btn-success");
-        trueRadio.nextSibling.style.background = "var(--bs-success)";
-        trueRadio.nextSibling.style.color = "#FFF";
-        trueRadio.nextSibling.style.border = "none";
-        title.innerHTML += (`<span class="badge bg-light"><a class="text-decoration-none" href="/questions/${q.dataset.id}/view" target="_blank">Đáp án chi tiết</a></span>`);
-        title.nextElementSibling.innerHTML = '<br>' + title.nextElementSibling.innerHTML;
-        
-    });
-
-    document.getElementById('result').innerHTML = questionArr.length - falseCounts;
-    
-    this.remove();
-    document.getElementById('resultCard').style.display = 'block';
-    scrollToTop();
-})
-
-function scrollToTop() {
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-}
-
-function onBeforeUnload(e) {
-    if (1) {
-        e.preventDefault();
-        e.returnValue = '';
-        return;
+function Question(element) {
+    this._element = element;
+    this._id = element.dataset['id'];
+    this._title = element.querySelector("b");
+    this._choices = element.querySelectorAll('input[type="radio"]');
+    this.getSelectedChoice = () => {
+        return this._element.querySelector('input:checked');
     }
-
-    delete e['returnValue'];
+    this.getChoiceById = (id) => {
+        return this._element.querySelector(`input[data-id=a-${id}]`)
+    }
+    this._choices.forEach(c => {
+        c.addEventListener("click", function () {
+            let itemMenuEle = document.querySelector(`a[href="#q-${element.dataset['id']}"]`);
+            itemMenuEle.style.background = 'var(--bs-primary)';
+            itemMenuEle.style.color = '#fff';
+            this.nextSibling.style["box-shadow"] = "0 0 0 2pt var(--bs-primary)";
+            this.dataset['moment'] = (new Date).getTime();
+        })
+    })
 }
 
-window.addEventListener('beforeunload', onBeforeUnload);
+let questionList = [];
+document.querySelectorAll(".question").forEach(q => questionList.push(new Question(q)));
+
+
+
+// Menu
+function toggleNav() {
+    let sideNav = document.querySelector(".sidenav");
+    if (sideNav.style.width == "0" || sideNav.style.width == "0px" || !sideNav.style.width) sideNav.style.width = "100%";
+    else sideNav.style.width = "0";
+}
+document.querySelectorAll(".sidenav a").forEach(a => a.addEventListener("click", toggleNav));
+
+// Submit choices
+function submitChoices(isFinished) {
+    let choicesList = [];
+    questionList.forEach(q => {
+        let selectedChoice = q.getSelectedChoice();
+        if (selectedChoice) {
+            choicesList.push({
+                choice_id: selectedChoice.dataset['id'],
+                moment: new Date(Number(selectedChoice.dataset['moment'])) || new Date()
+            })
+        }
+    })
+    fetch('/api/submit-choices', {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({choices: choicesList, testId, isFinished, resultId, leavesAreaTimes})
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.status != 200) {
+            notify("Hệ thống", "Có vấn đề đường truyền internet. Nếu thấy thông báo này lặp lại vui lòng reload bài thi.");
+            return;
+        }
+        if (isFinished)
+            notify("Hệ thống", "Đã lưu lại kết quả làm bài.");
+    })
+}
+
+// Submit test
+function submitTest(testId) {
+    window.onblur = undefined;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>  Đang nộp`;
+    notify("Hệ thống", "Đừng thoát vội chờ hệ thống lưu lại kết quả cái đã...");
+    fetch('/api/tests/' + testId + '/trueChoices')
+        .then(res => res.json())
+        .then(data => {
+            if (data.status != 200) {
+                notify("Hệ thống", "Không ổn, nộp lại xem nào.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = "Nộp lại";
+                return;
+            }
+            submitChoices(1);
+            let trueChoicesId = [...data.result];
+            let falseCounts = 0;
+            questionList.forEach(q => {
+                let checkedRadio, trueRadio;
+                q._choices.forEach(function (i) {
+                    if (i.checked) checkedRadio = i;
+                    if (trueChoicesId.indexOf(i.dataset.id) > -1) trueRadio = i;
+                    i.disabled = true;
+                    i.nextSibling.style["box-shadow"] = "";
+                })
+                q._title.classList.add("btn");
+                if (!checkedRadio) {
+                    falseCounts++;
+                    q._title.classList.add("btn-danger");
+                } else if (trueRadio.dataset.id != checkedRadio.dataset.id) {
+                    q._title.classList.add("btn-danger");
+                    checkedRadio.nextSibling.style.background = "var(--bs-danger)";
+                    falseCounts++;
+                } else q._title.classList.add("btn-success");
+                trueRadio.nextSibling.style.background = "var(--bs-success)";
+                trueRadio.nextSibling.style.color = "#FFF";
+                trueRadio.nextSibling.style.border = "none";
+                q._title.innerHTML += (`<a class="btn btn-sm btn-outline-light" href="/questions/${q._id}/view" target="_blank">Đáp án chi tiết</a>`);
+                q._title.nextElementSibling.innerHTML = '<br>' + q._title.nextElementSibling.innerHTML;
+
+            });
+            document.getElementById('result').innerHTML = questionList.length - falseCounts;
+            document.getElementById('leaveTimes').innerHTML = leavesAreaTimes;
+
+            notify("Hệ thống", "Chấm xong òi!");
+            submitBtn.remove();
+            document.getElementById('resultCard').style.display = 'block';
+            scrollToTop();
+        })
+}

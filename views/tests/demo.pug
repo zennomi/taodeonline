@@ -45,32 +45,13 @@ block script-header
     include ../layouts/mathjax.pug
 
 block content
-    .row
-        .col
-            input.form-control(name="name" type="text" placeholder="Tên đề")
-        .col
-            select.form-select(name="grade")
-                option(value="" hidden) Khối
-                option 10
-                option 11
-                option 12
-                option(value="") Trống
-        .col
-            input.form-control(name="time" type="number" value=40)
+    p.text-white Kiểm tra lại xem có câu nào lỗi không (thiếu đáp án, chữ này xọ chữ nọ)
+    button.btn.btn-danger(onclick="window.history.go(-1); return false;") Quay lại
 
     #main-list.sortable
         each q, i in matchedQuestions
             div(id="item-"+q._id)
                 b.order Câu #{i+1}: 
-                .badge.bg-success
-                    a.text-decoration-none.text-reset(href="/questions/"+q._id+"/view" target="_blank") Xem
-                | &nbsp;
-                .badge.bg-success
-                    a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
-                | &nbsp;
-                .badge.bg-primary
-                    a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="removeQuestion('"+q._id+"')") -
-                | &nbsp;
                 if (q.level)
                     .badge.bg-danger
                         a.text-decoration-none.text-reset(href="#"+q.grade target="_blank")= q.level
@@ -96,15 +77,14 @@ block content
                             .col.mb-1
                                 .radio.radio-before
                                     label.radio__input
-                                        input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
-                                        .radio__control(style=(a.isTrue==true) ? 'background: var(--bs-success);' : '')= String.fromCharCode(65+j)
-                                    .radio__label.d-flex.align-items-center
+                                        input(type="radio" name="radio")
+                                        .radio__control(style=(a.isTrue) ? 'background: var(--bs-success);' : '' checked= a.isTrue)= String.fromCharCode(65+j)
+                                    .radio__label
                                         | !{a.content}
-    button#submit.btn.btn-success Lưu
+    a.btn.btn-success(href="/questions/import/save") Lưu
 block script-footer
     script(src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js")
     script(src="/js/sortable.js")
-    script(src="/js/remove-question.js")
     script.
         sortable = new Sortable(document.getElementById("main-list"));
         function orderQuestions() {
@@ -127,28 +107,4 @@ block script-footer
                 }
             });
         }
-        document.getElementById("submit").addEventListener("click", function() {
-            fetch('/api/tests/save', {
-                method: 'POST',
-                mode: 'cors',
-                cache: 'no-cache',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                redirect: 'follow',
-                referrerPolicy: 'no-referrer',
-                body: JSON.stringify({ 
-                    name: document.querySelector('input[name="name"]').value,
-                    time: document.querySelector('input[name="time"]').value,
-                    order: sortable.toArray()
-                 })
-            })
-                .then(res => res.json())
-                .then(res => {
-                    if (res.status == 201) alert("Đã xảy ra lỗi khi lưu.");
-                    else location.href = location.origin + '/tests/'+ res.idNewTest + '/view';
-                });
-        })
-            
     
