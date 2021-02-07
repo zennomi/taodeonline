@@ -6,10 +6,18 @@ block content
                 tr
                     th(scope="col") Tên đề
                     th(scope="col") Số câu
+                    th(scope="col") Thời gian
+                    th(scope="col") Thao tác
             tbody
                 each test in tests
                     tr
-                        td
-                            a(href="/tests/"+test._id+"/view")= test.name ? test.name : "Đề kiểm tra"
+                        td= test.name ? test.name : "Đề kiểm tra"
                         td= test.questions.length
+                        td= test.time + " phút"
+                        td
+                            if user && user.isAdmin
+                                a.btn.btn-outline-primary Xem
+                                |     
+                            a.btn.btn-outlinh-success Làm đề
+
                     

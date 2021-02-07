@@ -21,7 +21,7 @@ module.exports = (function() {
 	router.get('/facebook/callback',
 	  passport.authenticate('facebook', { successRedirect : '/history', failureRedirect: '/login' }),
 	  function(req, res) {
-	    res.redirect((req.flash().history) ? req.flash().history[0] : '/');
+	    res.redirect('/history');
 	  });
 
 	router.get('/logout', function(req, res){
