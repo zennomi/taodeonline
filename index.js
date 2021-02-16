@@ -9,6 +9,9 @@ const TeXToMML = require("tex-to-mml");
 const mongoose = require('mongoose');
 
 const port = process.env.PORT ? process.env.PORT : 8080;
+
+const fbAdminIds = process.env.FACEBOOK_ADMIN_IDS.split(",");
+
 app.set('views', './views');
 app.set('view engine', 'pug');
 app.use(express.static('public'));
@@ -70,8 +73,7 @@ passport.use(new Strategy({
 },
   function (accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-      let adminIds = ['1599714943551633'];
-      if (adminIds.indexOf(profile.id) > -1) {
+      if (fbAdminIds.indexOf(profile.id) > -1) {
         profile.role = 'admin';
         profile.isAdmin = true;
       }
