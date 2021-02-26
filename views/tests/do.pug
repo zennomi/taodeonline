@@ -3,16 +3,7 @@ html(lang="en")
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous")
-        title= test.name ? test.name : "Đề thi"
-        style.
-            .question-wrap > p {
-                margin-bottom: 0;
-            }
-            .fixed-left {
-                position: absolute;
-                top: 10px;
-                left: 10px;
-            }
+        title= test.name ? test.name : "Đề thi"            
         include ../layouts/mathjax.pug
         script.
             window.MathJax.startup = {
@@ -31,7 +22,7 @@ html(lang="en")
         link(rel="stylesheet" href="/css/do-the-test.css")
 
     body
-        span.sticky-top.side-menu(style="" onclick="toggleNav()") &#9776; Menu
+        span.side-menu.fixed-left(style="" onclick="toggleNav()") &#9776; Menu
         .sidenav
             h5 Thời gian còn lại: 
             p#leftTime= test.time + " phút"
@@ -39,6 +30,7 @@ html(lang="en")
             .d-flex.justify-content-around.flex-wrap
                 each q, i in test.questions
                     a.mb-1(href="#q-"+q._id)= `Câu ${i+1}`
+            a.mb-1(href="#submit")= `Nộp bài`
 
         .container
 
@@ -107,8 +99,7 @@ html(lang="en")
                 button.btn.btn-primary.mb-5#submit(onclick=`submitTest("${test._id}")`) Nộp bài
         script(src="/bootstrap/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous")
         script.
-            let testId = "#{test._id}";
-            let totalTimes = #{test.time*60*1000}
+            let testId = "#{test._id}", totalTimes = #{test.time*60*1000}, isPublic = #{test.isPublic};
         script(src="/js/tests/init-test.js")
         script(src="/js/countdown.js")
         script(src="/js/do-the-test.js")

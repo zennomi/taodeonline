@@ -5,7 +5,8 @@ const testSchema = new Schema({
     questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
     time: Number,
     name: String,
-    deadline: Date
+    deadline: {type: Date, default: new Date()},
+    isPublic: {type: Boolean, default: false}
 })
 
 module.exports =  mongoose.model('Test', testSchema);

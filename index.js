@@ -27,6 +27,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: { maxAge: 7*24*60*60*1000 }
 }));
+
 app.use(require('express-flash')());
 
 mongoose.connect(process.env.MONGODB_URL, {
@@ -88,6 +89,18 @@ app.use(passport.session());
 app.use(function (req, res, next) {
   if (req.user) res.locals.user = req.user;
   else res.locals.user = undefined;
+  if (req.path != '/history') req.flash('history', req.originalUrl);
+  next();
+})
+
+app.get('/history', (req, res) => {
+  console.log(res.locals.history);
+  if (res.locals.history) res.redirect(res.locals.history);
+  else if (req.cookies.history) res.redirect(req.cookies.history);
+  else res.redirect('/');
+})
+
+app.use((req, res, next) => {
   next();
 })
 
@@ -104,12 +117,7 @@ app.get('/user', authMiddlewares.authRequire, (req, res) => {
   res.render('users/profile');
 })
 
-app.get('/history', (req, res) => {
-  console.log(req.cookies.history);
-  if (req.flash().history) res.redirect(req.flash().history[0]);
-  else if (req.cookies.history) res.redirect(req.cookies.history);
-  else res.redirect('/');
-})
+
 
 app.post('/api/add-question', (req, res) => {
   let response = { status: 200 };
@@ -226,6 +234,7 @@ app.get('/api/tests/:id/trueChoices', authMiddlewares.authRequire, async (req, r
     return;
   }
   response.result = matchedTest.questions.map(q => q.choices.filter(c => c.isTrue)[0]._id);
+  response.isPublic = matchedTest.isPublic;
   res.json(response);
 })
 

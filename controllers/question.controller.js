@@ -174,7 +174,12 @@ module.exports.import = (req, res) => {
 }
 
 module.exports.postImport = (req, res) => {
-    let quesStrArr = req.body.content.replace(/&nbsp;/g,' ').replace(/\s{3,}/g,'   ').split(/<p>\s*\[&lt;br&gt;\]\s*<\/p>/);
+    let quesStrArr = req.body.content
+    .replace(/&nbsp;/g,' ')
+    .replace(/\s{3,}/g,'   ')
+    .replace(/\s{3,}/g,'   ')
+    .replace(/(<[^\/<>]+>)(\s+)/g,'$2$1')
+    .split(/<p>\s*\[&lt;br&gt;\]\s*<\/p>/);
     let matchedQuestions = quesStrArr.map((q, i) => {
         let parArr = Array.from(q.matchAll(/<p>.+?<\/p>/g), m => m[0]);
         let quesContent = [];
@@ -206,18 +211,20 @@ module.exports.postImport = (req, res) => {
             side_tags: []
         }
     })
-    res.cookie('questions', { importQuestions: matchedQuestions }, { expires: new Date(Date.now() + 24 * 3600), httpOnly: true })
-    res.render('tests/demo', {matchedQuestions});
+    Question.insertMany(matchedQuestions, (err, questions) => {
+        if (err) return res.send(err);
+        res.cookie('questions', { ids: questions.map(q => q._id) }, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true });
+        res.render('tests/demo', {matchedQuestions: questions});
+    })
+    // res.cookie('questions', { importQuestions: matchedQuestions }, { expires: new Date(Date.now() + 24 * 3600), httpOnly: true });
+    // res.render('tests/demo', {matchedQuestions});
 }
 
 module.exports.saveImportedQuestions = (req, res) => {
-    console.log(req.cookies.questions.importQuestions);
     if (!req.cookies.questions.importQuestions) req.cookies.questions.importQuestions = [];
     Question.insertMany(req.cookies.questions.importQuestions, (err, questions) => {
         if (err) return res.send(err);
-        console.log(questions);
         res.cookie('questions', { importQuestions: [] }, { expires: new Date(Date.now() + 24 * 3600), httpOnly: true });
-        res.cookie('questions', { ids: questions.map(q => q._id) }, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true });
         res.redirect('/tests/create');
     });
 }

@@ -86,8 +86,7 @@ function submitTest(testId) {
                 return;
             }
             submitChoices(1);
-            let trueChoicesId = [...data.result];
-            let falseCounts = 0;
+            let trueChoicesId = [...data.result], falseCounts = 0, isPublic = data.isPublic;
             questionList.forEach(q => {
                 let checkedRadio, trueRadio;
                 q._choices.forEach(function (i) {
@@ -96,20 +95,24 @@ function submitTest(testId) {
                     i.disabled = true;
                     i.nextSibling.style["box-shadow"] = "";
                 })
-                q._title.classList.add("btn");
+                if (isPublic) q._title.classList.add("btn");
                 if (!checkedRadio) {
                     falseCounts++;
-                    q._title.classList.add("btn-danger");
+                    if (isPublic) q._title.classList.add("btn-danger");
                 } else if (trueRadio.dataset.id != checkedRadio.dataset.id) {
-                    q._title.classList.add("btn-danger");
-                    checkedRadio.nextSibling.style.background = "var(--bs-danger)";
+                    if (isPublic) {
+                        q._title.classList.add("btn-danger");
+                        checkedRadio.nextSibling.style.background = "var(--bs-danger)";
+                    }
                     falseCounts++;
-                } else q._title.classList.add("btn-success");
-                trueRadio.nextSibling.style.background = "var(--bs-success)";
-                trueRadio.nextSibling.style.color = "#FFF";
-                trueRadio.nextSibling.style.border = "none";
-                q._title.innerHTML += (`<a class="btn btn-sm btn-outline-light" href="/questions/${q._id}/view" target="_blank">Đáp án chi tiết</a>`);
-                q._title.nextElementSibling.innerHTML = '<br>' + q._title.nextElementSibling.innerHTML;
+                } else if (isPublic) q._title.classList.add("btn-success");
+                if (isPublic) {
+                    trueRadio.nextSibling.style.background = "var(--bs-success)";
+                    trueRadio.nextSibling.style.color = "#FFF";
+                    trueRadio.nextSibling.style.border = "none";
+                    q._title.innerHTML += (`<a class="btn btn-sm btn-outline-light" href="/questions/${q._id}/view" target="_blank">Đáp án chi tiết</a>`);
+                    q._title.nextElementSibling.innerHTML = '<br>' + q._title.nextElementSibling.innerHTML;
+                }
 
             });
             document.getElementById('result').innerHTML = questionList.length - falseCounts;

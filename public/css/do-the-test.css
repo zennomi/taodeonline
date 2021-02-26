@@ -113,26 +113,37 @@
 
 }
 
+.fixed-left {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 99;
+}
 
 .sidenav a:hover {
     color: var(--bs-teal);
     background: var(--bs-light);
 }
 
+.side-menu {
+    background: var(--bs-light);
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+}
 
-@media screen and (max-height: 450px) {
+@media only screen and (max-width: 450px) {
     .sidenav {
         padding-top: 15px;
     }
-
     .sidenav a {
         font-size: 18px;
     }
-}
-
-.side-menu {
-    background: var(--bs-light);
-    cursor:pointer;
-    padding: 10px;
-    border-radius: 5px;
+    .side-menu {
+        padding: 5px;
+    }
+    .fixed-left {
+        top: 5px;
+        left: 5px;
+    }
 }
