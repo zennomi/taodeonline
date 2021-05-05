@@ -49,7 +49,7 @@ block content
         b.text-success Đáp án đúng: 
         span= question.getTrueChoice()
         br
-        if question.answer.length > 3
+        if question.answer && question.answer.length > 3
             b.text-success Lời giải chi tiết:
             p.ml-1 !{question.answer}
         else 

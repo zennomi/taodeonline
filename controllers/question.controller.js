@@ -174,24 +174,55 @@ module.exports.import = (req, res) => {
 }
 
 module.exports.postImport = (req, res) => {
-    let quesStrArr = req.body.content
+    let matchedQuestions = questionfy(req.body.content);
+    
+    res.render('tests/demo', {matchedQuestions});
+}
+
+module.exports.saveImportedQuestions = (req, res) => {
+    let importQuestions = questionfy(req.body.content);
+    Question.insertMany(importQuestions, (err, questions) => {
+        if (err) return res.send(err);
+        res.cookie('questions', { ids: questions.map(q => q._id) }, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true });
+        res.render('tests/create', {matchedQuestions: questions});
+    })
+}
+
+function isChoice(str) {
+    return /<strong>.*[ABCD].*\..*<\/strong>/gi.test(str);
+}
+
+function isTrueChoice(str) {
+    return /<u>.*[ABCD].*\..*<\/u>/gi.test(str);
+}
+
+function questionfy(content) {
+    let quesStrArr = content
     .replace(/&nbsp;/g,' ')
     .replace(/\s{3,}/g,'   ')
     .replace(/\s{3,}/g,'   ')
     .replace(/(<[^\/<>]+>)(\s+)/g,'$2$1')
     .split(/<p>\s*\[&lt;br&gt;\]\s*<\/p>/);
+    let level;
     let matchedQuestions = quesStrArr.map((q, i) => {
         let parArr = Array.from(q.matchAll(/<p>.+?<\/p>/g), m => m[0]);
         let quesContent = [];
         let choiceList = [];
-
+        
         parArr.forEach((p, j) => {
             if (isChoice(p)) {
                 if (/\s{3,}/gi.test(p)) {
                     choiceList.push(...p.split(/\s{3,}/).filter(c => isChoice(c)));
                 } else choiceList.push(p);
             }
-            else quesContent.push(p);
+            else {
+                let levelRegex = /<p>\s*\[&lt;level:(\d{1,})&gt;\]\s*<\/p>/g;
+                if (levelRegex.test(p)) {
+                    console.log(levelRegex.exec(p));
+                    level = Number([...levelRegex.exec(p)][1]);
+                } else
+                quesContent.push(p);
+                }
         })
         return {
             question: quesContent.join('\n'),
@@ -207,32 +238,10 @@ module.exports.postImport = (req, res) => {
                     isTrue: isTrue
                 }
             }),
+            level: level || undefined,
             main_tags: [],
             side_tags: []
         }
     })
-    Question.insertMany(matchedQuestions, (err, questions) => {
-        if (err) return res.send(err);
-        res.cookie('questions', { ids: questions.map(q => q._id) }, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true });
-        res.render('tests/demo', {matchedQuestions: questions});
-    })
-    // res.cookie('questions', { importQuestions: matchedQuestions }, { expires: new Date(Date.now() + 24 * 3600), httpOnly: true });
-    // res.render('tests/demo', {matchedQuestions});
-}
-
-module.exports.saveImportedQuestions = (req, res) => {
-    if (!req.cookies.questions.importQuestions) req.cookies.questions.importQuestions = [];
-    Question.insertMany(req.cookies.questions.importQuestions, (err, questions) => {
-        if (err) return res.send(err);
-        res.cookie('questions', { importQuestions: [] }, { expires: new Date(Date.now() + 24 * 3600), httpOnly: true });
-        res.redirect('/tests/create');
-    });
-}
-
-function isChoice(str) {
-    return /<strong>.*[ABCD].*\..*<\/strong>/gi.test(str);
-}
-
-function isTrueChoice(str) {
-    return /<u>.*[ABCD].*\..*<\/u>/gi.test(str);
+    return matchedQuestions;
 }

@@ -81,7 +81,7 @@ module.exports.postAutoCreate = async (req, res) => {
 
 module.exports.view = async (req, res) => {
     let matchedTest = await Test.findById(req.params.id).populate('questions');
-    let trueChoiceIds = matchedTest.questions.map(q => q.choices.filter(c => c.isTrue)[0]._id);
+    let trueChoiceIds = matchedTest.questions.map(q => q.choices.filter(c => c.isTrue)[0] ? q.choices.filter(c => c.isTrue)[0]._id : null);
     let matchedResults = await Result.find({test_id: req.params.id});
     
     matchedTest.questions.forEach(q => {

@@ -5,9 +5,10 @@ block script-header
 
 block content
     h1 Thêm nhiều câu hỏi
-    form(action="/questions/import" method="POST")
+    form#importForm(action="/questions/import" method="POST")
         textarea(name="content")
-        button.btn.btn-primary(type="submit") Lưu
+        button.btn.btn-primary(type="submit") Xem trước
+        button.btn.btn-primary#importBtn(type="button") Lưu lại
 block script-footer
     script(src="/js/questions/import.js")
     

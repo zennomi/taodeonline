@@ -10,7 +10,7 @@ router.get('/', controller.index);
 router.get('/export', authMiddlewares.authRequire, controller.export);
 router.get('/import',authMiddlewares.authRequire, authMiddlewares.adminRequire,  controller.import);
 router.post('/import', authMiddlewares.authRequire, authMiddlewares.adminRequire,  controller.postImport);
-router.get('/import/save',authMiddlewares.authRequire, authMiddlewares.adminRequire, controller.saveImportedQuestions);
+router.post('/import/save',authMiddlewares.authRequire, authMiddlewares.adminRequire, controller.saveImportedQuestions);
 router.get('/:id', controller.view);
 router.get('/:id/view', controller.view);
 router.get('/:id/edit', authMiddlewares.authRequire, authMiddlewares.adminRequire, controller.edit);

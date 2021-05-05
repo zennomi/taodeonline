@@ -64,3 +64,9 @@
     CKEDITOR.plugins.addExternal('pastebase64', '/pastebase64/', 'plugin.js');
     CKEDITOR.replace('content', options);
   }());
+let importBtn = document.getElementById('importBtn');
+let importForm = document.getElementById('importForm');
+importBtn.onclick = () => {
+  importForm.action = '/questions/import/save';
+  importForm.submit();
+}
