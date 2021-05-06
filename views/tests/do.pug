@@ -89,7 +89,7 @@ html(lang="en")
                         form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
                             each a,j in q.choices
                                 .col.mb-1
-                                    .radio.radio-before
+                                    .radio.radio-before.d-flex.align-items-center
                                         label.radio__input
                                             input(type="radio" name="radio" data-id=a._id)
                                             .radio__control= String.fromCharCode(65+j)

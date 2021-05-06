@@ -110,7 +110,7 @@
     color: var(--bs-primary);
     display: block;
     transition: 0.3s;
-
+    min-width: 70px;
 }
 
 .fixed-left {

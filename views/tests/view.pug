@@ -3,6 +3,19 @@ block header
     include ../layouts/mathjax.pug
     link(rel="stylesheet" href="/css/do-the-test.css")
 block content
+    .modal#resultModal(tabindex='-1')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h5.modal-title Kết của của học sinh 
+                        span#nameStudent
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body
+                    #modalContent
+                    canvas#scatterChart
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Đóng
+
     .row.row-cols-md-2
         .col
             h5.text-primary Mã QR
@@ -21,19 +34,22 @@ block content
                         tr
                             th(scope="col") Tên
                             th(scope="col") Điểm
-                            th(scope="col") BĐ
-                            th(scope="col") TG
-                            th(scope="col") Rời
-                            th(scope="col") Mốc thời gian khoanh
+                            //- th(scope="col") BĐ
+                            //- th(scope="col") TG
+                            //- th(scope="col") Rời
+                            //- th(scope="col") Mốc thời gian khoanh
+                            th Xóa
                     tbody
                         each result in results
-                            tr
+                            tr(style="cursor: pointer;" onclick="viewResult('" + result._id + "');")
                                 td= result.user.display_name
                                 td= Math.round(result.mark*100)/100
-                                td= result.started_time
-                                td= (result.finished_time) ? Math.round((result.finished_time-result.started_time)/60/1000) + " phút" : "Chưa nộp"
-                                td= result.leaves_area_times
-                                td= result.choices.map(c => (c.moment.getTime()/1000)).sort((a, b) => a-b).map(c => c+"s").join(" - ")
+                                //- td= result.started_time
+                                //- td= (result.finished_time) ? Math.round((result.finished_time-result.started_time)/60/1000) + " phút" : "Chưa nộp"
+                                //- td= result.leaves_area_times
+                                //- td= result.choices.map(c => (c.moment.getTime()/1000)).sort((a, b) => a-b).map(c => c+"s").join(" - ")
+                                td
+                                    button.btn.btn-danger(onclick="deleteResult('" + result._id + "')") X
         .col
             h5.text-primary= test.name ? test.name : "Đề thi"
             .d-flex.justify-content-around
@@ -42,9 +58,6 @@ block content
                     | Thời gian 
                     span#totalTimes= test.time ? test.time : 40
                     |  phút.
-            .fixed-bottom
-                .progress
-                    #progress-btn.progress-bar
             .p-1
                 each q, i in test.questions
                     .question(id="q-"+q._id data-id=q._id)
@@ -87,7 +100,11 @@ block content
                                         .radio__label
                                             | !{a.content}
                     hr
+block script-footer
     script.
         document.getElementById('qr-image').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + window.location.origin + "/tests/#{test._id}/do"
-    script(src="/js/copy.js") 
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js" integrity="sha512-VMsZqo0ar06BMtg0tPsdgRADvl0kDHpTbugCBBrL55KmucH6hP9zWdLIWY//OTfMnzz6xWQRxQqsUFefwHuHyg==" crossorigin="anonymous")
+    script(src="/js/helper/copy.js")
+    script(src="/js/helper/post-data.js")
+    script(src="/js/tests/view.js")
         

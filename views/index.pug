@@ -1,6 +1,14 @@
 extends ./layouts/common.pug
 
 block content
-    a(href="/questions") Ngân hàng câu hỏi
-    br
-    a(href="/tests") Ngân hàng đề thi
+    .row.row-cols-1.row-cols-md-2
+        .col
+            a.card.text-white.bg-primary.mb-3.text-decoration-none(href="/tests")
+                .card-body
+                    h5.card-title Ngân hàng đề thi
+                    p.card-text Đề thi THPT Quốc Gia sát cấu trúc năm 2021, Đề Kiểm tra cuối kỳ,...
+        .col
+            a.card.text-white.bg-primary.mb-3.text-decoration-none(href="/questions")
+                .card-body
+                    h5.card-title Ngân hàng câu hỏi trắc nghiệm
+                    p.card-text Đáp án chi tiết tới tận răng

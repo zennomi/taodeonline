@@ -25,7 +25,7 @@ app.use(session({
   key: 'sid',
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 7*24*60*60*1000 }
+  cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 }
 }));
 
 app.use(require('express-flash')());
@@ -89,14 +89,12 @@ app.use(passport.session());
 app.use(function (req, res, next) {
   if (req.user) res.locals.user = req.user;
   else res.locals.user = undefined;
-  if (req.path != '/history') req.flash('history', req.originalUrl);
+  if (req.path != '/auth' && req.path != '/history') res.locals.history = req.originalUrl;
   next();
 })
 
 app.get('/history', (req, res) => {
-  console.log(res.locals.history);
-  if (res.locals.history) res.redirect(res.locals.history);
-  else if (req.cookies.history) res.redirect(req.cookies.history);
+  if (req.cookies.history) res.redirect(req.cookies.history);
   else res.redirect('/');
 })
 
@@ -116,8 +114,6 @@ app.use('/auth', authRoutes);
 app.get('/user', authMiddlewares.authRequire, (req, res) => {
   res.render('users/profile');
 })
-
-
 
 app.post('/api/add-question', (req, res) => {
   let response = { status: 200 };
@@ -191,26 +187,26 @@ app.post('/api/new-result', authMiddlewares.authRequire, (req, res) => {
   let newResult = new Result({
     test_id: req.body.testId,
     user: {
-        facebook_id: req.user.id,
-        display_name: req.user.displayName
+      facebook_id: req.user.id,
+      display_name: req.user.displayName
     },
     leaves_area_times: 0,
     started_time: new Date()
-});
-newResult.save((err, result) => {
+  });
+  newResult.save((err, result) => {
     if (err) {
       response.status = 201;
       return res.json(response);
     }
     response.resultId = result._id;
     return res.json(response);
-})
+  })
 })
 
 app.post('/api/submit-choices', authMiddlewares.authRequire, async (req, res) => {
   let response = { status: 200 };
   let matchedResult = await Result.findById(req.body.resultId);
-  
+
   if (!matchedResult) {
     response.status = 201;
     return res.json(response);
@@ -236,6 +232,25 @@ app.get('/api/tests/:id/trueChoices', authMiddlewares.authRequire, async (req, r
   response.result = matchedTest.questions.map(q => q.choices.filter(c => c.isTrue)[0]._id);
   response.isPublic = matchedTest.isPublic;
   res.json(response);
+})
+
+app.post('/api/result/view', authMiddlewares.authRequire, (req, res) => {
+  Result.findById(req.body.id, (err, result) => {
+    if (err || !result) return res.json({status: 404});
+    let choices = result.choices.map(c => c.moment.getTime());
+    if (choices.length == 0) choices.push(0);
+    let minTime = Math.min(...choices);
+    choices = choices.map(t => Math.round((t-minTime)/60000*10)/10);
+    result.choices = [...choices];
+    console.log(result.choices, choices);
+    res.json({status: 200, result, choices});
+  })
+})
+
+app.post('/api/result/delete', authMiddlewares.authRequire, (req, res) => {
+  Result.findByIdAndDelete(req.body.id, (err) => {
+    res.json({message: err || 'Tải lại trang.'});
+  })
 })
 
 app.listen(port, () => {
