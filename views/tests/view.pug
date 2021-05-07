@@ -23,10 +23,11 @@ block content
                 img.mb-1#qr-image(alt="QR Code")
                 br
                 button#button-addon2.btn.btn-outline-primary(type="button" onclick=`copyToClipboard(window.location.origin + "/tests/${test._id}/do")`) Copy
-            h5.text-primary Thao tác
-            a.btn.btn-outline-success(href=`/tests/${test._id}/edit`) Sửa
-            |     
-            a.btn.btn-outline-danger(href=`/tests/${test._id}/delete`) Xóa
+            if user && user.isAdmin
+                h5.text-primary Thao tác
+                a.btn.btn-outline-success(href=`/tests/${test._id}/edit`) Sửa
+                |     
+                a.btn.btn-outline-danger(href=`/tests/${test._id}/delete`) Xóa
             h5.text-primary Bảng điểm
             .table-responsive
                 table.table
@@ -38,18 +39,21 @@ block content
                             //- th(scope="col") TG
                             //- th(scope="col") Rời
                             //- th(scope="col") Mốc thời gian khoanh
-                            th Xóa
+                            th Thao tác
                     tbody
                         each result in results
-                            tr(style="cursor: pointer;" onclick="viewResult('" + result._id + "');")
-                                td= result.user.display_name
-                                td= Math.round(result.mark*100)/100
-                                //- td= result.started_time
-                                //- td= (result.finished_time) ? Math.round((result.finished_time-result.started_time)/60/1000) + " phút" : "Chưa nộp"
-                                //- td= result.leaves_area_times
-                                //- td= result.choices.map(c => (c.moment.getTime()/1000)).sort((a, b) => a-b).map(c => c+"s").join(" - ")
-                                td
-                                    button.btn.btn-danger(onclick="deleteResult('" + result._id + "')") X
+                            if user && (user.isAdmin || user.id == result.user.facebook_id)
+                                tr(style="cursor: pointer;" onclick="viewResult('" + result._id + "');")
+                                    td= result.user.display_name
+                                    td= Math.round(result.mark*100)/100
+                                    //- td= result.started_time
+                                    //- td= (result.finished_time) ? Math.round((result.finished_time-result.started_time)/60/1000) + " phút" : "Chưa nộp"
+                                    //- td= result.leaves_area_times
+                                    //- td= result.choices.map(c => (c.moment.getTime()/1000)).sort((a, b) => a-b).map(c => c+"s").join(" - ")
+                                    td
+                                        a.btn.btn-success(href='/tests/'+result.test_id._id+'/view-result/'+result._id target="_blank") Xem
+                                        if user && user.isAdmin
+                                            button.btn.btn-danger(onclick="deleteResult('" + result._id + "')") Xóa
         .col
             h5.text-primary= test.name ? test.name : "Đề thi"
             .d-flex.justify-content-around
@@ -72,6 +76,9 @@ block content
                             if user && user.isAdmin
                                 .badge.bg-primary
                                     a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="addQuestion('"+q._id+"')") +
+                                | &nbsp;
+                                .badge.bg-danger
+                                    a.text-decoration-none.text-reset #{q.trueTimes}/#{results.length} đúng
                             | &nbsp;
                             if (q.grade)
                                 .badge.bg-danger
@@ -90,7 +97,7 @@ block content
                         form.test-wrap.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0
                             each a,j in q.choices
                                 .col.mb-1
-                                    .radio.radio-before
+                                    .radio.radio-before.d-flex.align-items-center
                                         label.radio__input
                                             if a.isTrue
                                                 input(type="radio" name="radio" disabled checked)

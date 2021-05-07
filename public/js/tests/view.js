@@ -25,20 +25,24 @@ function viewResult(id) {
 				nameStdEle.textContent = result.user.display_name;
 				modalContentEle.innerHTML = `
 				<div><b>Thời gian bắt đầu: </b>${(new Date(result.started_time)).toLocaleString('vi-VN')}</div>
-				<div><b>Thời gian kết thúc: </b>${result.finished_time ? "Chưa nộp bài" : (new Date(result.finished_time)).toLocaleString('vi-VN')}</div>
+				<div><b>Thời gian kết thúc: </b>${result.finished_time ? (new Date(result.finished_time)).toLocaleString('vi-VN') : "Chưa nộp bài"}</div>
 				<div><b>Số lần rời khỏi khu vực thi: </b>${result.leaves_area_times}</div>
 				<div></div>
 			`;
-				let dataChart = res.choices.map((c, i) => { return { x: i, y: c } });
-				console.log(dataChart);
 				scatterChart = new Chart(chartEle, {
 					type: 'scatter',
 					data: {
 						datasets: [{
-							label: 'Thời gian khoanh',
-							data: dataChart,
-							backgroundColor: 'rgb(255, 99, 132)'
-						}]
+							label: 'Khoanh đúng',
+							data: res.choices.filter(c => c.isTrue).map(c => { return { x: c.index, y: c.moment } }),
+							backgroundColor: 'rgb(25, 135, 84)'
+						},
+							{
+								label: 'Khoanh sai',
+								data: res.choices.filter(c => !c.isTrue).map(c => { return { x: c.index, y: c.moment } }),
+								backgroundColor: 'rgb(255, 99, 132)'
+							}
+					]
 					},
 					options: {
 						scales: {

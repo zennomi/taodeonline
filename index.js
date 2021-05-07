@@ -106,6 +106,9 @@ app.get('/', (req, res) => {
   res.render('index');
 })
 
+app.get('/privacy-policy', (req, res) => {
+  res.render('privacy-policy');
+})
 
 app.use('/questions', questionRoutes);
 app.use('/tests', testRoutes);
@@ -234,24 +237,46 @@ app.get('/api/tests/:id/trueChoices', authMiddlewares.authRequire, async (req, r
   res.json(response);
 })
 
-app.post('/api/result/view', authMiddlewares.authRequire, (req, res) => {
-  Result.findById(req.body.id, (err, result) => {
-    if (err || !result) return res.json({status: 404});
-    let choices = result.choices.map(c => c.moment.getTime());
-    if (choices.length == 0) choices.push(0);
-    let minTime = Math.min(...choices);
-    choices = choices.map(t => Math.round((t-minTime)/60000*10)/10);
-    result.choices = [...choices];
-    console.log(result.choices, choices);
-    res.json({status: 200, result, choices});
+app.post('/api/result/view', authMiddlewares.authRequire, async (req, res) => {
+  let result;
+  try {
+    result = await Result.findById(req.body.id).populate({ path: 'test_id', populate: { path: 'questions' } });
+    if (!result) throw new Error('Not Found Result');
+    if (!result.test_id) throw new Error('Not Found Test');
+  } catch (err) {
+    res.json({ status: 404 });
+  }
+  let trueChoices = [];
+  result.test_id.questions.forEach(q => {
+    trueChoices.push(...q.getTrueChoiceArray().map(c => String(c)));
   })
+  let choices = result.choices.map(c => {
+    return {
+      moment: c.moment.getTime(),
+      isTrue: trueChoices.indexOf(String(c.choice_id)) > -1
+    }
+  });
+  if (choices.length == 0) choices.push(0);
+  let minTime = Math.min(...choices.map(c => c.moment));
+  choices = choices.map((t, i) => {
+    return {
+      moment: Math.round((t.moment - minTime) / 60000 * 10) / 10,
+      isTrue: t.isTrue,
+      index: i+1
+    }
+  });
+  res.json({ status: 200, result, choices });
 })
 
 app.post('/api/result/delete', authMiddlewares.authRequire, (req, res) => {
   Result.findByIdAndDelete(req.body.id, (err) => {
-    res.json({message: err || 'Tải lại trang.'});
+    res.json({ message: err || 'Tải lại trang.' });
   })
 })
+
+app.get('*', function (req, res) {
+  res.status(404).send('bon le bon not phao.');
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)

@@ -2,7 +2,6 @@ const { rawListeners } = require("../models/test.model");
 
 module.exports.authRequire = (req, res, next) => {
     // return next();
-    console.log(res.locals.history);
     if (req.user) { return next(); }
     res.cookie('history', res.locals.history, { expires: new Date(Date.now() + 3600 * 1000), httpOnly: true });
     req.flash('warning', 'Đăng nhập đã bạn ôi.');

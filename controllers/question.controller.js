@@ -145,7 +145,6 @@ module.exports.edit = (req, res) => {
 
 module.exports.postEdit = async (req, res) => {
     let question = await Question.findById(req.params.id);
-    console.log(question.question);
     question.question = texToMathML(req.body.question_content);
     question.answer = texToMathML(req.body.detailed_answer);
     question.grade = req.body.grade ? req.body.grade : undefined;

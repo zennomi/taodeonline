@@ -33,6 +33,10 @@ questionSchema.methods.getTrueChoice = function () {
     return keyArr.join(",");
 }
 
+questionSchema.methods.getTrueChoiceArray = function () {
+    return this.choices.filter(c => c.isTrue).map(c => c._id);
+}
+
 questionSchema.plugin(random);
 
 const Question = mongoose.model('Question', questionSchema);

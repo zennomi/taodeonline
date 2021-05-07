@@ -44,7 +44,7 @@ html(lang="en")
                     p Số lần rời khỏi khu vực thi: 
                         span#leaveTimes 0
                     p Thời điểm bắt đầu: 
-                        span= new Date()
+                        span= (new Date()).toLocaleString('vi-VN')
                     p Thời gian còn lại: 
                         span#leftTimes
             .modal.fade#init-modal(tab-index=-1 data-bs-backdrop="static" data-bs-keyboard="false").text-center
