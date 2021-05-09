@@ -5,21 +5,49 @@ function Question(element) {
     this._id = element.dataset['id'];
     this._title = element.querySelector("b");
     this._choices = element.querySelectorAll('input[type="radio"]');
+    this.choiceId = "";
+    this.shortcut = document.querySelector(`a[href="#q-${this._id}"]`);
+    this.moment;
     this.getSelectedChoice = () => {
         return this._element.querySelector('input:checked');
     }
     this.getChoiceById = (id) => {
         return this._element.querySelector(`input[data-id=a-${id}]`)
     }
+    this.getChoiceIdAndMoment = () => {
+        let selectedChoice = this.getSelectedChoice();
+        if (!selectedChoice) return null;
+        let choiceIdAndMoment = {
+            choice_id: this.choiceId || selectedChoice.dataset['id'],
+            moment: this.moment || new Date()
+        };
+        console.log(choiceIdAndMoment);
+        return choiceIdAndMoment;
+    }
+    var self = this;
     this._choices.forEach(c => {
-        c.addEventListener("click", function () {
-            let itemMenuEle = document.querySelector(`a[href="#q-${element.dataset['id']}"]`);
-            itemMenuEle.style.background = 'var(--bs-primary)';
-            itemMenuEle.style.color = '#fff';
-            this.nextSibling.style["box-shadow"] = "0 0 0 2pt var(--bs-primary)";
-            this.dataset['moment'] = (new Date).getTime();
-        })
+        c.addEventListener("input", function () { self.selectChoice() })
     })
+}
+
+// function () {
+//     let itemMenuEle = document.querySelector(`a[href="#q-${element.dataset['id']}"]`);
+//     itemMenuEle.style.background = 'var(--bs-primary)';
+//     itemMenuEle.style.color = '#fff';
+//     this.nextSibling.style["box-shadow"] = "0 0 0 2pt var(--bs-primary)";
+//     this.dataset['moment'] = (new Date).getTime();
+// }
+
+Question.prototype.selectChoice = function () {
+    console.log(this);
+    let selectedChoice = this.getSelectedChoice();
+    if (selectedChoice) {
+        this.choiceId = selectedChoice.dataset['id'];
+        this.moment = new Date();
+        this.shortcut.style.background = 'var(--bs-primary)';
+        this.shortcut.style.color = '#fff';
+        this.getSelectedChoice().nextSibling.style["box-shadow"] = "0 0 0 2pt var(--bs-primary)";
+    }
 }
 
 let questionList = [];
@@ -39,12 +67,9 @@ document.querySelectorAll(".sidenav a").forEach(a => a.addEventListener("click",
 function submitChoices(isFinished) {
     let choicesList = [];
     questionList.forEach(q => {
-        let selectedChoice = q.getSelectedChoice();
-        if (selectedChoice) {
-            choicesList.push({
-                choice_id: selectedChoice.dataset['id'],
-                moment: new Date(Number(selectedChoice.dataset['moment'])) || new Date()
-            })
+        let choiceIdAndMoment = q.getChoiceIdAndMoment();
+        if (choiceIdAndMoment) {
+            choicesList.push(choiceIdAndMoment)
         }
     })
     fetch('/api/submit-choices', {
@@ -53,21 +78,21 @@ function submitChoices(isFinished) {
         cache: 'no-cache',
         credentials: 'same-origin',
         headers: {
-          'Content-Type': 'application/json'
+            'Content-Type': 'application/json'
         },
         redirect: 'follow',
         referrerPolicy: 'no-referrer',
-        body: JSON.stringify({choices: choicesList, testId, isFinished, resultId, leavesAreaTimes})
+        body: JSON.stringify({ choices: choicesList, testId, isFinished, resultId, leavesAreaTimes })
     })
-    .then(res => res.json())
-    .then(res => {
-        if (res.status != 200) {
-            notify("Hệ thống", "Có vấn đề đường truyền internet. Nếu thấy thông báo này lặp lại vui lòng reload bài thi.");
-            return;
-        }
-        if (isFinished)
-            notify("Hệ thống", "Đã lưu lại kết quả làm bài.");
-    })
+        .then(res => res.json())
+        .then(res => {
+            if (res.status != 200) {
+                notify("Hệ thống", "Có vấn đề đường truyền internet. Nếu thấy thông báo này lặp lại vui lòng reload bài thi.");
+                return;
+            }
+            if (isFinished)
+                notify("Hệ thống", "Đã lưu lại kết quả làm bài.");
+        })
 }
 
 // Submit test

@@ -252,7 +252,7 @@ app.post('/api/result/view', authMiddlewares.authRequire, async (req, res) => {
   })
   let choices = result.choices.map(c => {
     return {
-      moment: c.moment.getTime(),
+      moment: c.moment ? c.moment.getTime() : 0,
       isTrue: trueChoices.indexOf(String(c.choice_id)) > -1
     }
   });

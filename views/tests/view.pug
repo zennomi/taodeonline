@@ -43,8 +43,8 @@ block content
                     tbody
                         each result in results
                             if user && (user.isAdmin || user.id == result.user.facebook_id)
-                                tr(style="cursor: pointer;" onclick="viewResult('" + result._id + "');")
-                                    td= result.user.display_name
+                                tr(style="cursor: pointer;")
+                                    td(onclick="viewResult('" + result._id + "');")= result.user.display_name
                                     td= Math.round(result.mark*100)/100
                                     //- td= result.started_time
                                     //- td= (result.finished_time) ? Math.round((result.finished_time-result.started_time)/60/1000) + " phút" : "Chưa nộp"
@@ -70,10 +70,10 @@ block content
                             .badge.bg-success
                                 a.text-decoration-none.text-reset(href="/questions/"+q._id+"/view" target="_blank") Xem
                             | &nbsp;
-                            .badge.bg-success
-                                a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
-                            | &nbsp;
                             if user && user.isAdmin
+                                .badge.bg-success
+                                    a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
+                                | &nbsp;
                                 .badge.bg-primary
                                     a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="addQuestion('"+q._id+"')") +
                                 | &nbsp;

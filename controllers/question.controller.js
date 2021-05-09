@@ -152,13 +152,15 @@ module.exports.postEdit = async (req, res) => {
     question.side_tags = req.body.side_tags ? JSON.parse(req.body.side_tags) : undefined;
     question.level = req.body.level ? req.body.level : undefined;
     let truthyChoices = req.body.answer_true.map(a => Number(a));
+    console.log(question.choices);
     req.body.answer_content.forEach((ans, i) => {
-        question.choices[i] = {};
+        question.choices[i] = question.choices[i] || {};
         question.choices[i].content = texToMathML(ans);
         if (truthyChoices.indexOf(i) > -1) question.choices[i].isTrue = true;
         else question.choices[i].isTrue = false;
     })
     await question.save();
+    console.log(question.choices);
     res.redirect('/questions/' + question._id);
 }
 

@@ -53,14 +53,20 @@ html(lang="en")
                         .modal-header.justify-content-center
                             .h1.modal-title= test.name ? test.name : "Đề thi"
                         .modal-body
-                            p Thời gian
-                            p.text-primary.h3= test.time ? test.time + " phút" : "40 phút"
+                            .d-flex.justify-content-around.flex-wrap
+                                .mb-2
+                                    p Thời gian
+                                    p.text-primary.h3= test.time ? test.time + " phút" : "40 phút"
+                                .mb-2
+                                    p Số câu
+                                    p.text-primary.h3= test.questions.length + " câu"
                             //- img#qr-image(alt="QR Code")
                             p.h5 Chú ý
                             p First time? Đây là lần đầu của bạn?
                             p Hãy đọc hướng dẫn 
                                 a(href="/tests/guide" target="_blank") tại đây
                                 |  để làm đề trên web hiệu quả nhất.
+                            .alert.alert-danger Nên làm đề ở trình duyệt Chrome, Safari,... để có trải nghiệm nuột nhất. Khuyến cáo không dùng trình duyệt mặc định của Messenger, Facebook.
                         .modal-footer.justify-content-center
                             button.btn.btn-primary#start-btn(type="button" data-bs-dismiss="modal" disabled)
                                 span.spinner-border.spinner-border-sm(role="status" aria-hidden="true")
@@ -78,7 +84,7 @@ html(lang="en")
                     |  phút.
             p Họ và tên: #{user.displayName}.
             .fixed-bottom
-                .progress
+                .progress.rounded-0
                     #progress-btn.progress-bar
             .test-wrap.p-1(style="display: none;")
                 each q, i in test.questions
@@ -93,7 +99,7 @@ html(lang="en")
                                         label.radio__input
                                             input(type="radio" name="radio" data-id=a._id)
                                             .radio__control= String.fromCharCode(65+j)
-                                        .radio__label
+                                        .radio__label.ms-2
                                             | !{a.content}
                     hr
                 button.btn.btn-primary.mb-5#submit(onclick=`submitTest("${test._id}")`) Nộp bài

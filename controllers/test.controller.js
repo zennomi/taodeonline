@@ -98,14 +98,15 @@ module.exports.view = async (req, res) => {
     matchedResults.forEach(result => {
         let mark = 0;
         let earliest = 0;
-        if (result.choices.length > 0) earliest = Math.min(...result.choices.map(c => c.moment.getTime()));
+        console.log(result.choices);
+        if (result.choices.length > 0) earliest = Math.min(...result.choices.map(c => c.moment ? c.moment.getTime() : 0));
         result.choices.forEach(c => {
             let index = trueChoiceIds.indexOf(String(c.choice_id));
             if (index > -1) {
                 mark++;
                 matchedTest.questions[trueChoices[index].index].trueTimes++;
             }
-            c.moment = c.moment.getTime() - earliest;
+            c.moment = c.moment ? c.moment.getTime() - earliest : 0;
         })
         result.mark = mark / trueChoiceIds.length * 10;
     })

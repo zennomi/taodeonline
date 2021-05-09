@@ -14,9 +14,8 @@ module.exports.adminRequire = (req, res, next) => {
         res.redirect('/');
         return;
     }
-    if (req.user.role == 'admin') { return next(); }
-    res.cookie('history', req.originalUrl, { expires: new Date(Date.now() + 3600), httpOnly: true });
-    req.flash('history', req.originalUrl);
+    if (req.user.isAdmin) { return next(); }
+    res.cookie('history', res.locals.history, { expires: new Date(Date.now() + 3600), httpOnly: true });
     req.flash('warning', 'Admin mới thực hiện được chức năng này bạn ạ.');
-    res.redirect(res.locals.history);
+    res.redirect('/');
 }
