@@ -1,6 +1,15 @@
 extends ../layouts/common.pug
 
 block content
-    .p-2.shadow.w-sm-50.text-center
-        .h5.text-primary login and dizz the test bruh
-        a.btn.btn-outline-primary(href="/auth/facebook") Đăng nhập bằng facebook để tiếp tục
+    .mx-auto
+        .text-center
+            a#loginBtn.btn.btn-primary(href="/auth/facebook") Đăng nhập bằng Facebook
+            .text-muted.text-tiny
+                | Đọc thêm về chính sách sử dụng thông tin cá nhân của chúng tôi tại 
+                a(href="/privacy-policy" target="_blank") đây
+                | .
+            br
+            .h5.text-danger Ôi không sợ bị đánh cắp dữ liệu lắm :'(
+            a.btn.btn-danger(href="/") Trở về trang chủ
+    script(src="/js/login.js")
+

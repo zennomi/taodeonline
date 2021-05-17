@@ -2,7 +2,7 @@ html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous")
+        link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous")
         title= test.name ? test.name : "Đề thi"            
         include ../layouts/mathjax.pug
         script.
@@ -22,15 +22,18 @@ html(lang="en")
         link(rel="stylesheet" href="/css/do-the-test.css")
 
     body
-        span.side-menu.fixed-left(style="" onclick="toggleNav()") &#9776; Menu
-        .sidenav
-            h5 Thời gian còn lại: 
-            p#leftTime= test.time + " phút"
-            h5 Lối tắt
-            .d-flex.justify-content-around.flex-wrap
-                each q, i in test.questions
-                    a.mb-1(href="#q-"+q._id)= `Câu ${i+1}`
-            a.mb-1(href="#submit")= `Nộp bài`
+        button.btn.btn-outline-success.fixed-left.bg-white(type="button" data-bs-toggle="offcanvas" data-bs-target="#sidemenu" aria-controls="offcanvasScrolling") &gt;
+        #sidemenu.offcanvas.offcanvas-start(data-bs-scroll="true"  tabindex="-1" aria-labelledby="offcanvasScrollingLabel")
+            .offcanvas-header
+                button(type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close")
+            .offcanvas-body.sidenav
+                h5 Thời gian còn lại: 
+                p#leftTime= test.time + " phút"
+                h5 Lối tắt
+                .d-flex.justify-content-around.flex-wrap
+                    each q, i in test.questions
+                        a.mb-1(href="#q-"+q._id)= `Câu ${i+1}`
+                a.mb-1(href="#submit")= `Nộp bài`
 
         .container
 
@@ -55,42 +58,63 @@ html(lang="en")
                         .modal-body
                             .d-flex.justify-content-around.flex-wrap
                                 .mb-2
-                                    p Thời gian
-                                    p.text-primary.h3= test.time ? test.time + " phút" : "40 phút"
+                                    | Thời gian
+                                    .text-success.h3= test.time ? test.time + " phút" : "40 phút"
                                 .mb-2
-                                    p Số câu
-                                    p.text-primary.h3= test.questions.length + " câu"
+                                    | Số câu
+                                    .text-success.h3= test.questions.length + " câu"
                             //- img#qr-image(alt="QR Code")
-                            p.h5 Chú ý
-                            p First time? Đây là lần đầu của bạn?
-                            p Hãy đọc hướng dẫn 
-                                a(href="/tests/guide" target="_blank") tại đây
-                                |  để làm đề trên web hiệu quả nhất.
-                            .alert.alert-danger Nên làm đề ở trình duyệt Chrome, Safari,... để có trải nghiệm nuột nhất. Khuyến cáo không dùng trình duyệt mặc định của Messenger, Facebook.
-                        .modal-footer.justify-content-center
-                            button.btn.btn-primary#start-btn(type="button" data-bs-dismiss="modal" disabled)
+                            .h5 Chú ý
+                            | First time? Đây là lần đầu của bạn?
+                            br
+                            | Hãy đọc hướng dẫn 
+                            a.text-success(href="/tests/guide" target="_blank") tại đây
+                            |  để làm đề trên web hiệu quả nhất.
+                            .d-block.d-md-none.alert.alert-danger.my-2 Nên làm đề ở trình duyệt Chrome, Safari,... để có trải nghiệm nuột nhất. Khuyến cáo không dùng trình duyệt mặc định của Messenger, Facebook.
+                        .modal-footer.d-flex.justify-content-center
+                            button.btn.btn-success#start-btn(type="button" data-bs-dismiss="modal" disabled)
                                 span.spinner-border.spinner-border-sm(role="status" aria-hidden="true")
                                 |   Đang chuẩn bị đề...
+                            button.btn.btn-warning(onclick="copyToClipboard('"+link+"')") Copy link đề
+                            a.btn.btn-danger(href="/tests") Thoátttt
+                        .modal-body.border-top
+                            if results.length > 0
+                                .h5 Lịch sử làm bài
+                                table.table.text-center
+                                    thead
+                                        tr
+                                            th Giờ bắt đầu làm
+                                            th Giờ kết thúc
+                                    tbody
+                                        each result in results
+                                            tr
+                                                td
+                                                    a(href="/tests/"+test._id+"/view-result/"+result._id target="_blank")= result.started_time.toLocaleString('vi-VN')
+                                                td
+                                                    a(href="/tests/"+test._id+"/view-result/"+result._id target="_blank")= result.finished_time ? result.finished_time.toLocaleString('vi-VN') : "Chưa nộp bài"
+
 
             .fixed-top(aria-live="polite" aria-atomic="true")
                 .toast-container.position-absolute.top-0.end-0.p-3
 
-            h1.text-primary.text-center= test.name ? test.name : "Đề thi"
+            h1.mt-2.text-success.text-center= test.name ? test.name : "Đề thi"
             .d-flex.justify-content-around
                 p Đề thi gồm #{test.questions.length} câu.
                 p
                     | Thời gian 
                     span#totalTimes= test.time ? test.time : 40
                     |  phút.
-            p Họ và tên: #{user.displayName}.
+            p 
+                b Họ và tên:
+                |   #{user.displayName}.
             .fixed-bottom
                 .progress.rounded-0
-                    #progress-btn.progress-bar
+                    #progress-btn.progress-bar.bg-success
             .test-wrap.p-1(style="display: none;")
                 each q, i in test.questions
                     .question(id="q-"+q._id data-id=q._id)
                         .question-wrap
-                            b Câu #{i+1}: 
+                            b.text-success Câu #{i+1}: 
                             span !{q.question}
                         form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
                             each a,j in q.choices
@@ -102,12 +126,13 @@ html(lang="en")
                                         .radio__label.ms-2
                                             | !{a.content}
                     hr
-                button.btn.btn-primary.mb-5#submit(onclick=`submitTest("${test._id}")`) Nộp bài
-        script(src="/bootstrap/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous")
+            button.d-block.mx-auto.btn.btn-success.mb-5#submit(onclick=`submitTest("${test._id}")`) NỘP BÀI
+        script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous")
         script.
             let testId = "#{test._id}", totalTimes = #{test.time*60*1000}, isPublic = #{test.isPublic};
+        script(src='/js/helper/copy.js')
         script(src="/js/tests/init-test.js")
         script(src="/js/countdown.js")
-        script(src="/js/do-the-test.js")
+        script(src="/js/tests/do-the-test.js")
         script.
             //- document.getElementById('qr-image').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+location.href

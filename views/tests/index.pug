@@ -11,10 +11,10 @@ block content
             tbody
                 each test in tests
                     tr
-                        td= test.name ? test.name : "Đề kiểm tra"
-                        td= test.questions.length
-                        td= test.time + " phút"
-                        td
+                        td.align-middle= test.name ? test.name : "Đề kiểm tra"
+                        td.align-middle= test.questions.length
+                        td.align-middle= test.time + " phút"
+                        td.align-middle
                             if user && user.isAdmin
                                 a.btn.btn-outline-primary(href="/tests/"+test._id+"/view") Xem
                                 |     

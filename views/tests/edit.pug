@@ -15,8 +15,11 @@ block content
                     option 11
                     option 12
                     option(value="") Trống
-            .col-6.col-sm-2.mb-1
+            .col-3.col-sm-2.mb-1
                 label Deadline
+                input.form-control.w-100(type="datetime-local" name="deadline" value=test.deadline.toISOString().slice(0,16))
+            .col-3.col-sm-2.mb-1
+                label Công khi
                 input.form-control.w-100(type="datetime-local" name="deadline" value=test.deadline.toISOString().slice(0,16))
         button.mr-2.btn.btn-primary(type="submit") Lưu
         |     

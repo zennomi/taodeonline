@@ -32,7 +32,7 @@ function countdown() {
         if (Math.round(distance/1000) == (5*60)) {
             notify("Nhắc nhở nho nhỏ", "Lúc này thì nên bắt đầu tô đáp án nhó. Bỏ câu khó đi mà làm người.");
         }
-        if (distance <= 0) {
+        if (distance <= 1) {
             clearInterval(x);
             notify("Thời gian", `Hết giờ!!!`);
             document.getElementById("submit").click();

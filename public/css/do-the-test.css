@@ -1,5 +1,6 @@
 .modal-backdrop.show {
-    opacity: 0.95;
+    opacity: 1;
+    background-color: var(--bs-success);
 }
 
 .TEX-I {
@@ -29,7 +30,7 @@
 }
 
 .radio:focus-within {
-    background-color: var(--bs-primary);
+    background-color: var(--bs-success);
     color: var(--bs-light);
     border-radius: 5px;
     height: 100%;
@@ -70,11 +71,12 @@
     transform: scale(0);
 } */
 .radio-before input:checked+.radio__control {
-    background: var(--bs-primary);
+    background: var(--bs-success);
     color: #FFF;
 }
 
 .radio__control {
+    font-weight: 900;
     cursor: pointer;
     display: block;
     width: 2em;
@@ -88,7 +90,7 @@
     margin: 0;
 }
 
-.sidenav {
+/* .sidenav {
     height: 100%;
     width: 0;
     position: fixed;
@@ -100,14 +102,15 @@
     transition: 0.5s;
     padding-top: 60px;
     text-align: center;
-}
+} */
 
 .sidenav a {
+    text-align: center;
     padding: 8px 8px 8px 8px;
-    border: solid 2px var(--bs-light);
+    border: solid 2px var(--bs-success);
     border-radius: 5px;
     text-decoration: none;
-    color: var(--bs-primary);
+    color: var(--bs-success);
     display: block;
     transition: 0.3s;
     min-width: 70px;
@@ -121,15 +124,8 @@
 }
 
 .sidenav a:hover {
-    color: var(--bs-teal);
-    background: var(--bs-light);
-}
-
-.side-menu {
-    background: var(--bs-light);
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 5px;
+    background: var(--bs-success);
+    color: white;
 }
 
 @media only screen and (max-width: 450px) {

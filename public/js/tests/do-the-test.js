@@ -44,9 +44,10 @@ Question.prototype.selectChoice = function () {
     if (selectedChoice) {
         this.choiceId = selectedChoice.dataset['id'];
         this.moment = new Date();
-        this.shortcut.style.background = 'var(--bs-primary)';
+        this.shortcut.style.background = 'var(--bs-success)';
         this.shortcut.style.color = '#fff';
-        this.getSelectedChoice().nextSibling.style["box-shadow"] = "0 0 0 2pt var(--bs-primary)";
+        this.getSelectedChoice().nextSibling.style["box-shadow"] = "0 0 0 2pt var(--bs-success)";
+        this.getSelectedChoice().nextSibling.style["border"] = "solid 1px white";
     }
 }
 
@@ -56,15 +57,19 @@ document.querySelectorAll(".question").forEach(q => questionList.push(new Questi
 
 
 // Menu
-function toggleNav() {
-    let sideNav = document.querySelector(".sidenav");
-    if (sideNav.style.width == "0" || sideNav.style.width == "0px" || !sideNav.style.width) sideNav.style.width = "100%";
-    else sideNav.style.width = "0";
-}
-document.querySelectorAll(".sidenav a").forEach(a => a.addEventListener("click", toggleNav));
+
+let sideNav = document.querySelector("#sidemenu");
+let offcanvas = new bootstrap.Offcanvas(sideNav);
+
+    
+document.querySelectorAll(".sidenav a").forEach(a => a.addEventListener("click", () => {
+    setTimeout(function(){ offcanvas.hide(); }, 1000);
+    
+}));
 
 // Submit choices
 function submitChoices(isFinished) {
+    return;
     let choicesList = [];
     questionList.forEach(q => {
         let choiceIdAndMoment = q.getChoiceIdAndMoment();
@@ -97,10 +102,12 @@ function submitChoices(isFinished) {
 
 // Submit test
 function submitTest(testId) {
+    return ;
+    if (!alert("Nộp bài nhé?")) return;
     window.onblur = undefined;
     submitBtn.disabled = true;
     submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>  Đang nộp`;
-    notify("Hệ thống", "Đừng thoát vội chờ hệ thống lưu lại kết quả cái đã...");
+    notify("Hệ thống", "Đừng thoát vội, chờ hệ thống lưu lại kết quả cái đã...");
     fetch('/api/tests/' + testId + '/trueChoices')
         .then(res => res.json())
         .then(data => {

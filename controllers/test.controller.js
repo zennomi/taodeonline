@@ -13,7 +13,6 @@ module.exports.index = (req, res) => {
 }
 
 module.exports.do = (req, res) => {
-    let retryTimes = req.cookies.retryTimes ? Number(req.cookies.retryTimes) + 1 : 1;
     Test.findById(req.params.id).populate('questions').exec((err, test) => {
         if (err || !test) return res.send('Error');
         if (!test.time) test.time = 40;
@@ -34,7 +33,10 @@ module.exports.do = (req, res) => {
             questionGroups[level] = shuffle(questionGroups[level]);
             test.questions.push(...questionGroups[level])
         }
-        res.render('tests/do', { test, link: `${req.hostname}${req.originalUrl}` });
+        Result.find({"user.facebook_id": req.user.id, test_id: test._id}).exec((err, results) => {
+
+            res.render('tests/do', { test, link: `${req.hostname}${req.originalUrl}`, results});
+        })
     })
 }
 
