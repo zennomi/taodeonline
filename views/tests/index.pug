@@ -1,19 +1,21 @@
 extends ../layouts/common.pug
+block title
+    title Kho đề online - Vật Lý Siêu Nhẩm
 block content
     .table-responsive
         table.table
             thead
                 tr
+                    th(scope="col") Khối
                     th(scope="col") Tên đề
-                    th(scope="col") Số câu
-                    th(scope="col") Thời gian
+                    th(scope="col") Chi tiết
                     th(scope="col") Thao tác
             tbody
                 each test in tests
                     tr
+                        td.align-middle= test.grade
                         td.align-middle= test.name ? test.name : "Đề kiểm tra"
-                        td.align-middle= test.questions.length
-                        td.align-middle= test.time + " phút"
+                        td.align-middle= test.questions.length + " câu/" + test.time + " phút"
                         td.align-middle
                             if user && user.isAdmin
                                 a.btn.btn-outline-primary(href="/tests/"+test._id+"/view") Xem

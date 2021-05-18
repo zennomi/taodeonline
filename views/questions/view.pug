@@ -6,10 +6,11 @@ block script-header
 
 block content
     if user && user.isAdmin
-        a.btn.btn-success(href="/questions/create") Add
-        a.btn.btn-success(href="/questions/"+question._id+"/edit") Edit
-        form(action="/questions/"+question._id+"/delete")
-            button.btn.btn-danger(type="submit") Delete
+        .d-flex
+            a.d-block.btn.btn-success(href="/questions/create") Add
+            a.d-block.btn.btn-success(href="/questions/"+question._id+"/edit") Edit
+            form(action="/questions/"+question._id+"/delete")
+                button.btn.btn-danger(type="submit") Delete
     .p-2.mb-2.shadow-sm
         if user && user.isAdmin
             .badge.bg-success

@@ -2,6 +2,16 @@ extends ../layouts/common.pug
 block header
     include ../layouts/mathjax.pug
     link(rel="stylesheet" href="/css/do-the-test.css")
+    style.
+        .table>:not(:last-child)>:last-child>* {
+            border-bottom-color: currentColor;
+        }
+        .table>:not(caption)>*>* {
+            padding: .5rem .5rem;
+            background-color: var(--bs-table-bg);
+            border-bottom-width: none;
+            box-shadow: none;
+        }
 block content
     .modal#resultModal(tabindex='-1')
         .modal-dialog
@@ -25,35 +35,26 @@ block content
                 button#button-addon2.btn.btn-outline-primary(type="button" onclick=`copyToClipboard(window.location.origin + "/tests/${test._id}/do")`) Copy
             if user && user.isAdmin
                 h5.text-primary Thao tác
-                a.btn.btn-outline-success(href=`/tests/${test._id}/edit`) Sửa
-                |     
-                a.btn.btn-outline-danger(href=`/tests/${test._id}/delete`) Xóa
+                .d-flex.justify-content-around
+                    a.d-block.btn.btn-outline-success(href=`/tests/${test._id}/edit`) Sửa
+                    a.d-block.btn.btn-outline-success(href=`/tests/${test._id}/do`) Làm
+                    a.d-block.btn.btn-outline-danger(href=`/tests/${test._id}/delete`) Xóa
             h5.text-primary Bảng điểm
             .table-responsive
                 table.table
-                    thead
-                        tr
-                            th(scope="col") Tên
-                            th(scope="col") Điểm
-                            //- th(scope="col") BĐ
-                            //- th(scope="col") TG
-                            //- th(scope="col") Rời
-                            //- th(scope="col") Mốc thời gian khoanh
-                            th Thao tác
-                    tbody
-                        each result in results
-                            if user && (user.isAdmin || user.id == result.user.facebook_id)
-                                tr(style="cursor: pointer;")
-                                    td(onclick="viewResult('" + result._id + "');")= result.user.display_name
-                                    td= Math.round(result.mark*100)/100
-                                    //- td= result.started_time
-                                    //- td= (result.finished_time) ? Math.round((result.finished_time-result.started_time)/60/1000) + " phút" : "Chưa nộp"
-                                    //- td= result.leaves_area_times
-                                    //- td= result.choices.map(c => (c.moment.getTime()/1000)).sort((a, b) => a-b).map(c => c+"s").join(" - ")
-                                    td
-                                        a.btn.btn-success(href='/tests/'+result.test_id._id+'/view-result/'+result._id target="_blank") Xem
-                                        if user && user.isAdmin
-                                            button.btn.btn-danger(onclick="deleteResult('" + result._id + "')") Xóa
+                    tr
+                        th(style="cursor: pointer;" scope="col") Tên
+                        th(style="cursor: pointer;" scope="col") Điểm
+                        th Thao tác
+                    each result in results
+                        if user && (user.isAdmin || user.id == result.user.facebook_id)
+                            tr(style="cursor: pointer;")
+                                td(onclick="viewResult('" + result._id + "');")= result.user.display_name
+                                td= Math.round(result.mark*100)/100
+                                td
+                                    a.btn.btn-success(href='/tests/'+result.test_id._id+'/view-result/'+result._id target="_blank") Xem
+                                    if user && user.isAdmin
+                                        button.btn.btn-danger(onclick="deleteResult('" + result._id + "')") Xóa
         .col
             h5.text-primary= test.name ? test.name : "Đề thi"
             .d-flex.justify-content-around
@@ -63,7 +64,7 @@ block content
                     span#totalTimes= test.time ? test.time : 40
                     |  phút.
             .p-1
-                each q, i in test.questions
+                each q, i in test.questions.sort((a, b) => (a.level - b.level))
                     .question(id="q-"+q._id data-id=q._id)
                         .question-wrap
                             b Câu #{i+1}: 
@@ -80,6 +81,10 @@ block content
                                 .badge.bg-danger
                                     a.text-decoration-none.text-reset #{q.trueTimes}/#{results.length} đúng
                             | &nbsp;
+                            if (q.level)
+                                .badge.bg-danger
+                                    a.text-decoration-none.text-reset(href="#") Mức #{q.level}
+                                | &nbsp;
                             if (q.grade)
                                 .badge.bg-danger
                                     a.text-decoration-none.text-reset(href="/questions?grade="+q.grade target="_blank") Lớp #{q.grade}
@@ -112,6 +117,7 @@ block script-footer
         document.getElementById('qr-image').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + window.location.origin + "/tests/#{test._id}/do"
     script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js" integrity="sha512-VMsZqo0ar06BMtg0tPsdgRADvl0kDHpTbugCBBrL55KmucH6hP9zWdLIWY//OTfMnzz6xWQRxQqsUFefwHuHyg==" crossorigin="anonymous")
     script(src="/js/helper/copy.js")
+    script(src="/js/helper/tablesorting.js")
     script(src="/js/helper/post-data.js")
     script(src="/js/tests/view.js")
         

@@ -8,7 +8,7 @@ router.get('/create', controller.create);
 router.get('/auto-create', authMiddlewares.authRequire, controller.autoCreate);
 router.post('/auto-create', authMiddlewares.authRequire, controller.postAutoCreate);
 router.get('/guide', controller.guide);
-router.get('/:id/view', authMiddlewares.authRequire, controller.view);
+router.get('/:id/view', authMiddlewares.adminRequire, controller.view);
 router.get('/:id/view-result/:resultId', authMiddlewares.authRequire, controller.viewResult);
 router.get('/:id/do', authMiddlewares.authRequire, controller.do);
 router.get('/:id/edit', authMiddlewares.authRequire, controller.edit);

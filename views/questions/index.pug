@@ -48,6 +48,10 @@ block content
                 .badge.bg-primary
                     a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="addQuestion('"+q._id+"')") +
                 | &nbsp;
+            if (q.level)
+                .badge.bg-danger
+                    a.text-decoration-none.text-reset(href="#") Độ khó #{q.level}
+                | &nbsp;
             if (q.grade)
                 .badge.bg-danger
                     a.text-decoration-none.text-reset(href="/questions?grade="+q.grade target="_blank") Lớp #{q.grade}
@@ -59,6 +63,10 @@ block content
             each tag in q.side_tags
                 .badge.bg-warning
                     a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
+                | &nbsp;
+            if q.answer && q.answer.length > 5
+                .badge.bg-success
+                    a.text-decoration-none.text-reset(href="#") Có đáp án chi tiết
                 | &nbsp;
             .test-wrap
                 .question-wrap.ml-2.mt-1

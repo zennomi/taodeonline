@@ -1,48 +1,65 @@
 extends ../layouts/common.pug
+block title
+	title Xem bài làm của #{result.user.display_name}
 block header
 	include ../layouts/mathjax.pug
 	link(rel="stylesheet" href="/css/do-the-test.css")
 block content
 	h5.text-primary= result.test_id.name ? result.test_id.name : "Đề thi"
-	.d-flex.justify-content-around
-		p Đề thi gồm #{result.test_id.questions.length} câu.
-		p
+	.d-flex.justify-content-around.text-center
+		div
+			| Đề thi gồm #{result.test_id.questions.length} câu.
+			br
+			| Làm đúng #{selectedChoiceIds.filter(c => trueChoiceIds.indexOf(c)>-1).length}/#{result.test_id.questions.length} câu.
+		div
 			| Thời gian 
 			span#totalTimes= result.test_id.time ? result.test_id.time : 40
 			|  phút.
+			br
+			| Bắt đầu: #{result.started_time.toLocaleString('vi-VN')}.
+			br
+			if result.finished_time
+				| Kết thúc: #{result.finished_time.toLocaleString('vi-VN')}.
 	p
 		| Họ tên: #{result.user.display_name}
-	.p-1
-		each q, i in result.test_id.questions
-			.question(id="q-"+q._id data-id=q._id)
-				.question-wrap
-					b Câu #{i+1}: 
-					.badge.bg-success
-						a.text-decoration-none.text-reset(href="/questions/"+q._id+"/view" target="_blank") Xem
-					| &nbsp;
-					.badge.bg-success
-						a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
-					| &nbsp;
-					if (q.grade)
-						.badge.bg-danger
-							a.text-decoration-none.text-reset(href="/questions?grade="+q.grade target="_blank") Lớp #{q.grade}
+	if (result.test_id.isPublic || user.isAdmin)
+		.alert.alert-danger
+			| Thứ tự các câu có thể không giống với ký ức của bạn vì trước đó các câu, các đáp án đã bị tráo.
+		.p-1
+			each q, i in result.test_id.questions.sort((a, b) => (a.level - b.level))
+				.question(id="q-"+q._id data-id=q._id)
+					.question-wrap
+						b Câu #{i+1}: 
+						.badge.bg-success
+							a.text-decoration-none.text-reset(href="/questions/"+q._id+"/view" target="_blank") Xem
 						| &nbsp;
-					each tag in q.main_tags
-						.badge.bg-danger
-							a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
-						| &nbsp;
-					each tag in q.side_tags
-						.badge.bg-warning
-							a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
-						| &nbsp;
-					br
-					span.test-wrap !{q.question}
-				form.test-wrap.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0
-					each a,j in q.choices
-						.col.mb-1
-							.radio.radio-before.d-flex.align-items-center
-								label.radio__input
-									input.bg-success(type="radio" name="radio" disabled)
-									.radio__control(class= a.isTrue ? "text-white bg-success" : selectedChoiceIds.indexOf(a._id) > -1 ? "text-white bg-danger" : "")= String.fromCharCode(65+j)
-								.radio__label
-									| !{a.content}
+						if user.isAdmin
+							.badge.bg-success
+								a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
+							| &nbsp;
+						if (q.grade)
+							.badge.bg-danger
+								a.text-decoration-none.text-reset(href="/questions?grade="+q.grade target="_blank") Lớp #{q.grade}
+							| &nbsp;
+						each tag in q.main_tags
+							.badge.bg-danger
+								a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
+							| &nbsp;
+						each tag in q.side_tags
+							.badge.bg-warning
+								a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
+							| &nbsp;
+						br
+						span.test-wrap !{q.question}
+					form.test-wrap.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0
+						each a,j in q.choices
+							.col.mb-1
+								.radio.radio-before.d-flex.align-items-center
+									label.radio__input
+										input.bg-success(type="radio" name="radio" disabled)
+										.radio__control(class= a.isTrue ? "text-white bg-success" : selectedChoiceIds.indexOf(a._id) > -1 ? "text-white bg-danger" : "")= String.fromCharCode(65+j)
+									.radio__label
+										| !{a.content}
+	else
+		.alert.alert-danger
+			| Bài thi chưa được công bố đáp án.

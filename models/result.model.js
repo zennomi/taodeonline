@@ -11,7 +11,9 @@ const resultSchema = new Schema({
     test_id: { type: Schema.Types.ObjectId, ref: 'Test' },
     user: {
         facebook_id: String,
-        display_name: String
+        display_name: String,
+        ip: String,
+        software: String
     },
     started_time: Date,
     finished_time: Date,

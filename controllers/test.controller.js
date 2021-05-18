@@ -5,7 +5,7 @@ const shuffle = require('shuffle-array');
 const groupArray = require('group-array');
 
 module.exports.index = (req, res) => {
-    Test.find({}).exec((err, tests) => {
+    Test.find({}).sort({_id: -1}).exec((err, tests) => {
         if (err) return res.send("Error.");
 
         res.render('tests/index', { tests });
@@ -118,7 +118,7 @@ module.exports.view = async (req, res) => {
 module.exports.edit = (req, res) => {
     Test.findById(req.params.id).exec((err, test) => {
         if (err) return res.send(err);
-        if (test.deadline) test.deadline = new Date(test.deadline.getTime() + 7 * 24 * 3600);
+        // if (test.deadline) test.deadline = new Date(test.deadline.getTime() + 7 * 24 * 3600);
         res.render('tests/edit', { test });
     })
 }
@@ -128,7 +128,10 @@ module.exports.postEdit = (req, res) => {
         if (err) return res.send(err);
         test.name = req.body.name;
         test.time = req.body.time;
+        test.grade = req.body.grade || undefined;
         if (req.body.deadline) test.deadline = new Date(req.body.deadline);
+        test.isPublic = req.body.isPublic == 'on';
+        console.log(test.isPublic);
         test.save((err, test) => {
             if (err) return res.send(err);
             res.redirect('/tests/' + test._id + '/view');
@@ -151,10 +154,11 @@ module.exports.viewResult = async (req, res) => {
     } catch (err) {
         return res.status(404).send(err);
     }
-    let trueChoiceIds = [], selectedChoiceIds = result.choices.map(c => c.choice_id);
+    let trueChoiceIds = [], selectedChoiceIds = result.choices.map(c => String(c.choice_id));
     result.test_id.questions.forEach(q => {
         trueChoiceIds.push(...q.getTrueChoiceArray());
     })
+    console.log(selectedChoiceIds.filter(c => trueChoiceIds.indexOf(String(c))>-1).length, selectedChoiceIds, trueChoiceIds);
     res.render('tests/view-result', {result, trueChoiceIds, selectedChoiceIds});
 }
 

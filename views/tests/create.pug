@@ -56,7 +56,7 @@ block content
                 option 12
                 option(value="") Trống
         .col
-            input.form-control(name="time" type="number" value=40)
+            input.form-control(name="time" type="number" value=50)
 
     #main-list.sortable
         each q, i in matchedQuestions
@@ -87,7 +87,10 @@ block content
                     .badge.bg-warning
                         a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
                     | &nbsp;
-
+                if q.answer && q.answer.length > 5
+                    .badge.bg-success
+                        a.text-decoration-none.text-reset(href="#") Có đáp án chi tiết
+                    | &nbsp;
                 .test-wrap
                     .question-wrap
                         | !{q.question}

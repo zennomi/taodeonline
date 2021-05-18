@@ -39,7 +39,6 @@ function Question(element) {
 // }
 
 Question.prototype.selectChoice = function () {
-    console.log(this);
     let selectedChoice = this.getSelectedChoice();
     if (selectedChoice) {
         this.choiceId = selectedChoice.dataset['id'];
@@ -61,15 +60,14 @@ document.querySelectorAll(".question").forEach(q => questionList.push(new Questi
 let sideNav = document.querySelector("#sidemenu");
 let offcanvas = new bootstrap.Offcanvas(sideNav);
 
-    
+
 document.querySelectorAll(".sidenav a").forEach(a => a.addEventListener("click", () => {
-    setTimeout(function(){ offcanvas.hide(); }, 1000);
-    
+    setTimeout(function () { offcanvas.hide(); }, 1000);
+
 }));
 
 // Submit choices
 function submitChoices(isFinished) {
-    return;
     let choicesList = [];
     questionList.forEach(q => {
         let choiceIdAndMoment = q.getChoiceIdAndMoment();
@@ -102,8 +100,9 @@ function submitChoices(isFinished) {
 
 // Submit test
 function submitTest(testId) {
-    return ;
-    if (!alert("Nộp bài nhé?")) return;
+    if (!confirm("Nộp bài nhé?")) return;
+    progressBtn.parentNode.remove();
+    clearInterval(countdownCtrl);
     window.onblur = undefined;
     submitBtn.disabled = true;
     submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>  Đang nộp`;
@@ -142,6 +141,8 @@ function submitTest(testId) {
                     trueRadio.nextSibling.style.background = "var(--bs-success)";
                     trueRadio.nextSibling.style.color = "#FFF";
                     trueRadio.nextSibling.style.border = "none";
+                    q._title.style.color = "#FFF";
+                    q._title.classList.remove("text-success");
                     q._title.innerHTML += (`<a class="btn btn-sm btn-outline-light" href="/questions/${q._id}/view" target="_blank">Đáp án chi tiết</a>`);
                     q._title.nextElementSibling.innerHTML = '<br>' + q._title.nextElementSibling.innerHTML;
                 }
@@ -150,7 +151,7 @@ function submitTest(testId) {
             document.getElementById('result').innerHTML = questionList.length - falseCounts;
             document.getElementById('leaveTimes').innerHTML = leavesAreaTimes;
 
-            notify("Hệ thống", "Chấm xong òi!");
+            notify("Hệ thống", "Chấm xong rồi ik!");
             submitBtn.remove();
             document.getElementById('resultCard').style.display = 'block';
             scrollToTop();

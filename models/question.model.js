@@ -16,7 +16,10 @@ const questionSchema = new Schema({
     }],
     answer: String,
     grade: Number,
-    level: Number,
+    level: {
+        type: Number,
+        default: 11
+    },
     main_tags: [tagSchema],
     side_tags: [tagSchema]
 });
@@ -34,7 +37,7 @@ questionSchema.methods.getTrueChoice = function () {
 }
 
 questionSchema.methods.getTrueChoiceArray = function () {
-    return this.choices.filter(c => c.isTrue).map(c => c._id);
+    return this.choices.filter(c => c.isTrue).map(c => String(c._id));
 }
 
 questionSchema.plugin(random);

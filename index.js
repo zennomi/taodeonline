@@ -191,7 +191,9 @@ app.post('/api/new-result', authMiddlewares.authRequire, (req, res) => {
     test_id: req.body.testId,
     user: {
       facebook_id: req.user.id,
-      display_name: req.user.displayName
+      display_name: req.user.displayName,
+      ip: req.ip,
+      software: req.get("User-Agent")
     },
     leaves_area_times: 0,
     started_time: new Date()

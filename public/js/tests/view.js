@@ -27,6 +27,8 @@ function viewResult(id) {
 				<div><b>Thời gian bắt đầu: </b>${(new Date(result.started_time)).toLocaleString('vi-VN')}</div>
 				<div><b>Thời gian kết thúc: </b>${result.finished_time ? (new Date(result.finished_time)).toLocaleString('vi-VN') : "Chưa nộp bài"}</div>
 				<div><b>Số lần rời khỏi khu vực thi: </b>${result.leaves_area_times}</div>
+				<div><b>Địa chỉ IP: </b>${result.user.ip}</div>
+				<div><b>ĐThiết bị: </b>${result.user.software}</div>
 				<div></div>
 			`;
 				scatterChart = new Chart(chartEle, {

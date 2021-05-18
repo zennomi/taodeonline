@@ -11,16 +11,18 @@ block content
             .col-6.mb-1
                 label Khối
                 select.form-select(name="grade")
+                    option(selected)= test.grade
                     option 10
                     option 11
                     option 12
                     option(value="") Trống
             .col-3.col-sm-2.mb-1
                 label Deadline
-                input.form-control.w-100(type="datetime-local" name="deadline" value=test.deadline.toISOString().slice(0,16))
+                input.form-control.w-100(type="datetime-local" name="deadline" value=test.deadline.toLocaleString('vi-vn'))
             .col-3.col-sm-2.mb-1
-                label Công khi
-                input.form-control.w-100(type="datetime-local" name="deadline" value=test.deadline.toISOString().slice(0,16))
+                .form-check.form-switch
+                    input.form-check-input(type="checkbox" name="isPublic" checked=test.isPublic ? true : false)
+                    label.form-check-label Công khai
         button.mr-2.btn.btn-primary(type="submit") Lưu
         |     
         button.btn.btn-danger(type="button") Xóa

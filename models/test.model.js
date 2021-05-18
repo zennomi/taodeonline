@@ -6,7 +6,8 @@ const testSchema = new Schema({
     time: Number,
     name: String,
     deadline: {type: Date, default: new Date()},
-    isPublic: {type: Boolean, default: false}
+    isPublic: {type: Boolean, default: false},
+    grade: {type: Number, default: 12}
 })
 
 module.exports =  mongoose.model('Test', testSchema);

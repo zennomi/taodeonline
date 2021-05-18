@@ -1,12 +1,14 @@
+var countdownCtrl;
+var progressBtn = document.getElementById('progress-btn');
+
 function countdown() {
 
     notify("Thời gian", "Bắt đầu giờ làm bài.");
     notify("Tips", "Bạn có thể vào menu để xem thời gian còn lại.");
-    var progressBtn = document.getElementById('progress-btn');
     let leftTimeElement = document.getElementById('leftTime');
     countDownDate = new Date().getTime() + totalTimes;
     
-    var x = setInterval(function () {
+    countdownCtrl = setInterval(function () {
 
         // Get today's date and time
         var now = new Date().getTime();
@@ -40,8 +42,7 @@ function countdown() {
     }, 1000);
 
     document.getElementById("submit").addEventListener("click", function() {
-        progressBtn.parentNode.remove();
-        clearInterval(x);
+        
     })
 }
 // Update the count down every 1 second
