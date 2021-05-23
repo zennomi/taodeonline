@@ -67,14 +67,17 @@ html(lang="en")
                         if user
                             ul.navbar-nav.me-auto.mb-2.mb-lg-0
                                 li.nav-item.dropdown
-                                    a.nav-link.dropdown-toggle(href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false")
+                                    a#userName.nav-link.dropdown-toggle(href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false")
                                         span= span= user.displayName
                                     ul.dropdown-menu(aria-labelledby="navbarDropdown")
+                                        if user.isAdmin
+                                            a.dropdown-item(href="/tests/create") Xem giỏ câu hỏi
                                         li
                                             a.dropdown-item(href="/auth/logout") Đăng xuất
                         else
                             a.btn.btn-outline-success.nav-item(href="/auth/facebook") Đăng nhập
-
+        .fixed-top(aria-live="polite" aria-atomic="true")
+            .toast-container.position-absolute.top-0.end-0.p-3
         .container.mt-3
             if messages.warning
                 .alert.alert-primary= messages.warning

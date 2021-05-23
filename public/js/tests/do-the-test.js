@@ -75,8 +75,8 @@ function submitChoices(isFinished) {
             choicesList.push(choiceIdAndMoment)
         }
     })
-    fetch('/api/submit-choices', {
-        method: 'POST',
+    fetch('/api/results/'+resultId, {
+        method: 'PUT',
         mode: 'cors',
         cache: 'no-cache',
         credentials: 'same-origin',
@@ -85,14 +85,10 @@ function submitChoices(isFinished) {
         },
         redirect: 'follow',
         referrerPolicy: 'no-referrer',
-        body: JSON.stringify({ choices: choicesList, testId, isFinished, resultId, leavesAreaTimes })
+        body: JSON.stringify({ choices: choicesList, isFinished, leavesAreaTimes })
     })
         .then(res => res.json())
         .then(res => {
-            if (res.status != 200) {
-                notify("Hệ thống", "Có vấn đề đường truyền internet. Nếu thấy thông báo này lặp lại vui lòng reload bài thi.");
-                return;
-            }
             if (isFinished)
                 notify("Hệ thống", "Đã lưu lại kết quả làm bài.");
         })
@@ -107,15 +103,15 @@ function submitTest(testId) {
     submitBtn.disabled = true;
     submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>  Đang nộp`;
     notify("Hệ thống", "Đừng thoát vội, chờ hệ thống lưu lại kết quả cái đã...");
-    fetch('/api/tests/' + testId + '/trueChoices')
+    fetch('/api/tests/' + testId + '/true-choices')
         .then(res => res.json())
         .then(data => {
-            if (data.status != 200) {
-                notify("Hệ thống", "Không ổn, nộp lại xem nào.");
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = "Nộp lại";
-                return;
-            }
+            // if (data.status != 200) {
+            //     notify("Hệ thống", "Không ổn, nộp lại xem nào.");
+            //     submitBtn.disabled = false;
+            //     submitBtn.innerHTML = "Nộp lại";
+            //     return;
+            // }
             submitChoices(1);
             let trueChoicesId = [...data.result], falseCounts = 0, isPublic = data.isPublic;
             questionList.forEach(q => {

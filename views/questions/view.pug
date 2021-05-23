@@ -7,10 +7,10 @@ block script-header
 block content
     if user && user.isAdmin
         .d-flex
-            a.d-block.btn.btn-success(href="/questions/create") Add
-            a.d-block.btn.btn-success(href="/questions/"+question._id+"/edit") Edit
+            a.d-block.btn.btn-success(href="/questions/create") Thêm câu hỏi mới
+            a.d-block.btn.btn-success(href="/questions/"+question._id+"/edit") Sửa câu hỏi này
             form(action="/questions/"+question._id+"/delete")
-                button.btn.btn-danger(type="submit") Delete
+                button.btn.btn-danger(type="submit") Xoá câu hỏi này
     .p-2.mb-2.shadow-sm
         if user && user.isAdmin
             .badge.bg-success
@@ -58,4 +58,7 @@ block content
     script.
         document.querySelectorAll("input[type='radio']").forEach(i => {i.disabled = true});
 block script-footer
-    script(src="/js/add-question.js")
+    if user && user.isAdmin
+        script(src="/js/helper/notify.js")
+        script(src="/js/helper/fetch.js")
+        script(src="/js/questions/functions.js")

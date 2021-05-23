@@ -69,7 +69,7 @@ block content
                     a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
                 | &nbsp;
                 .badge.bg-primary
-                    a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="removeQuestion('"+q._id+"')") -
+                    a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="removeQuestion('"+q._id+"', update)") -
                 | &nbsp;
                 if (q.level)
                     .badge.bg-danger
@@ -107,28 +107,17 @@ block content
 block script-footer
     script(src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js")
     script(src="/js/sortable.js")
-    script(src="/js/remove-question.js")
+    script(src="/js/helper/notify.js")
+    script(src="/js/helper/fetch.js")
+    script(src="/js/questions/functions.js")
     script.
         sortable = new Sortable(document.getElementById("main-list"));
         function orderQuestions() {
-        fetch('/api/order-question', {
-            method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer',
-            body: JSON.stringify({ order: sortable.toArray() })
-            })
-            .then(res => res.json())
-            .then(res => {
-                if (res.status != 200) {
-                    alert("Đã xảy ra lỗi khi lưu.");
-                }
-            });
+            anotherMethod('/api/questions/memory/order', 'POST', { order: sortable.toArray() }, undefined, (res) => {notify('Lỗi', 'Xảy ra lỗi khi lưu thứ tự.')});
+        }
+        let update = (id) => {
+            document.getElementById('item-'+id).remove();
+            document.querySelectorAll('.order').forEach((e, i) => { e.innerText = `Câu ${i + 1}: ` });
         }
         document.getElementById("submit").addEventListener("click", function() {
             fetch('/api/tests/save', {

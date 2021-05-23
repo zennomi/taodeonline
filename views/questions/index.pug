@@ -8,8 +8,6 @@ block content
     if user && user.isAdmin
         .mb-2
             a.btn.btn-primary(href="/questions/create") Thêm
-            a#number.btn.btn-primary(href="/tests/create")= numberOfQuestions
-
     .mb-2
         form(action="/questions" method="GET")
             .row
@@ -102,6 +100,9 @@ block content
     script.
         document.querySelectorAll("input[type='radio']").forEach(i => {i.disabled = true});
 block script-footer
-    script(src="/js/add-question.js")
+    if user && user.isAdmin
+        script(src="/js/helper/notify.js")
+        script(src="/js/helper/fetch.js")
+        script(src="/js/questions/functions.js")
     script(src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.0/dist/tagify.min.js")
     script(src="/js/questions/init-tagify.js")

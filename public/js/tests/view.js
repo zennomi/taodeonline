@@ -1,9 +1,8 @@
 function deleteResult(id) {
 	if (confirm("Xóa kết quả này?")) {
-		postData('/api/result/delete', { id })
-			.then(res => {
-				alert(res.message);
-			})
+		anotherMethod('/api/results/'+id, 'DELETE', {}, (res) => {
+			notify('Hệ thống', res.message);
+		})
 	}
 }
 var resultModalEle = document.getElementById('resultModal');

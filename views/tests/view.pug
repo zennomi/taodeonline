@@ -116,8 +116,10 @@ block script-footer
     script.
         document.getElementById('qr-image').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + window.location.origin + "/tests/#{test._id}/do"
     script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js" integrity="sha512-VMsZqo0ar06BMtg0tPsdgRADvl0kDHpTbugCBBrL55KmucH6hP9zWdLIWY//OTfMnzz6xWQRxQqsUFefwHuHyg==" crossorigin="anonymous")
+    script(src="/js/helper/notify.js")
+    script(src="/js/helper/fetch.js")
+    script(src="/js/questions/functions.js")
     script(src="/js/helper/copy.js")
     script(src="/js/helper/tablesorting.js")
-    script(src="/js/helper/post-data.js")
     script(src="/js/tests/view.js")
         

@@ -5,7 +5,7 @@ let resultId;
 // Modal
 var initModal = document.getElementById('init-modal');
 initModal.addEventListener('hidden.bs.modal', function (event) {
-    fetch('/api/new-result', {
+    fetch('/api/results', {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
@@ -19,10 +19,6 @@ initModal.addEventListener('hidden.bs.modal', function (event) {
     })
     .then(res => res.json())
     .then(res => {
-        if (res.status != 200) {
-            notify("Hệ thống", "Có vấn đề đường truyền internet. Nếu thấy thông báo này lặp lại vui lòng reload bài thi.");
-            return;
-        }
         
         document.querySelector('.test-wrap').style.display = 'block';
         let leaveCountEle = document.getElementById('leaveTimes');
@@ -33,7 +29,7 @@ initModal.addEventListener('hidden.bs.modal', function (event) {
             leavesAreaTimes++;
             notify('Cảnh báo', `Bạn đã rời khỏi khu vực làm bài thi ${leavesAreaTimes} lần.`);
         }
-        resultId = res.resultId;
+        resultId = res.result._id;
         window.onblur = userCheated;
         countdown();
         scrollToTop();
