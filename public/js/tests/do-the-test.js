@@ -30,14 +30,6 @@ function Question(element) {
     })
 }
 
-// function () {
-//     let itemMenuEle = document.querySelector(`a[href="#q-${element.dataset['id']}"]`);
-//     itemMenuEle.style.background = 'var(--bs-primary)';
-//     itemMenuEle.style.color = '#fff';
-//     this.nextSibling.style["box-shadow"] = "0 0 0 2pt var(--bs-primary)";
-//     this.dataset['moment'] = (new Date).getTime();
-// }
-
 Question.prototype.selectChoice = function () {
     let selectedChoice = this.getSelectedChoice();
     if (selectedChoice) {

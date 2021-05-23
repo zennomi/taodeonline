@@ -134,7 +134,7 @@ html(lang="en")
                         .question-wrap
                             b.text-success Câu #{i+1}: 
                             span !{q.question}
-                        form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
+                        form.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0(class = q.getMaxLengthChoice() < 24 ? "row-cols-md-4" : q.getMaxLengthChoice() < 48 ? "row-cols-md-2" : "row-cols-md-1")
                             each a,j in q.choices
                                 .col.mb-1.d-flex.align-items-center
                                     .radio.radio-before.d-flex.align-items-center

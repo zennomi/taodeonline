@@ -1,7 +1,7 @@
-var countdownCtrl;
+var countdownCtrl, countDownDate, distance;
 var progressBtn = document.getElementById('progress-btn');
 
-function countdown() {
+function countdown(totalTimes) {
 
     notify("Thời gian", "Bắt đầu giờ làm bài.");
     notify("Tips", "Bạn có thể vào menu để xem thời gian còn lại.");
@@ -14,7 +14,7 @@ function countdown() {
         var now = new Date().getTime();
         
         // Find the distance between now and the count down date
-        var distance = countDownDate - now;
+        distance = countDownDate - now;
 
         // Time calculations for days, hours, minutes and seconds
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -35,14 +35,10 @@ function countdown() {
             notify("Nhắc nhở nho nhỏ", "Lúc này thì nên bắt đầu tô đáp án nhó. Bỏ câu khó đi mà làm người.");
         }
         if (distance <= 1) {
-            clearInterval(x);
+            clearInterval(countdownCtrl);
             notify("Thời gian", `Hết giờ!!!`);
-            document.getElementById("submit").click();
+            submitTest();
         }
     }, 1000);
-
-    document.getElementById("submit").addEventListener("click", function() {
-        
-    })
 }
 // Update the count down every 1 second

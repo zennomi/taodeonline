@@ -1,0 +1,176 @@
+html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#eee;" : "")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous")
+        title= test.name ? test.name : "Đề thi"            
+        include ../../layouts/mathjax.pug
+        script.
+            window.MathJax.startup = {
+            ready: () => {
+            MathJax.startup.defaultReady();
+            MathJax.startup.promise.then(() => {
+                window.onload = function() {
+                var startBtn = document.getElementById('start-btn');
+                startBtn.innerHTML = '<i class="fad fa-pen-square"></i>  Bắt đầu làm bài';
+                startBtn.disabled = false;
+                }
+                
+                });
+                }
+            }
+        link(rel="stylesheet" href="/css/premium-test.css")
+        include ../../layouts/favicon.pug
+        link(rel='stylesheet', type='text/css', href='//cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@8af0edd/css/all.css')
+
+    body
+        // Menu
+        button#menuBtn.btn.btn-outline-success(type="button" data-bs-toggle="offcanvas" data-bs-target="#sidemenu" aria-controls="offcanvasScrolling")
+            i.fad.fa-bars
+        #sidemenu.offcanvas.offcanvas-start(data-bs-scroll="true"  tabindex="-1" aria-labelledby="offcanvasScrollingLabel")
+            .offcanvas-header
+                //- h5.offcanvas-title Menu hỗ trợ
+                .d-flex
+                    button.d-block.me-2.btn.btn-outline-success(onclick="toggleNightMode(this)")
+                        if (style=config.darkmode == 'on')
+                            i.fad.fa-sun
+                            |  Light Mode
+                        else
+                            i.fad.fa-moon
+                            |  Dark Mode
+                    button#timeBtn.d-block.me-2.btn.btn-outline-success(onclick="playOrPauseTime(this)")
+                        i.fas.fa-pause
+                        |  Tạm dừng
+                    button.d-block.me-2.btn.btn-outline-success(onclick="zoomOut()")
+                        i.fas.fa-search-plus
+                    button.d-block.me-2.btn.btn-outline-success(onclick="zoomIn()")
+                        i.fas.fa-search-minus
+                button(type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close")
+            .offcanvas-body.sidenav
+                h5 Thời gian còn lại: 
+                p#leftTime= test.time + " phút"
+                h5 Lối tắt
+                .d-flex.justify-content-around.flex-wrap
+                    each q, i in test.questions
+                        a.mx-1.my-1(href="#q-"+q._id)= `Câu ${i+1}`
+                    a.mb-1(href="#submit")
+                        i.fad.fa-paper-plane
+                        |    Nộp bài
+                    a.mb-1(href="/")
+                        i.fad.fa-home
+                        |    Trang chủ
+
+        // setting modal
+        .modal.fade#init-modal(tab-index=-1 data-bs-backdrop="static" data-bs-keyboard="false").text-center
+            .modal-dialog.modal-dialog-centered
+                .modal-content
+                    .modal-header.justify-content-center
+                        .h1.modal-title= test.name ? test.name : "Đề thi"
+                    .modal-body
+                        .d-flex.justify-content-around.flex-wrap
+                            .mb-2
+                                .text-success.h3
+                                    i.fad.fa-hourglass-start
+                                    |  
+                                    span= test.time ? test.time + " phút" : "40 phút"
+                            .mb-2
+                                .text-success.h3
+                                    i.fad.fa-list-ol
+                                    |  
+                                    span= test.questions.length + " câu"
+                        //- img#qr-image(alt="QR Code")
+                    .modal-footer.d-flex.justify-content-center
+                        button.btn.btn-success#start-btn(type="button" data-bs-dismiss="modal" disabled)
+                            | Chuẩn bị đề
+                        button.btn.btn-warning(onclick="copyToClipboard('"+link+"')")
+                            i.fad.fa-copy
+                            |   Copy Link Đề
+                        a.btn.btn-danger(href="/tests/premium")
+                            i.fad.fa-undo-alt
+                            |   Trở về
+                    .modal-body.border-top
+                        if results.length > 0
+                            .h5.text-success
+                                i.fad.fa-history
+                                |   Lịch sử làm bài
+                            table.table.text-center
+                                thead
+                                    tr
+                                        th Bắt đầu lúc
+                                        th Nộp bài lúc
+                                tbody
+                                    each result in results
+                                        tr
+                                            td
+                                                a(href="/tests/"+test._id+"/view-result/"+result._id target="_blank")= result.started_time.toLocaleString('vi-VN')
+                                            td
+                                                a(href="/tests/"+test._id+"/view-result/"+result._id target="_blank")= result.finished_time ? result.finished_time.toLocaleString('vi-VN') : "Chưa nộp bài"
+        // Notify
+        .fixed-bottom(aria-live="polite" aria-atomic="true")
+            .toast-container.position-absolute.bottom-0.end-0.p-4
+        // Main Area
+        .container(style="zoom: 1;")
+            .card#resultCard.mt-5(style="display:none;")
+                .card-header
+                    .h5 Kết quả
+                .card-body
+                    p Số câu đúng: 
+                        span#result
+                        span= "/" + test.questions.length + " câu"
+                    p Số lần rời khỏi khu vực thi: 
+                        span#leaveTimes 0
+                    p Thời điểm bắt đầu: 
+                        span= (new Date()).toLocaleString('vi-VN')
+                    p Thời gian còn lại: 
+                        span#leftTimes
+
+
+
+            h1.mt-2.text-success.text-center= test.name ? test.name : "Đề thi"
+            .d-flex.justify-content-around
+                p Đề thi gồm #{test.questions.length} câu.
+                p
+                    | Thời gian 
+                    span#totalTimes= test.time ? test.time : 40
+                    |  phút.
+            p 
+                b Họ và tên:
+                |   #{user.displayName}.
+            .fixed-bottom
+                .progress.rounded-0
+                    #progress-btn.progress-bar.bg-success
+            .test-wrap.p-1(style="display: none;")
+                each q, i in test.questions
+                    .question(id="q-"+q._id data-id=q._id)
+                        .question-wrap
+                            b.text-success Câu #{i+1}: 
+                            span !{q.question}
+                        form.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0(class = q.getMaxLengthChoice() < 24 ? "row-cols-md-4" : q.getMaxLengthChoice() < 48 ? "row-cols-md-2" : "row-cols-md-1")
+                            each a,j in q.choices
+                                .col.mb-1.d-flex.align-items-center
+                                    .radio.radio-before.d-flex.align-items-center
+                                        label.radio__input
+                                            input(type="radio" name="radio" data-id=a._id)
+                                            .radio__control= String.fromCharCode(65+j)
+                                        .radio__label.ms-2
+                                            | !{a.content}
+                    .collapse(id="ans-"+q._id)
+                        if q.answer
+                            | !{q.answer}
+                        else
+                            | Câu này chưa có lời giải chi tiết.
+
+                    hr
+            button.d-block.mx-auto.btn.btn-success.mb-5#submit(onclick=`submitTest("${test._id}")`)
+                i.fad.fa-paper-plane
+                span.fw-bold   NỘP BÀI
+        script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous")
+        script.
+            let testId = "#{test._id}", totalTimes = #{test.time*60*1000};
+        script(src='/js/helper/copy.js')
+        script(src='/js/helper/fetch.js')
+        script(src='/js/helper/notify.js')
+        script(src="/js/tests/premium/init.js")
+        script(src="/js/countdown.js")
+        script.
+            //- document.getElementById('qr-image').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+location.href

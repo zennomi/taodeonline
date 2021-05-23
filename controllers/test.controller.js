@@ -158,7 +158,6 @@ module.exports.viewResult = async (req, res) => {
     result.test_id.questions.forEach(q => {
         trueChoiceIds.push(...q.getTrueChoiceArray());
     })
-    console.log(selectedChoiceIds.filter(c => trueChoiceIds.indexOf(String(c))>-1).length, selectedChoiceIds, trueChoiceIds);
     res.render('tests/view-result', {result, trueChoiceIds, selectedChoiceIds});
 }
 

@@ -31,7 +31,7 @@ initModal.addEventListener('hidden.bs.modal', function (event) {
         }
         resultId = res.result._id;
         window.onblur = userCheated;
-        countdown();
+        countdown(totalTimes);
         scrollToTop();
     })
 

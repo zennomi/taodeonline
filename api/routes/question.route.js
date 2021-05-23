@@ -10,9 +10,9 @@ router.get('/memory', (req, res) => {
 router.post('/memory/', (req, res) => {
     let response = {};
     if (!req.cookies.questions) {
-        res.cookie('questions', { ids: [req.body.questionId] }, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true });
+        response.ids = [req.body.questionId];
+        res.cookie('questions', { ids: response.ids }, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true });
         response.message = "Thêm câu hỏi thành công! Đang có 1 câu hỏi trong bộ nhớ";
-        response.ids = req.cookies.questions.ids;
         res.status(200).json(response);
         return;
     }

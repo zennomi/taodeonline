@@ -1,5 +1,6 @@
 const express = require('express');
 const controller = require('../controllers/test.controller');
+const premiumController = require('../controllers/premiumTest.controller');
 const authMiddlewares =require('../middlewares/auth.middleware');
 const router = express.Router();
 
@@ -15,4 +16,9 @@ router.get('/:id/edit', authMiddlewares.authRequire, controller.edit);
 router.get('/:id/delete', authMiddlewares.authRequire, controller.delete);
 router.post('/:id/edit', authMiddlewares.authRequire, controller.postEdit);
 router.post('/:id/delete', authMiddlewares.authRequire, controller.postDelete);
+
+// premium
+router.get('/premium/:id/do', authMiddlewares.adminRequire, premiumController.do);
+router.post('/premium/:id/do', authMiddlewares.adminRequire, premiumController.do);
+router.get('/premium/:id/view', authMiddlewares.adminRequire, premiumController.view);
 module.exports = router;
