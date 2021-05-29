@@ -37,13 +37,13 @@ module.exports.postCreate = async (req, res) => {
 }
 
 module.exports.index = async (req, res) => {
-    
+
     // Search
     let tagsList = req.query.tags ? JSON.parse(req.query.tags).map(t => t.value) : [];
     let optionSearch = {
         question: { $regex: (new RegExp(req.query.query, 'i')) },
         grade: req.query.grade ? req.query.grade : undefined,
-        main_tags: req.query.tags ? { $elemMatch: { value: {$in: tagsList} } } : undefined
+        main_tags: req.query.tags ? { $elemMatch: { value: { $in: tagsList } } } : undefined
     }
     if (!req.query.query) delete optionSearch.question;
     if (!req.query.grade) delete optionSearch.grade;
@@ -51,25 +51,25 @@ module.exports.index = async (req, res) => {
 
     // Sort
     let sortOption;
-    switch(Number(req.query.sort)) {
+    switch (Number(req.query.sort)) {
         case 2:
-            sortOption = {_id: -1};
+            sortOption = { _id: -1 };
             break;
         case 3:
-            sortOption = {level: 1};
+            sortOption = { level: 1 };
             break;
         case 4:
-            sortOption = {level: -1};
+            sortOption = { level: -1 };
             break;
         default:
-            sortOption = {_id: 1};
+            sortOption = { _id: 1 };
     }
 
     // Pagination
     const perPage = 10;
-    let indexPage = req.query.p ? Number(req.query.p)-1 : 0;
+    let indexPage = req.query.p ? Number(req.query.p) - 1 : 0;
     let maxPage = await Question.countDocuments(optionSearch);
-    maxPage = Math.ceil(maxPage/perPage);
+    maxPage = Math.ceil(maxPage / perPage);
 
     // Handle query
     let handledQuery = {
@@ -80,7 +80,7 @@ module.exports.index = async (req, res) => {
     }
 
     // Main
-    let questions = await Question.find(optionSearch).limit(perPage).skip(indexPage*perPage).sort(sortOption);
+    let questions = await Question.find(optionSearch).limit(perPage).skip(indexPage * perPage).sort(sortOption);
     questions.forEach(q => {
         q.question = toInlineElement(q.question);
         q.choices.forEach(a => {
@@ -91,7 +91,7 @@ module.exports.index = async (req, res) => {
     res.render('questions/index', {
         questions: questions,
         numberOfQuestions: req.cookies.questions ? req.cookies.questions.ids.length : 0,
-        currentPage: indexPage+1,
+        currentPage: indexPage + 1,
         maxPage: maxPage,
         handledQuery: handledQuery
     });
@@ -132,13 +132,13 @@ module.exports.view = (req, res) => {
 module.exports.edit = (req, res) => {
     Question.findById(req.params.id, null, function (err, question) {
         if (err || !question) return res.send('Error.');
-        
-            question.question = texToMathML(question.question);
-            question.choices.forEach(a => {
-                a.content = texToMathML(a.content);
-            })
-            question.maxLengthAnswer = Math.max(...question.choices.map(a => a.content.length));
-            question.answer = texToMathML(question.answer);
+
+        question.question = texToMathML(question.question);
+        question.choices.forEach(a => {
+            a.content = texToMathML(a.content);
+        })
+        question.maxLengthAnswer = Math.max(...question.choices.map(a => a.content.length));
+        question.answer = texToMathML(question.answer);
         res.render('questions/edit', { question });
     })
 }
@@ -151,7 +151,7 @@ module.exports.postEdit = async (req, res) => {
     question.main_tags = req.body.main_tags ? JSON.parse(req.body.main_tags) : undefined;
     question.side_tags = req.body.side_tags ? JSON.parse(req.body.side_tags) : undefined;
     question.level = req.body.level ? req.body.level : undefined;
-    let truthyChoices = req.body.answer_true.map(a => Number(a));
+    let truthyChoices = req.body.answer_true ? req.body.answer_true.map(a => Number(a)) : [];
     console.log(question.choices);
     req.body.answer_content.forEach((ans, i) => {
         question.choices[i] = question.choices[i] || {};
@@ -176,16 +176,22 @@ module.exports.import = (req, res) => {
 
 module.exports.postImport = (req, res) => {
     let matchedQuestions = questionfy(req.body.content);
-    
-    res.render('tests/demo', {matchedQuestions});
+
+    res.render('tests/demo', { matchedQuestions });
 }
 
 module.exports.saveImportedQuestions = (req, res) => {
     let importQuestions = questionfy(req.body.content);
+    console.log(req.cookies.questions);
     Question.insertMany(importQuestions, (err, questions) => {
         if (err) return res.send(err);
-        res.cookie('questions', { ids: questions.map(q => q._id) }, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true });
-        res.render('tests/create', {matchedQuestions: questions});
+        if (req.body.addToMemory == 'on') {
+            if (!req.cookies.questions) req.cookies.questions = { ids: [] }
+            let ids = req.cookies.questions.ids || [];
+            ids.push(...questions.map(q => q._id));
+            res.cookie('questions', { ids: ids }, { expires: new Date(Date.now() + 7 * 24 * 3600), httpOnly: true });
+        }
+        res.render('tests/create', { matchedQuestions: questions });
     })
 }
 
@@ -199,17 +205,17 @@ function isTrueChoice(str) {
 
 function questionfy(content) {
     let quesStrArr = content
-    .replace(/&nbsp;/g,' ')
-    .replace(/\s{3,}/g,'   ')
-    .replace(/\s{3,}/g,'   ')
-    .replace(/(<[^\/<>]+>)(\s+)/g,'$2$1')
-    .split(/<p>\s*\[&lt;br&gt;\]\s*<\/p>/);
+        .replace(/&nbsp;/g, ' ')
+        .replace(/\s{3,}/g, '   ')
+        .replace(/\s{3,}/g, '   ')
+        .replace(/(<[^\/<>]+>)(\s+)/g, '$2$1')
+        .split(/<p>\s*\[&lt;br&gt;\]\s*<\/p>/);
     let level;
     let matchedQuestions = quesStrArr.map((q, i) => {
         let parArr = Array.from(q.matchAll(/<p>.+?<\/p>/g), m => m[0]);
         let quesContent = [];
         let choiceList = [];
-        
+
         parArr.forEach((p, j) => {
             if (isChoice(p)) {
                 if (/\s{3,}/gi.test(p)) {
@@ -222,14 +228,14 @@ function questionfy(content) {
                     console.log(levelRegex.exec(p));
                     level = Number([...levelRegex.exec(p)][1]);
                 } else
-                quesContent.push(p);
-                }
+                    quesContent.push(p);
+            }
         })
         return {
             question: quesContent.join('\n'),
             choices: choiceList.map(c => {
                 let isTrue = false;
-                c = c.replace(/[ABCD]/i,'').replace(/\./,'');
+                c = c.replace(/[ABCD]/i, '').replace(/\./, '');
                 if (/<u>\s*<\/u>/g.test(c)) {
                     isTrue = true;
                 }

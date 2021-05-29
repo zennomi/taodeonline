@@ -1,0 +1,111 @@
+extends ../layouts/common
+block content
+    .header-text(style="border:0px;margin-left:0px")
+        h1
+            | 3 bước thanh toán khoá luyện đề
+        .alert.alert-info 
+            | 3 bước thanh toán đều làm việc với cộng tác viên nên các bạn yên tâm nhé, mọi phát sinh sẽ được giải quyết.
+        .row.clearfix
+            .col.col-12.col-md-4
+                .card 
+                    .card-header 
+                        .badge.badge-success Bước 1
+                        .h3.ms-3 Xác nhận tài khoản
+                    .card-body.text-center
+                        .mb-2 Chụp lại đơn thanh toán khoá luyện đề phía dưới
+                        .card.bg-primary.text-white.mb-2
+                            .card-body
+                                .row.align-items-center.mb-2
+                                    .col.col-auto
+                                        .avatar.avatar-sm.rounded-circle
+                                            img(src='/img/logo.jpg')
+                                    .col.text-start
+                                        .fw-bold= user.displayName 
+                                        span= user.id
+                                hr.my-2
+                                .fs-5.fw-bold.text-uppercase=course.name 
+                                .badge.badge-primary.mb-2= course._id 
+                                .row.align-items-center
+                                    .col.col-auto
+                                        .text-start Giá tiền: 
+                                    .col
+                                        .fs-2.text-end= course.public_price.toLocaleString()
+                                            sup đ
+                        i.mx-auto.fas.fa-angle-down.fs-1.text-success
+                        .mb-2
+                            | Gửi ảnh đã chụp tới facebook của cộng tác viên VLSN.
+                        .mb-2
+                            a.btn.btn-facebook.btn-icon(href="https://www.facebook.com/ngdatuananh/" target="_blank")
+                                i.fab.fa-facebook
+                                span Nguyễn Đăng Tuấn Anh
+                        .mb-2 Hoặc Fanpage Lớp học thầy Quý
+                        .mb-2
+                            a.btn.btn-facebook.btn-icon(href="https://www.facebook.com/HocLyThayQuy/" target="_blank")
+                                i.fab.fa-facebook
+                                span Học Lý thầy Quý
+                        i.mx-auto.fas.fa-angle-down.fs-1.text-success
+                        .mb-2
+                            | Chờ xác nhận tài khoản.
+                        .alert.alert-danger 
+                            | Thông tin trên đơn thanh toán phải trùng khớp với tài khoản facebook bạn dùng để liên hệ với cộng tác viên.
+            .col.col-12.col-md-4
+                .card 
+                    .card-header 
+                        .badge.badge-success Bước 2
+                        .h3.ms-3 Thanh toán
+                    .card-body
+                        .mb-2 
+                            | Chuyển khoản chính xác số tiền #{course.public_price.toLocaleString()}đ với nội dung
+                        .mb-2.card.bg-gradient-primary.text-white
+                            .card-body
+                                .text-truncate #{user.displayName} - #{course.name}
+                                .d-flex.justify-content-end
+                                    button.btn.btn-outline-white.btn-sm(onclick="copyToClipboard('"+ user.displayName + " - " + course.name + "')") copy
+                        .mb-2
+                            | tới một trong các tài khoản sau.
+                        .card.bg-gradient-teal.text-white.mb-2
+                            .card-body
+                                .text-uppercase.fs-4 Vietinbank
+                                b STK: 
+                                span.me-1 105870480290
+                                button.btn.btn-outline-white.btn-sm(onclick="copyToClipboard('105870480290')") copy
+                                br
+                                b Chủ TK: 
+                                | Nguyễn Đăng Tuấn Anh
+                        .card.bg-gradient-pink.text-white.mb-2
+                            .card-body
+                                .text-uppercase.fs-4 Momo
+                                b SĐT: 
+                                span.me-1 0969142728
+                                button.btn.btn-outline-white.btn-sm(onclick="copyToClipboard('0969142728')") copy
+                                br
+                                b Chủ TK: 
+                                | Nguyễn Đăng Tuấn Anh 
+                        .mb-2.text-center
+                            i.fas.fa-angle-down.fs-1.text-success
+                        .mb-2 Chụp ảnh màn hình giao dịch thành công với cộng tác viên và xác nhận thanh toán.
+                        .alert.alert-info 
+                            | Để xác nhận nhanh nhất nên chọn chuyển khoản 24/7.
+            .col.col-12.col-md-4
+                .card 
+                    .card-header 
+                        .badge.badge-success Bước 3
+                        .h3.ms-3 Nhận khoá luyện đề
+                    .card-body
+                        .mb-2 
+                            | Sau khi cộng tác viên xác nhận giao dịch, kiểm tra thanh toán thành công tại 
+                            a.btn.btn-outline-primary.btn-sm(href="/courses/"+course._id+"/view" target="_blank") link
+                            | .
+                        .mb-2 
+                            | Nếu thành công sẽ có dòng chữ sau:
+                        button.btn.btn-success.btn-lg.btn-block(type='button' href="/courses/"+course._id+"/enroll" disabled) Đã mua khoá luyện đề
+                        .mb-2.text-center
+                            i.fas.fa-angle-down.fs-1.text-success
+                        div 
+                            | Nếu khoá luyện đề đã mở, vào làm đề ngay thôi 
+                            i.fas.fa-heart.text-danger
+    script 
+        include /js/helper/copy.js
+block info-footer
+    include ../layouts/info-footer
+

@@ -1,50 +1,72 @@
-html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#eee;" : "")
+html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#eee; --bs-filter: invert(95%);" : "")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous")
+        //- link(rel='stylesheet', href='/template/css/argon.min.css', type='text/css')
         title= test.name ? test.name : "Đề thi"            
         include ../../layouts/mathjax.pug
         script.
             window.MathJax.startup = {
-            ready: () => {
-            MathJax.startup.defaultReady();
-            MathJax.startup.promise.then(() => {
-                window.onload = function() {
-                var startBtn = document.getElementById('start-btn');
-                startBtn.innerHTML = '<i class="fad fa-pen-square"></i>  Bắt đầu làm bài';
-                startBtn.disabled = false;
-                }
-                
-                });
+                ready: () => {
+                    MathJax.startup.defaultReady();
+                    MathJax.startup.promise.then(() => {
+                        window.onload = function() {
+                            var startBtn = document.getElementById('start-btn');
+                            startBtn.innerHTML = '<i class="fad fa-pencil"></i>    Bắt đầu làm bài';
+                            startBtn.disabled = false;
+                        }
+                    });
                 }
             }
-        link(rel="stylesheet" href="/css/premium-test.css")
+        style
+            include /css/premium-test.css
+        //- link(rel="stylesheet" href="/css/premium-test.css")
         include ../../layouts/favicon.pug
         link(rel='stylesheet', type='text/css', href='//cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@8af0edd/css/all.css')
-
+        script(src='//w.soundcloud.com/player/api.js') 
     body
+        // None
         // Menu
         button#menuBtn.btn.btn-outline-success(type="button" data-bs-toggle="offcanvas" data-bs-target="#sidemenu" aria-controls="offcanvasScrolling")
-            i.fad.fa-bars
+            i.fas.fa-bars
         #sidemenu.offcanvas.offcanvas-start(data-bs-scroll="true"  tabindex="-1" aria-labelledby="offcanvasScrollingLabel")
-            .offcanvas-header
+            .offcanvas-header.align-items-start
                 //- h5.offcanvas-title Menu hỗ trợ
-                .d-flex
-                    button.d-block.me-2.btn.btn-outline-success(onclick="toggleNightMode(this)")
+                iframe#sc-widget.d-none(src="//w.soundcloud.com/player/?url=//soundcloud.com/dabootlegboy/sets/study-chill-lofi-hiphop?show_artwork=false")
+                .d-flex.flex-wrap
+                    button.d-block.me-2.btn.btn-outline-success.mb-1(onclick="toggleNightMode(this)")
                         if (style=config.darkmode == 'on')
-                            i.fad.fa-sun
+                            i.fas.fa-sun
                             |  Light Mode
                         else
-                            i.fad.fa-moon
+                            i.fas.fa-moon
                             |  Dark Mode
-                    button#timeBtn.d-block.me-2.btn.btn-outline-success(onclick="playOrPauseTime(this)")
+                    button#timeBtn.d-block.me-2.btn.btn-outline-success.mb-1(onclick="playOrPauseTime(this)")
                         i.fas.fa-pause
                         |  Tạm dừng
-                    button.d-block.me-2.btn.btn-outline-success(onclick="zoomOut()")
+                    button.d-block.me-2.btn.btn-outline-success.mb-1(onclick="zoomOut()")
                         i.fas.fa-search-plus
-                    button.d-block.me-2.btn.btn-outline-success(onclick="zoomIn()")
+                        |  Phóng to
+                    button.d-block.me-2.btn.btn-outline-success.mb-1(onclick="zoomIn()")
                         i.fas.fa-search-minus
+                        |  Thu nhỏ
+                    button.d.block.me-2.btn.btn-outline-success.mb-2(onclick="fullScreenOrEsc(this)")
+                        i.fas.fa-expand-wide
+                        |  Toàn màn hình
+                    .flex-grow-1.d-flex.justify-content-between.mb-1
+                        button#preBtn.d-block.btn.btn-outline-success.mb-1(disabled)
+                            i.fas.fa-step-backward
+                        button#playBtn.d-block.btn.btn-outline-success.mb-1(disabled)
+                            i.fas.fa-play
+                        button#nextBtn.d-block.btn.btn-outline-success.mb-1(disabled)
+                            i.fas.fa-step-forward
+                        button#shuffleBtn.d-block.btn.btn-outline-success.mb-1(disabled)
+                            i.fas.fa-exchange-alt
+                    select#musicSelect.form-select.mb-1
+                        option(value="//soundcloud.com/dabootlegboy/sets/study-chill-lofi-hiphop" selected) Lofi Chill
+                        option(value="//soundcloud.com/user-11544854/sets/baroque-study") Baroque
+                        option(value="//soundcloud.com/thenhan2501/sets/vn-remix") Vinahouse
                 button(type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close")
             .offcanvas-body.sidenav
                 h5 Thời gian còn lại: 
@@ -61,7 +83,7 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                         |    Trang chủ
 
         // setting modal
-        .modal.fade#init-modal(tab-index=-1 data-bs-backdrop="static" data-bs-keyboard="false").text-center
+        .modal.fade.hide#init-modal(tab-index=-1 data-bs-backdrop="static" data-bs-keyboard="false").text-center
             .modal-dialog.modal-dialog-centered
                 .modal-content
                     .modal-header.justify-content-center
@@ -79,18 +101,21 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                                     |  
                                     span= test.questions.length + " câu"
                         //- img#qr-image(alt="QR Code")
-                    .modal-footer.d-flex.justify-content-center
-                        button.btn.btn-success#start-btn(type="button" data-bs-dismiss="modal" disabled)
+                    .modal-body
+                        button.d-block.w-75.btn.btn-success.btn-lg.mx-auto.mb-2#start-btn(type="button" data-bs-dismiss="modal" disabled)
                             | Chuẩn bị đề
-                        button.btn.btn-warning(onclick="copyToClipboard('"+link+"')")
-                            i.fad.fa-copy
-                            |   Copy Link Đề
-                        a.btn.btn-danger(href="/tests/premium")
-                            i.fad.fa-undo-alt
-                            |   Trở về
-                    .modal-body.border-top
-                        if results.length > 0
-                            .h5.text-success
+                        .row.w-75.mx-auto.g-0
+                            .col.me-2
+                                button.w-100.btn.btn-warning(onclick="copyToClipboard('"+link+"')")
+                                    i.fad.fa-copy
+                                    |   Copy Link Đề
+                            .col
+                                a.w-100.btn.btn-danger(href="/tests/premium")
+                                    i.fad.fa-undo-alt
+                                    |   Trở về
+                    if results.length > 0
+                        .modal-body.border-top
+                            .h5.d-inline.border-success.text-success.border-bottom.border-5
                                 i.fad.fa-history
                                 |   Lịch sử làm bài
                             table.table.text-center
@@ -167,10 +192,13 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
         script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous")
         script.
             let testId = "#{test._id}", totalTimes = #{test.time*60*1000};
-        script(src='/js/helper/copy.js')
-        script(src='/js/helper/fetch.js')
-        script(src='/js/helper/notify.js')
-        script(src="/js/tests/premium/init.js")
-        script(src="/js/countdown.js")
+        script
+            include /js/tests/premium/init.js
+            include /js/helper/copy.js
+            include /js/helper/fetch.js
+            include /js/helper/notify.js
+            include /js/tests/premium/helper.js
+            include /js/tests/premium/player.js
+
         script.
             //- document.getElementById('qr-image').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+location.href

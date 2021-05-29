@@ -1,14 +1,61 @@
 extends ./layouts/common.pug
 
-block content
-    .row.row-cols-1.row-cols-md-2
-        .col
-            a.card.text-white.bg-primary.mb-3.text-decoration-none(href="/tests")
-                .card-body
-                    h5.card-title Ngân hàng đề thi
-                    p.card-text Đề thi THPT Quốc Gia sát cấu trúc năm 2021, Đề Kiểm tra cuối kỳ,...
-        .col
-            a.card.text-white.bg-primary.mb-3.text-decoration-none(href="/questions")
-                .card-body
-                    h5.card-title Ngân hàng câu hỏi trắc nghiệm
-                    p.card-text Đáp án chi tiết tới tận răng
+block header-text
+    .section.section-hero.section-shaped
+        .shape.shape-style-1.shape-primary.bg-success.bg-gradient
+            span.span-150
+            span.span-50
+            span.span-50
+            span.span-75
+            span.span-100
+            span.span-75
+            span.span-50
+            span.span-100
+            span.span-50
+            span.span-100
+        .page-header
+            .mt-
+            .container.shape-container.d-flex.align-items-center.py-lg
+                .col.px-0
+                    .row.align-items-center.justify-content-center
+                        .col-lg-6.text-center
+                            img.img-fluid(src='/img/logo-no-background.png' style='width: 200px;')
+                            p.lead.text-white Làm đề cùng 
+                                strong.fs-4 Vật Lý Siêu Nhẩm
+                            .btn-wrapper.mt-5
+                                a.btn.btn-lg.btn-outline-white.mb-3.mb-sm-0(href='/tests')
+                                    i.fas.fa-list-ol
+                                    span Ngân hàng đề thi miễn phí
+                                a.btn.btn-lg.btn-white.mb-3.mb-sm-0(href='/courses')
+                                    i.fas.fa-graduation-cap
+                                    spa Khoá luyện đề THPT QG 2021
+                            .mt-5
+                                small.font-weight-bold.mb-0.mr-2.text-white *proudly coded by
+                                b.text-white VLSN IT
+        .separator.separator-bottom.separator-skew.zindex-100
+            svg(x='0' y='0' viewBox='0 0 2560 100' preserveAspectRatio='none' version='1.1' xmlns='http://www.w3.org/2000/svg')
+                polygon.fill-white(points='2560 0 2560 100 0 100')
+
+
+    // Your Plugin chat code
+    #fb-customer-chat.fb-customerchat
+    script.
+      var chatbox = document.getElementById('fb-customer-chat');
+      chatbox.setAttribute("page_id", "659218737551412");
+      chatbox.setAttribute("attribution", "biz_inbox");
+      window.fbAsyncInit = function() {
+      FB.init({
+      xfbml            : true,
+      version          : 'v10.0'
+      });
+      };
+      (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = 'https://connect.facebook.net/vi_VN/sdk/xfbml.customerchat.js';
+      fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+
+block info-footer 
+    include ./layouts/info-footer

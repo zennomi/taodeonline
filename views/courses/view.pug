@@ -1,0 +1,162 @@
+extends ../layouts/common
+block content   
+  .row
+    .col-xl-4.order-xl-2
+      .card.card-profile
+        img.card-img-top(src=course.img_link, alt='Khóa học')
+        .card-header.border-0.pt-8.pt-md-4.pb-0.pb-md-4.text-end
+            if course.logged_user_ids.includes(user.id)
+                button.btn.btn-success.btn-lg.btn-block(type='button' disabled) Đã mua khoá luyện đề
+            else 
+                    if course.original_price
+                        .text-danger.fs-4
+                            .d-inline.text-decoration-line-through= course.original_price.toLocaleString()
+                            sup đ
+                            |   
+                            .badge.badge-danger
+                            | -
+                            span= Math.round((course.original_price-course.public_price)/course.original_price*100)
+                            | %
+                    .text-success.fw-bold.fs-2= course.public_price.toLocaleString()
+                        sup đ
+                    .text-end
+                        small.card-text.text-muted= course.note
+                    a.btn.btn-success.btn-lg.btn-block(type='button' href="/courses/"+course._id+"/enroll") Hướng dẫn đăng ký khoá học
+      .card.card-profile
+        .card-body
+          .row.gy-2
+              .col.col-12
+                  .card.mb-1.mb-md-3.shadow-lg
+                      // Card body
+                      .card-body
+                          .row
+                              .col.p-0
+                                  h5.card-title.text-uppercase.text-muted.mb-0 Cấu trúc đề
+                                  span.h2.font-weight-bold.mb-0 Bám sát
+                              .col-auto.p-0
+                                  .icon.icon-shape.bg-gradient-red.text-white.rounded-circle.shadow
+                                      i.fas.fa-list-alt
+                          p.mt-3.mb-0.text-sm
+                              span.text-red.mr-2
+                                  | Đề THPT QG năm 2021
+              .col.col-12
+                  .card.mb-1.mb-md-3.shadow-lg
+                      // Card body
+                      .card-body
+                          .row
+                              .col.p-0
+                                  h5.card-title.text-uppercase.text-muted.mb-0 Lời giải
+                                  span.h2.font-weight-bold.mb-0 Chi tiết
+                              .col-auto.p-0
+                                  .icon.icon-shape.bg-gradient-blue.text-white.rounded-circle.shadow
+                                      i.fas.fa-info-circle
+                          p.mt-3.mb-0.text-sm
+                              span.text-blue.mr-2
+                                  | Kèm nhóm 
+                                  a.badge.badge-primary(href="https://www.facebook.com/groups/giaimoibaily" target="_blank") facebook
+                                  |  hỗ trợ
+              .col.col-12
+                  .card.mb-1.mb-md-3.shadow-lg
+                      // Card body
+                      .card-body
+                          .row
+                              .col.p-0
+                                  h5.card-title.text-uppercase.text-muted.mb-0 Luyện đề
+                                  span.h2.font-weight-bold.mb-0 Chủ động
+                              .col-auto.p-0
+                                  .icon.icon-shape.bg-gradient-pink.text-white.rounded-circle.shadow
+                                      i.fas.fa-skating
+                          p.mt-3.mb-0.text-sm
+                              span.text-pink.mr-2
+                                  | Điều chỉnh thời gian, độ khó
+              .col.col-12
+                  .card.mb-1.mb-md-3.shadow-lg
+                      // Card body
+                      .card-body
+                          .row
+                              .col.p-0
+                                  h5.card-title.text-uppercase.text-muted.mb-0 Nền tảng
+                                  span.h2.font-weight-bold.mb-0 Đa thiết bị
+                              .col-auto.p-0
+                                  .icon.icon-shape.bg-gradient-orange.text-white.rounded-circle.shadow
+                                      i.fas.fa-tablet
+                          p.mt-3.mb-0.text-sm
+                              span.text-orange.mr-2
+                                  | Điện thoại, Máy tính,...
+              .col.col-12
+                  .card.mb-1.mb-md-3.shadow-lg.bg-gradient-indigo
+                      // Card body
+                      .card-body
+                          .row
+                              .col.p-0
+                                  h5.card-title.text-uppercase.text-secondary.mb-0 Trải nghiệm
+                                  span.h2.font-weight-bold.text-white.mb-0 Mướt mườn mượt
+                              .col-auto.p-0
+                                  .icon.icon-shape.bg-gradient-purple.text-white.rounded-circle.shadow
+                                      i.fas.fa-kiss-wink-heart
+                          p.mt-3.mb-0.text-sm
+                              span.mr-2
+                                  span.mb-1.ml-1.badge.bg-dark Chế độ ban đêm 
+                                  span.mb-1.ml-1.badge.bg-gradient-teal Nhạc tập trung
+                                  span.mb-1.ml-1.badge.bg-gradient-red Chỉnh cỡ chữ
+    .col-xl-8.order-xl-1
+        .card
+            .card-header
+                .row.align-items-center
+                    .col-8
+                        h3.mb-0 Thông tin khóa học
+            .card-body
+                h1.h1= course.name
+                | !{course.description}
+            .pb-6
+              .container-fluid
+                .header-body
+                  // Card stats
+                  .row
+                    .col-xl-12.col-md-12
+                      .card.card-stats
+                        // Card body
+                        .card-body
+                          .row
+                            .col
+                              h5.card-title.text-uppercase.text-muted.mb-0 Số đề trong khóa học 
+                              //- Span ở dưới = số đề đã làm
+                              span.h2.font-weight-bold.mb-0= tests.length
+                            .col-auto
+                              .icon.icon-shape.bg-gradient-red.text-white.rounded-circle.shadow
+                                i.ni.ni-archive-2
+                          p.mt-3.mb-0.text-sm
+                            span.text-success.mr-2
+                    .col-xl-12.col-md-12
+                      .card.card-stats
+                        // Card body
+                        .card-body
+                          .row
+                            .col
+                              h5.card-title.text-uppercase.text-muted.mb-0 Thời hạn khóa học
+                              span.h2.font-weight-bold.mb-0 08/07/2021
+                            .col-auto
+                              .icon.icon-shape.bg-gradient-info.text-white.rounded-circle.shadow
+                                i.ni.ni-hat-3
+                          p.mt-3.mb-0.text-sm
+                h3.h3 Danh sách các đề có trong khóa học
+                .table-responsive-md
+                    table.table.text-wrap
+                        thead
+                            tr
+                                th(scope="col") Tên đề
+                                th(scope="col") Số câu
+                                th(scope="col") Thời gian
+                                if course.logged_user_ids.includes(user.id)
+                                    th(scope="col") Thao tác
+                        tbody
+                            each test in tests
+                                tr
+                                    td.align-middle= test.name ? test.name : "Đề kiểm tra"
+                                    td.align-middle= test.questions.length
+                                    td.align-middle= test.time + " phút"
+                                    if course.logged_user_ids.includes(user.id)
+                                        td.align-middle
+                                            a.btn.btn-outline-primary.btn-sm(href="/tests/premium/"+test._id+"/view") Xem
+                            //- each test_id in test_ids 
+                            //- sdfsdf

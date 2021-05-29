@@ -1,0 +1,67 @@
+extends ../layouts/common
+block content   
+    .header-text
+        .container
+            .row.clearfix
+                .right-text.col-lg-6.col-md-6.col-sm-12.col-xs-12(data-scroll-reveal='enter left move 30px over 0.6s after 0.4s')
+                    .card.mx-auto(style='width: 18rem;')
+                        img.card-img-top(src='/img/logo.jpg', alt='Card image cap')
+                        .card-body
+                            h2.card-title Chỉnh sửa khóa học
+                            a.btn.btn-primary.my-2(href="/courses/manage/"+course._id+"/edit") Sửa thông tin 
+                            button.btn.btn-danger.my-2(type='button', data-toggle='modal', data-target='#Confirmation') Xóa khóa học
+                            button.btn.btn-success.my-2(type='button', data-toggle='modal', data-target='#Modal') Thêm học sinh
+                .col-lg-6.col-md-6.col-sm-12.col-xs-12(data-scroll-reveal="enter right move 30px over 0.6s after 0.4s")
+                    .card.mx-auto
+                        .card-header
+                            | Thông tin khóa học
+                        .card-body
+                            h1.card-title= "Tên khóa học: " + course.name
+                            h3= "Mô tả: " + course.description
+                            p.card-text= "Giá: " + course.price + " đồng"
+                            p.card-text= "Tổng số đề: " + course.test_ids.length 
+                            p.card-text= "Lớp: "+ course.grade
+                            p.card-text Các đề trong khóa: 
+                            .table-responsive-sm
+                                table.table
+                                    thead
+                                        tr
+                                            th(scope="col") Tên đề
+                                            th(scope="col") Số câu
+                                            th(scope="col") Thời gian
+                                    tbody
+                                        each test in tests
+                                            tr
+                                                td.align-middle= test.name ? test.name : "Khóa học" 
+                                                td.align-middle= test.questions.length
+                                                td.align-middle= test.time ? test.time : "null"                              
+    #Modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+      .modal-dialog(role='document')
+        .modal-content
+          .modal-header
+            h5#exampleModalLabel.modal-title Thêm học sinh
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') &times;
+          .modal-body
+            form(action="/courses/manage/"+course._id+"/add" method="POST")
+                .form-group
+                    label(for='studentID') ID Học sinh
+                    input#studentID.form-control(type='text', name="studentId", placeholder='Nhập ID Học sinh')
+                button.btn.btn-primary(type='submit') Thêm
+          .modal-footer
+            button.btn.btn-secondary(type='button', data-dismiss='modal') Hủy
+    #Confirmation.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+      .modal-dialog(role='document')
+        .modal-content
+          .modal-header
+            h5#exampleModalLabel.modal-title XÁC NHẬN
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') &times;
+          .modal-body
+            p Xóa là mất lun đó nha :<
+          .modal-footer
+            button.btn.btn-secondary(type='button', data-dismiss='modal') Thui đổi í rùi 
+            a.btn.btn-danger(type='button' href="/courses/manage/" + course._id + "/delete") Okeee lun
+
+
+

@@ -47,7 +47,7 @@ router.put('/:id', authMiddlewares.authRequire, async (req, res) => {
 })
 
 router.delete('/:id', (req, res) => {
-  Result.findByIdAndDelete(req.body.id, (err) => {
+  Result.findByIdAndDelete(req.params.id, (err) => {
     if (err) res.status(500).json({error: err});
     res.json({ message: 'Tải lại trang để có hiệu lực.' });
   })

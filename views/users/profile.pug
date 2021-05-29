@@ -1,5 +1,136 @@
 extends ../layouts/common.pug
+block outofcontent
+    // Main content
+    // Header
+    // Header
+    // Page content
+    .container-fluid.mt--6
+      .row
+        .col-xl-4.order-xl-2
+          .card.card-profile
+            img.card-img-top(src='/img/profile-default-background-image.jpg', alt='Image placeholder')
+            .row.justify-content-center
+              .col-lg-3.order-lg-2
+                .card-profile-image
+                  a(href='#')
+                  if user.avatar 
+                    img.rounded-circle(src=user.avatar)
+                  else  
+                    img.rounded-circle(src='/img/logo.jpg')
+            .card-header.text-center.border-0.pt-8.pt-md-4.pb-0.pb-md-4
+              .d-flex.justify-content-between
+                a.btn.btn-sm.btn-info.mr-4(href='#') Connect
+                a.btn.btn-sm.btn-default.float-right(href='#') Message
+            .card-body.pt-0
+              .text-center
+                h5.h3= user.displayName
+                  if user.birthYear
+                    span.font-weight-light= "," + user.birthYear
+                .h5.font-weight-300
+                  if user.accommodation 
+                    i.ni.location_pin.mr-2= user.accommodation
+                .h5.mt-4
+                  i.ni.business_briefcase-24.mr-2
+                    span= "ID: " + user.id
+                div
+                  if(user.school)
+                    i.ni.education_hat.mr-2
+                    span= user.school
+                  else
+                    span Vật Lý Siêu Nhẩm 
+        .col-xl-8.order-xl-1
+          .card
+            .card-header
+              .row.align-items-center
+                .col-8
+                  h3.mb-0 Sửa thông tin cá nhân
+            .card-body
+              form(action="", method="POST")
+                h6.heading-small.text-muted.mb-4 Thông tin học sinh
+                .pl-lg-4
+                  .row
+                    .col-lg-6
+                      .form-group
+                        label.form-control-label(for='input-username') Họ và Tên:
+                        input#input-username.form-control(type='text', placeholder="Họ và tên...", value=user.displayName)
+                    .col-lg-6
+                      .form-group
+                        label.form-control-label(for='input-email') Trường đang theo học:
+                        input#input-email.form-control(type='text', placeholder='Trường...')
+                  .row
+                    .col-lg-6
+                      .form-group
+                        label.form-control-label(for='input-first-name') Ngày sinh:
+                        input#input-first-name.form-control(type='date', placeholder='Ngày sinh...', value=user.birth)
+                    .col-lg-6
+                      .form-group
+                        label.form-control-label(for='input-last-name') Tỉnh (Thành phố)
+                        input#input-last-name.form-control(type='text', placeholder='Last name', value=user.accommodation)
+                  .form-group
+                    button.btn.btn-outline-success.nav-item(type="submit") Cập nhật thông tin tài khoản             
+                hr.my-4
+                // Address
+                // Header
+                .pb-6
+                  .container-fluid
+                    .header-body
+                      // Card stats
+                      .row
+                        .col-xl-6.col-md-6
+                          .card.card-stats
+                            // Card body
+                            .card-body
+                              .row
+                                .col
+                                  h5.card-title.text-uppercase.text-muted.mb-0 Tổng số đề đã làm
+                                  //- Span ở dưới = số đề đã làm
+                                  span.h2.font-weight-bold.mb-0 69
+                                .col-auto
+                                  .icon.icon-shape.bg-gradient-red.text-white.rounded-circle.shadow
+                                    i.ni.ni-archive-2
+                              p.mt-3.mb-0.text-sm
+                                span.text-success.mr-2
+                                  //- Số bài đã làm trong 1 tuần
+                                  i.fa.fa-arrow-up
+                                  |  3.48%
+                                span.text-nowrap Trong tuần này
+                        .col-xl-6.col-md-12
+                          .card.card-stats
+                            // Card body
+                            .card-body
+                              .row
+                                .col
+                                  h5.card-title.text-uppercase.text-muted.mb-0 Điểm trung bình
+                                  span.h2.font-weight-bold.mb-0 6,9
+                                .col-auto
+                                  .icon.icon-shape.bg-gradient-info.text-white.rounded-circle.shadow
+                                    i.ni.ni-chart-bar-32
+                              p.mt-3.mb-0.text-sm
+                                span.text-success.mr-2
+                                  i.fa.fa-arrow-up
+                                  |  3.48%
+                                span.text-nowrap Trong tuần này
+                // Page content
+                .container-fluid.mt--6
+                  .row
+                          .col-xl-12
+                            .card
+                              .card-header.bg-transparent
+                                .row.align-items-center
+                                  .col
+                                    h6.text-uppercase.text-muted.ls-1.mb-1 Điểm trung bình
+                                    h5.h3.mb-0 Các đề thi gần đây
+                              .card-body
+                                // Chart
+                                .chart
+                                  canvas#chart-bars.chart-canvas
+                                              // Chart
+                                              .chart
+                                                // Chart wrapper
+                                                canvas#chart-sales-dark.chart-canvas
+                hr.my-4
+    // Core
+block script-footer 
+  script(src='https://cdn.jsdelivr.net/npm/chart.js')
+  //- script(src='/template/vendor/chart.js/dist/Chart.extension.js')
 
-block content
-    p= user.displayName
-    p= user.id

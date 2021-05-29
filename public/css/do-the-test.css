@@ -1,3 +1,8 @@
+:root {
+    --bs-success: #2dce89;
+    --bs-danger: #f5365c;
+}
+
 .modal-backdrop.show {
     opacity: 1;
     background-color: var(--bs-success);
@@ -7,6 +12,11 @@
     font-family: inherit !important;
 }
 
+p {
+    font-size: large;
+}
+
+
 .test-wrap {
     font-family: "Times New Roman";
     font-size: large;
@@ -15,6 +25,7 @@
 .question-wrap>p {
     margin-top: 5px;
     margin-bottom: 0;
+    font-size: large;
 }
 
 .radio {

@@ -1,0 +1,54 @@
+extends ../layouts/common
+block script-header
+    script(src="//cdn.ckeditor.com/4.16.0/standard-all/ckeditor.js")
+block content
+    form.row.g-3(method="POST" action="/courses/manage/" + course.id + "/edit")
+        .col-12
+            label.form-label(for='inputEmail4') Tên khóa học:
+            input#inputEmail4.form-control(type='text' name="name" placeholder="Nhập tên khóa học..." value=course.name required)
+        .col-md-6
+            label.form-label(for='public_price') Giá công khai:
+            input#public_price.form-control(type='number' name="public_price"  value=course.public_price placeholder="Nhập giá khóa học..." required)
+        .col-md-6
+            label.form-label(for='original_price') Giá gốc:
+            input#original_price.form-control(type='number' name="original_price" placeholder="Nhập giá khóa học..." value=course.original_price)
+        .col-md-6
+            label.form-label(for='grade') Khối:
+            select#grade.form-control(type='number' name="grade" placeholder="Nhập giá khóa học..." required)
+                option(value="12" selected=course.grade==12) 12
+                option(value="11" selected=course.grade==12) 11
+                option(value="10" selected=course.grade==12) 10
+                option(value="9" selected=course.grade==12) 9
+        .col-md-6
+            label.form-label(for='img_link') Link ảnh bìa
+            input#img_link.form-control(type='text', placeholder='Giới thiệu khóa học...' name="img_link")
+        .col-12
+            label.form-label(for='description') Giới thiệu khóa học (Mô tả)
+            textarea#description(name="description")
+                | !{course.description}
+        .col-12
+            label.form-label(for='owner') Ghi chú
+            input#owner.form-control(type='text', placeholder='Giới thiệu khóa học...' name="note" value=course.note)
+
+        .col-12
+            h3 Những đề trong khóa học:
+            .d-flex.flex-wrap
+                each test in tests 
+                    .form-check.mx-2
+                        input.form-check-input(id="test-"+test._id type='checkbox', value=test._id, name="test_ids" checked=course.test_ids.includes(test._id))
+                        label.form-check-label(for="test-"+test._id)
+                            strong= test.name 
+                            br
+                            span= " Số câu: " + test.questions.length 
+                            br
+                            span= " Thời gian: " + test.time + " phút"
+                        br
+        .col-12 
+            label.form-label(for='owner') ID học sinh đăng ký
+            textarea.form-control#description(name="logged_user_ids")= course.logged_user_ids.join(";")
+        .col-12
+            br
+            button.btn.btn-primary(type='submit') Cập nhật
+    script
+        include /js/courses/descriptionEditor.js
+    

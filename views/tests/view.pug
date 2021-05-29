@@ -13,13 +13,14 @@ block header
             box-shadow: none;
         }
 block content
-    .modal#resultModal(tabindex='-1')
+    .modal.fade#resultModal(tabindex='-1')
         .modal-dialog
             .modal-content
                 .modal-header
                     h5.modal-title Kết của của học sinh 
                         span#nameStudent
-                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                    button.btn-close.close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                        | &times;
                 .modal-body
                     #modalContent
                     canvas#scatterChart
@@ -49,8 +50,8 @@ block content
                     each result in results
                         if user && (user.isAdmin || user.id == result.user.facebook_id)
                             tr(style="cursor: pointer;")
-                                td(onclick="viewResult('" + result._id + "');")= result.user.display_name
-                                td= Math.round(result.mark*100)/100
+                                td.align-middle(onclick="viewResult('" + result._id + "');")= result.user.display_name
+                                td.align-middle= Math.round(result.mark*100)/100
                                 td
                                     a.btn.btn-success(href='/tests/'+result.test_id._id+'/view-result/'+result._id target="_blank") Xem
                                     if user && user.isAdmin

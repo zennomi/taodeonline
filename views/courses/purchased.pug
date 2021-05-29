@@ -1,0 +1,20 @@
+extends ../layouts/common
+block content 
+    .table-responsive-sm
+        table.table
+            thead
+                tr
+                    th(scope="col") Tên khóa học
+                    th(scope="col") Số đề
+                    th(scope="col") Lớp
+                    th(scope="col") Giá
+                    th(scope="col") Thao tác
+            tbody
+                each course in courses
+                    tr
+                        td.align-middle= course.name ? course.name : "Khóa học"
+                        td.align-middle= course.test_ids.length
+                        td.align-middle= course.grade
+                        td.align-middle= course.price + " đồng" ? course.price : "null" 
+                        td.align-middle
+                            a.btn.btn-primary(href="/courses/"+course._id+"/view") Xem

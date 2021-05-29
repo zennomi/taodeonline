@@ -7,7 +7,9 @@ function notify(title, content) {
     toastEl.addEventListener('hidden.bs.toast', function () {
         toastEl.remove();
     })
-    toast = new bootstrap.Toast(toastEl, {});
+    toast = new bootstrap.Toast(toastEl, {
+        delay: 5000
+    });
     toast.show();
 }
 function createElementFromHTML(htmlString) {

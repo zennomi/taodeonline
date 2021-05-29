@@ -1,0 +1,178 @@
+.section {
+    position: relative;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+.section-xl {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+}
+
+.section-lg {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+.section-sm {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    .section-hero {
+        min-height: 500px;
+    }
+}
+
+.section-shaped {
+    position: relative;
+    overflow: hidden;
+}
+
+.section-shaped .shape {
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+}
+
+.section-shaped .shape {
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+}
+
+.section-shaped .shape span {
+    position: absolute;
+}
+
+.section-shaped .shape-style-1 span {
+    height: 120px;
+    width: 120px;
+    border-radius: 50%;
+}
+
+.section-shaped .shape-style-1 .span-200 {
+    height: 200px;
+    width: 200px;
+}
+
+.section-shaped .shape-style-1 .span-150 {
+    height: 150px;
+    width: 150px;
+}
+
+.section-shaped .shape-style-1 .span-100 {
+    height: 100px;
+    width: 100px;
+}
+
+.section-shaped .shape-style-1 .span-75 {
+    height: 75px;
+    width: 75px;
+}
+
+.section-shaped .shape-style-1 .span-50 {
+    height: 50px;
+    width: 50px;
+}
+
+.section-shaped .shape-style-1 :nth-child(1) {
+    left: -4%;
+    bottom: auto;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.section-shaped .shape-style-1 :nth-child(2) {
+    right: 4%;
+    top: 10%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.section-shaped .shape-style-1 :nth-child(3) {
+    top: 280px;
+    right: 5.66666%;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.section-shaped .shape-style-1 :nth-child(4) {
+    top: 320px;
+    right: 7%;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.section-shaped .shape-style-1 :nth-child(5) {
+    top: 38%;
+    left: 1%;
+    right: auto;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.section-shaped .shape-style-1 :nth-child(6) {
+    width: 200px;
+    height: 200px;
+    top: 44%;
+    left: 10%;
+    right: auto;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.section-shaped .shape-style-1 :nth-child(7) {
+    bottom: 50%;
+    right: 36%;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.section-shaped .shape-style-1 :nth-child(8) {
+    bottom: 70px;
+    right: 2%;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.section-shaped .shape-style-1 :nth-child(9) {
+    bottom: 1%;
+    right: 2%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.section-shaped .shape-style-1 :nth-child(10) {
+    bottom: 1%;
+    left: 1%;
+    right: auto;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 991.98px) {
+    .section-shaped .shape-style-1 span {
+        height: 120px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .section-shaped .shape-style-1 span {
+        height: 90px;
+    }
+}
+
+.icon-shape {
+    display: block;
+}
+
+@media (min-width: 1300px) {
+    .container,
+    .container-lg,
+    .container-md,
+    .container-sm,
+    .container-xl {
+        max-width: 1240px;
+    }
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}

@@ -13,13 +13,14 @@ block content
             tbody
                 each test in tests
                     tr
-                        td.align-middle= test.grade
-                        td.align-middle= test.name ? test.name : "Đề kiểm tra"
-                        td.align-middle= test.questions.length + " câu/" + test.time + " phút"
+                        td.align-middle.text-wrap= test.grade
+                        td.align-middle.text-wrap= test.name ? test.name : "Đề kiểm tra"
+                        td.align-middle.text-wrap= test.questions.length + " câu/" + test.time + " phút"
                         td.align-middle
                             if user && user.isAdmin
-                                a.btn.btn-outline-primary(href="/tests/"+test._id+"/view") Xem
-                                |     
-                            a.btn.btn-outline-success(href="/tests/"+test._id+"/do") Làm đề
+                                a.btn.btn-primary.btn-icon.btn-sm(href="/tests/"+test._id+"/view" title="Xem chi tiết")
+                                    i.fas.fa-eye
+                            a.btn.btn-success.btn-icon.btn-sm(href="/tests/"+test._id+"/do" title="Làm đề")
+                                i.fas.fa-pencil
 
                     

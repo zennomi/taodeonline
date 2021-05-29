@@ -5,14 +5,15 @@ const testSchema = new Schema({
     questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
     time: Number,
     name: String,
-    deadline: {type: Date, default: new Date()},
-    isPublic: {type: Boolean, default: false},
-    grade: {type: Number, default: 12},
+    deadline: { type: Date, default: new Date() },
+    isPublic: { type: Boolean, default: false },
+    grade: { type: Number, default: 12 },
     isPremium: {
         type: Boolean,
         default: false
     },
-    link_ggdrive: String
+    link_ggdrive: String,
+    link_fb_live: String
 })
 
-module.exports =  mongoose.model('Test', testSchema);
+module.exports = mongoose.model('Test', testSchema);

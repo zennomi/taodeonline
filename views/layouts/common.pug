@@ -1,75 +1,188 @@
 html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        block title
-        title Vật Lý Siêu Nhẩm
-        link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous")
-        block header
-        block stylesheet
-        block script-header
-        include ./favicon.pug
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    block title
+    include ./favicon.pug
+    title Vật Lý Siêu Nhẩm
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x', crossorigin='anonymous')
+    //- Fonts
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Quicksand:300,400,600,700')
+    //- Argon CSS
+    link(rel='stylesheet', href='/template/css/argon.min.css', type='text/css')
+    style
+      include /css/index.css
+    #fb-root
+      script(async='', defer='', crossorigin='anonymous', src='https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v10.0', nonce='2WyVCSOP')
+    block header
+    block stylesheet
+    block script-header
+    link(rel='stylesheet', type='text/css', href='//cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@8af0edd/css/all.css')
+  body
+    // Main content
+    #panel.sticky-top
+      // Topnav
+      nav.navbar.navbar-top.navbar-expand.navbar-dark.px-0.px-md-2.py-1.bg-success.bg-gradient
+        .container-fluid
+          a.mr-0.me-md-1(href="/")
+            img(src='/img/logo.jpg' class="img-fluid rounded shadow" style="width: 50px;")
+          #navbarSupportedContent.collapse.navbar-collapse
+            // Search form
+            //- form#navbar-search-main.navbar-search.navbar-search-light.form-inline.mr-sm-3
+            //-   .form-group.mb-0
+            //-     .input-group.input-group-alternative.input-group-merge
+            //-       .input-group-prepend
+            //-         span.input-group-text
+            //-           i.fas.fa-search
+            //-       input.form-control(placeholder='Nhập câu hỏi...', type='text')
+              button.close(type='button', data-action='search-close', data-target='#navbar-search-main', aria-label='Close')
+                span(aria-hidden='true') &times;
+            // Navbar links
+            ul.navbar-nav.align-items-center.ml-md-auto
+              //- li.nav-item.d-xl-none
+              //-   // Sidenav toggler
+              //- li.nav-item.d-sm-none
+              //-   a.nav-link(href='#', data-action='search-show', data-target='#navbar-search-main')
+              //-     i.ni.ni-zoom-split-in
+              li.nav-item.dropdown
+                a#questionDropdown.nav-link.mx-md-1(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false' data-bs-toggle="dropdown")
+                  i.fas.fa-stars.text-yellow
+                  |   Luyện online
+                .dropdown-menu.dropdown-menu-xl.dropdown-menu-end.overflow-hidden
+                  .nav-item.dropdown.dropdown-menu-inner
+                    a.media.d-flex.align-items-center.mb-2.mb-md-4(href='/courses')
+                      .icon.icon-shape.bg-gradient-warning.rounded-circle.text-white
+                        i.fas.fa-graduation-cap
+                      .media-body.ml-3
+                        h5.heading.text-warning.mb-md-1 Khoá luyện đề
+                        p.description.d-none.d-md-inline-block.mb-0 Luyện đề thi THPT Quốc Gia bám sát cấu trúc với lời giải chi tiết, nhóm facebook hỗ trợ, các chức năng để trải nghiệm thi thử là tốt nhất.
+                    a.media.d-flex.align-items-center.mb-2.mb-md-4(href='/tests')
+                      .icon.icon-shape.bg-gradient-danger.rounded-circle.text-white
+                        i.fas.fa-file-edit
+                      .media-body.ml-3
+                        h6.heading.text-danger.mb-md-1 Ngân hàng đề miễn phí
+                        p.description.d-none.d-md-inline-block.mb-0 Đề luyện thi THPT Quốc Gia sát nhất với cấu trúc của Bộ, đề thi học kì lớp 9,10,11,12,...
+                    a.media.d-flex.align-items-center(href='/questions')
+                      .icon.icon-shape.bg-gradient-primary.rounded-circle.text-white
+                        i.fas.fa-list-ol
+                      .media-body.ml-3
+                        h6.heading.text-primary.mb-md-1 Câu hỏi trắc nghiệm
+                        p.description.d-none.d-md-inline-block.mb-0 10000+ câu hỏi có lời giải cực chi tiết.
 
-        
-    body
-        nav.navbar.sticky-top.navbar-expand-lg.navbar-light.bg-light
-            .container-fluid
-                a.navbar-brand(href="/") VLSN
-                button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
-                    span.navbar-toggler-icon
-                #navbarSupportedContent.collapse.navbar-collapse
-                    ul.navbar-nav.me-auto.mb-2.mb-lg-0
-                        li.nav-item.dropdown
-                            a#questionDropdown.nav-link.dropdown-toggle(href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false")
-                                | Câu hỏi
-                            ul.dropdown-menu(aria-labelledby="questionDropdown")
-                                li
-                                    a.dropdown-item(href="/questions") Ngân hàng câu hỏi
-                                if user && user.isAdmin
-                                    li
-                                        hr.dropdown-divider
-                                    li
-                                        a.dropdown-item(href="/questions/create") Thêm câu hỏi mới
-                                    li
-                                        a.dropdown-item(href="/questions/import") Thêm nhiều câu hỏi
-                        li.nav-item.dropdown
-                            a#testDropdown.nav-link.dropdown-toggle(href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false")
-                                | Đề thi
-                            ul.dropdown-menu(aria-labelledby="testDropdown")
-                                li
-                                    a.dropdown-item(href="/tests") Ngân hàng đề
-                                li
-                                    a.dropdown-item(href="/tests/guide") Hướng dẫn làm đề
-                                if user && user.isAdmin
-                                    li
-                                        hr.dropdown-divider
-                                    li
-                                        a.dropdown-item(href="/tests/create") Thêm đề mới
-                                    li
-                                        a.dropdown-item(href="/tests/create") Tự tạo đề
-                    .d-flex
-                        if user
-                            ul.navbar-nav.me-auto.mb-2.mb-lg-0
-                                li.nav-item.dropdown
-                                    a#userName.nav-link.dropdown-toggle(href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false")
-                                        span= span= user.displayName
-                                    ul.dropdown-menu(aria-labelledby="navbarDropdown")
-                                        if user.isAdmin
-                                            a.dropdown-item(href="/tests/create") Xem giỏ câu hỏi
-                                        li
-                                            a.dropdown-item(href="/auth/logout") Đăng xuất
-                        else
-                            a.btn.btn-outline-success.nav-item(href="/auth/facebook") Đăng nhập
-        .fixed-top(aria-live="polite" aria-atomic="true")
-            .toast-container.position-absolute.top-0.end-0.p-3
-        .container.mt-3
-            if messages.warning
-                .alert.alert-primary= messages.warning
-            block content
-                
-        block outofcontent
-        script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous")
-        //- script(src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous")
-        //- script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous")
-        block script-footer
+              li.nav-item.dropdown
+                a.nav-link.mx-md-1(href='#', role='button', data-toggle='dropdown' data-bs-toggle='dropdown' aria-haspopup='true', aria-expanded='false')
+                  | Hỗ trợ
+                .dropdown-menu.dropdown-menu-lg.dropdown-menu-dark.dropdown-menu-end.bg-primary
+                  .row.row-cols-2.g-1.m-1
+                    .col.p-1
+                      a.list-group-item.list-group-item-action.text-center(href='https://www.facebook.com/HocLyThayQuy/' target="_blank")
+                        div
+                          span.shortcut-media.avatar.rounded-circle.bg-gradient-purple
+                            i.fab.fa-facebook
+                        h4.mb-0.text-sm Fanpage Facebook
+                    .col.p-1
+                      a.list-group-item.list-group-item-action.text-center(href='https://m.me/ngdatuananh/' target="_blank")
+                        div
+                          span.shortcut-media.avatar.rounded-circle.bg-gradient-pink
+                            i.fab.fa-facebook-messenger
+                        h4.mb-0.text-sm Phòng CNTT VLSN
+                    .col.p-1
+                      a.list-group-item.list-group-item-action.text-center(href='https://www.facebook.com/groups/giaimoibaily' target="_blank")
+                        div
+                          span.shortcut-media.avatar.rounded-circle.bg-gradient-blue
+                            i.fas.fa-users-class
+                        h4.mb-0.text-sm Group Ở đây giải mọi bài tập Lý
+                    .col.p-1
+                      a.list-group-item.list-group-item-action.text-center(href='https://www.youtube.com/channel/UCeJKtPNOdWnp9ya5jKBiu2w' target="_blank")
+                        div
+                          span.shortcut-media.avatar.rounded-circle.bg-gradient-red
+                            i.fab.fa-youtube
+                        h4.mb-0.text-sm Kênh Youtube Bài Giảng
+                    
+            if user
+                ul.navbar-nav.align-items-center.ml-auto.ml-md-0
+                    li.nav-item.dropdown
+                        a.nav-link.pr-0(href='#', role='button', data-toggle='dropdown', data-bs-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                            .media.align-items-center
+                                span.avatar.avatar-sm.rounded-circle
+                                    if user.avatar
+                                      img(alt='avatar', src=user.avatar)
+                                    else  
+                                      img(src='/img/logo.jpg')
+                                .media-body.ml-2.d-none.d-lg-block
+                                 span#userName.mb-0.text-sm.font-weight-bold= user.displayName
+                            .dropdown-menu.dropdown-menu-end
+                                .dropdown-header.noti-title
+                                    h6.text-overflow.m-0= "Xin chào, " + user.displayName
+                                a.dropdown-item(href='/user/')
+                                    i.fad.fa-id-badge
+                                    span Trang cá nhân
+                                //- a.dropdown-item(href='#')
+                                //-     i.ni.ni-settings-gear-65
+                                //-     span Cài đặt
+                                //- a.dropdown-item(href='#!')
+                                //-     i.ni.ni-calendar-grid-58
+                                //-     span Tình trạng hoạt động
+                                if user.isAdmin 
+                                  a.dropdown-item(href="/tests/create")
+                                    i.fad.fa-shopping-cart
+                                    span Xem giỏ câu hỏi
+                                  a.dropdown-item(href="/courses/manage")
+                                    i.fad.fa-shopping-cart
+                                    span Quản lý khoá học
+                                a.dropdown-item(href='http://m.me/HocLyThayQuy')
+                                    i.fad.fa-question-circle
+                                    span Hỗ trợ
+                                .dropdown-divider
+                                a.dropdown-item(href='/auth/logout')
+                                    i.fad.fa-sign-out
+                                    span Đăng xuất    
+            else
+                a.btn.btn-warning.nav-item(href="/auth/facebook") Đăng nhập
+    block header-text
+    .container.mt-3
+        if messages.warning
+            .alert.alert-primary= messages.warning
+        block content
+    .fixed-bottom(aria-live="polite" aria-atomic="true")
+      .toast-container.position-absolute.bottom-0.end-0.p-3                
+    //- script(src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous")
+    //- script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous")
+    // Modal
+    #exampleModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+      .modal-dialog(role='document')
+        .modal-content
+          .modal-header
+            h5#exampleModalLabel.modal-title Mã quà tặng
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') &times;
+          .modal-body
+            form(action="")
+              .form-group
+                label(for='#Giftcode') Mã quà tặng
+                input#Giftcode.form-control(type='giftcode', placeholder='Nhập mã quà tặng...')
+          .modal-footer
+            button.btn.btn-secondary(type='button', data-dismiss='modal') Hủy
+            button.btn.btn-primary(type='button') Xác nhận
+
+    block outofcontent
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous")
+    //- script(src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous")
+    //- script(src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous")
+    //- script(src='/template/vendor/js-cookie/js.cookie.js')
+    //- script(src='/template/vendor/jquery.scrollbar/jquery.scrollbar.min.js')
+    //- //- script(src='/template/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js')
+    //- script(src="https://cdn.jsdelivr.net/npm/jquery-scroll-lock@3.1.3/jquery-scrollLock.min.js" integrity="sha256-OGBqkSG4kYQ0UbrT7juDZpE/VqIjMPuu6CVKQ1KaTEA=" crossorigin="anonymous")
+    //- block script-footer
+    //- //- Argon JS
+    //- //- script(src='/template/js/argon.js?v=1.2.0')
+    //- script(src="https://cdn.jsdelivr.net/npm/@argonjs/argon@1.2.0/dist/argon.js" integrity="sha256-dsqmiOyroFLeWe2rdh+E0b+RuM5BzFzO7pudNGFq1Cc=" crossorigin="anonymous")
+    block script-footer
             
+  // Footer
+  footer.text-center.text-lg-start.bg-light.pt-3
+    // Section: Social media
+    block info-footer
+    .text-center.p-2(style='background-color: rgba(0, 0, 0, 0.05);')
+      | © 2021 Copyright: Phòng CNTT VLSN - VLSN IT

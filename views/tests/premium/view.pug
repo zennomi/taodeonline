@@ -109,7 +109,9 @@ block content
                                             | !{a.content}
                     .collapse(id="ans-"+q._id)
                         if q.answer
-                            | !{q.answer}
+                            .h6.text-success.fw-bold.sans-serif Đáp án
+                            .ms-2
+                                | !{q.answer}
                         else
                             | Câu này chưa có lời giải chi tiết.
                     hr

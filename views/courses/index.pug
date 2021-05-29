@@ -1,0 +1,216 @@
+extend ../layouts/common
+block header    
+    link(href='https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js', rel='stylesheet', integrity='sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x', crossorigin='anonymous')
+//- block header-text
+//-     .header-text(style="background-color: #00CC98;border:0px;margin-top:-20px")
+//-         .container
+//-             .row.clearfix
+//-                 .right-text.col-lg-6.col-md-6.col-sm-12.col-xs-12(data-scroll-reveal='enter left move 30px over 0.6s after 0.4s', style="padding:50px 0")
+//-                     h1(style="color:white")  
+//-                         | Các khóa học luyện đề online trên 
+//-                         strong LAMDEVLSN.
+//-                     p(style="color:white")
+//-                 .right-text.col-lg-6.col-md-6.col-sm-12.col-xs-12(data-scroll-reveal="enter right move 30px over 0.6s after 0.4s")
+//-                     img.rounded.img-fluid.d-block.mx-auto  
+block header-text
+    .section.section-hero.section-shaped.pt-0.pt-md-3
+        .shape.shape-style-1.shape-primary.bg-success.bg-gradient(style="max-height: 60vh;")
+            span.span-150
+            span.span-50
+            span.span-50
+            span.span-50
+            span.span-75
+            span.span-100
+            span.span-75
+            span.span-50
+            span.span-100
+            span.span-100
+        .page-header
+            .container.my-2.my-md-5.text-center
+                .fs-1.lead.text-white 
+                    .badge.bg-gradient-red.py-2 Khoá luyện đề
+                    |  công phá 
+                    .badge.bg-gradient-red #{Math.floor(((new Date('2021-07-07')).valueOf() - (new Date()).valueOf())/(24*3600*1000))} ngày
+                    |  trước giờ G 
+                    i.fas.fa-fire.text-orange
+                .container.d-flex.justify-content-around.flex-wrap
+                    .d-inline-block.badge.badge-success.mb-1 #LAS EDU
+                    .d-inline-block.badge.badge-success.mb-1 #VLSN
+                    .d-inline-block.badge.badge-success.mb-1 #Kỳ thi THPT QG 2021
+                    .d-inline-block.badge.badge-success.mb-1 #Luyện đề online
+                    .d-inline-block.badge.badge-success.mb-1 #VLSN IT
+
+                .btn-wrapper.my-4.my-md-5
+                    a.btn.btn-lg.btn-warning.bg-gradient-red(href="#courses") Đăng ký ngay
+            .row.row-cols-1.row-cols-md-2.gy-2.py-lg
+                .col
+                    #carouselExampleInterval.carousel.slide.w-100.bg-gradient-success.shadow(data-bs-ride='carousel')
+                        .carousel-inner
+                            .carousel-item.active(data-bs-interval='2000')
+                                img.d-block.w-100(src='/img/pre-courses-img.png' alt='Giới thiệu khoá học')
+                            .carousel-item(data-bs-interval='2000')
+                                img.d-block.w-100(src='/img/pre-courses-img.png' alt='Giới thiệu khoá học')
+                            .carousel-item
+                                img.d-block.w-100(src='/img/pre-courses-img.png' alt='Giới thiệu khoá học')
+                        button.carousel-control-prev(type='button' data-bs-target='#carouselExampleInterval' data-bs-slide='prev')
+                            span.carousel-control-prev-icon(aria-hidden='true')
+                            span.visually-hidden Trước
+                        button.carousel-control-next(type='button' data-bs-target='#carouselExampleInterval' data-bs-slide='next')
+                            span.carousel-control-next-icon(aria-hidden='true')
+                            span.visually-hidden Tiếp
+                .col
+                    .row.gy-2
+                        .col.col-12.col-md-6
+                            .card.mb-1.mb-md-3.shadow-lg
+                                // Card body
+                                .card-body
+                                    .row
+                                        .col.p-0
+                                            h5.card-title.text-uppercase.text-muted.mb-0 Cấu trúc đề
+                                            span.h2.font-weight-bold.mb-0 Bám sát
+                                        .col-auto.p-0
+                                            .icon.icon-shape.bg-gradient-red.text-white.rounded-circle.shadow
+                                                i.fas.fa-list-alt
+                                    p.mt-3.mb-0.text-sm
+                                        span.text-red.mr-2
+                                            | Đề THPT QG năm 2021
+                        .col.col-12.col-md-6
+                            .card.mb-1.mb-md-3.shadow-lg
+                                // Card body
+                                .card-body
+                                    .row
+                                        .col.p-0
+                                            h5.card-title.text-uppercase.text-muted.mb-0 Lời giải
+                                            span.h2.font-weight-bold.mb-0 Chi tiết
+                                        .col-auto.p-0
+                                            .icon.icon-shape.bg-gradient-blue.text-white.rounded-circle.shadow
+                                                i.fas.fa-info-circle
+                                    p.mt-3.mb-0.text-sm
+                                        span.text-blue.mr-2
+                                            | Kèm nhóm 
+                                            a.badge.badge-primary(href="https://www.facebook.com/groups/giaimoibaily" target="_blank") facebook
+                                            |  hỗ trợ
+                        .col.col-12.col-md-6
+                            .card.mb-1.mb-md-3.shadow-lg
+                                // Card body
+                                .card-body
+                                    .row
+                                        .col.p-0
+                                            h5.card-title.text-uppercase.text-muted.mb-0 Luyện đề
+                                            span.h2.font-weight-bold.mb-0 Chủ động
+                                        .col-auto.p-0
+                                            .icon.icon-shape.bg-gradient-pink.text-white.rounded-circle.shadow
+                                                i.fas.fa-skating
+                                    p.mt-3.mb-0.text-sm
+                                        span.text-pink.mr-2
+                                            | Điều chỉnh thời gian, độ khó
+                        .col.col-12.col-md-6
+                            .card.mb-1.mb-md-3.shadow-lg
+                                // Card body
+                                .card-body
+                                    .row
+                                        .col.p-0
+                                            h5.card-title.text-uppercase.text-muted.mb-0 Nền tảng
+                                            span.h2.font-weight-bold.mb-0 Đa thiết bị
+                                        .col-auto.p-0
+                                            .icon.icon-shape.bg-gradient-orange.text-white.rounded-circle.shadow
+                                                i.fas.fa-tablet
+                                    p.mt-3.mb-0.text-sm
+                                        span.text-orange.mr-2
+                                            | Điện thoại, Máy tính,...
+                        .col.col-12
+                            .card.mb-1.mb-md-3.shadow-lg.bg-gradient-indigo
+                                // Card body
+                                .card-body
+                                    .row
+                                        .col.p-0
+                                            h5.card-title.text-uppercase.text-secondary.mb-0 Trải nghiệm
+                                            span.h2.font-weight-bold.text-white.mb-0 Mướt mườn mượt
+                                        .col-auto.p-0
+                                            .icon.icon-shape.bg-gradient-purple.text-white.rounded-circle.shadow
+                                                i.fas.fa-kiss-wink-heart
+                                    p.mt-3.mb-0.text-sm
+                                        span.mr-2
+                                            span.mb-1.ml-1.badge.bg-dark Chế độ ban đêm 
+                                            span.mb-1.ml-1.badge.bg-gradient-teal Nhạc tập trung
+                                            span.mb-1.ml-1.badge.bg-gradient-red Chỉnh cỡ chữ
+
+                
+
+block content
+    .album
+        #courses.container.my-2.my-md-5.text-center
+            .badge.badge-success.fs-2.shadow-lg Khoá luyện đề
+        //- .right-text.col-lg-6.col-md-6.col-sm-12.col-xs-12
+        //-     h1.h1(style="margin-top:-30px;margin-bottom:5px") Củng cố kiến thức và rèn luyện kĩ năng làm đề
+        //-     p.text-muted(style="margin-bottom:20px") Chỉ học kiến thức là chưa đủ, chúng ta cần bắt tay vào thực chiến để giữ cho kiến thức không bị mai một. Vì vậy Vật Lý Siêu Nhẩm mang tới cho các bạn khóa học luyện đề xuyên suốt cho cả năm bao gồm cả luyện đề lý thuyết và bài tập
+        //-     .form-group
+        //-         a.btn.btn-danger(href="/courses/all-courses" style="color:white") Tất cả khóa học
+        //- .col-lg-6.col-md-6.col-sm-12.col-xs-12
+        //-     img.img-fluid.d-block.mx-auto.rounded-circle(data-scroll-reveal="enter right move 30px over 0.6s after 0.4s")  
+        .container
+            .row.row-cols-1.row-cols-sm-2.row-cols-md-3.g-3
+                // ADD Tests into res.render('index') of '/'
+                each course in courses
+                    .col
+                        .card.shadow
+                            img.bd-placeholder-img.card-img-top(width='100%', src='https://i.imgur.com/tzKT4lz.jpeg', role='img', aria-label='Placeholder:', preserveaspectratio='xMidYMid slice', focusable='true')
+                            title 123
+                            rect(width='100%', height='100%', fill='#55595c')
+                            text(x='50%', y='50%', fill='#eceeef', dy='.3em')
+                            .card-body
+                                .card-text
+                                    span= course.name
+                                    |  
+                                    .badge.badge-warning Hot
+                                .card-text.d-flex.justify-content-end.align-items-end
+                                    if course.original_price
+                                        .text-danger.fs-4.text-decoration-line-through= course.original_price.toLocaleString()
+                                            sup đ
+                                    .text-success.fs-2.ms-3= course.public_price.toLocaleString()
+                                        sup đ
+                                .text-end
+                                    small.card-text.text-muted= course.note
+                                .d-flex.justify-content-end
+                                    .btn-group
+                                        a.me-1.btn.btn-success.btn-sm.btn-icon(href="/courses/"+course._id+"/view")
+                                            i.fas.fa-eye
+                                            span Chi tiết
+                                        a.btn.btn-success.btn-sm.btn-icon(href="/courses/"+course._id+"/enroll")
+                                            i.fas.fa-shopping-cart
+                                            span Hướng dẫn mua
+            //- nav#courses(aria-label='Page navigation example')
+            //-     ul.pagination.justify-content-center
+            //-         if !page || page == 1
+            //-             li.page-item.disabled
+            //-                 a.page-link(href='#', tabindex='-1') <<
+            //-             li.page-item.active
+            //-                 a.page-link(href='/courses?page=1#courses') 1
+            //-             li.page-item
+            //-                 a.page-link(href='/courses?page=2#courses') 2
+            //-             li.page-item
+            //-                 a.page-link(href='/courses?page=3#courses') 3
+            //-             li.page-item
+            //-                 a.page-link(href='/courses?page=2#courses') >>
+            //-         if page === 2
+            //-             li.page-item
+            //-                 a.page-link(href='/courses?page=1#courses', tabindex='-1') <<
+            //-             li.page-item
+            //-                 a.page-link(href='/courses?page=1#courses') 1
+            //-             li.page-item.active
+            //-                 a.page-link(href='/courses?page=2#courses') 2
+            //-             li.page-item
+            //-                 a.page-link(href='/courses?page=3#courses') 3
+            //-             li.page-item
+            //-                 a.page-link(href='/courses?page=3#courses') >>
+            //-         if page == 3
+            //-             li.page-item
+            //-                 a.page-link(href='/courses?page=2#courses', tabindex='-1') <<
+            //-             li.page-item
+            //-                 a.page-link(href='/courses?page=1#courses') 1
+            //-             li.page-item
+            //-                 a.page-link(href='/courses?page=2#courses') 2
+            //-             li.page-item.active
+            //-                 a.page-link(href='/courses?page=3#courses') 3
+            //-             li.page-item.disabled
+            //-                 a.page-link(href='#') >>                            

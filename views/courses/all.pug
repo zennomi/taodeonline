@@ -1,0 +1,30 @@
+extends ../layouts/common
+block header-text 
+    .header-text(style="background-color: #00CC98;border:0px;margin-top:-20px")
+        .container
+            .row.clearfix
+                .right-text.col-lg-6.col-md-6.col-sm-12.col-xs-12(data-scroll-reveal='enter left move 30px over 0.6s after 0.4s', style="padding:50px 0")
+                    h1(style="color:white")  
+                        | Tất cả khóa học tại page 
+                        strong LAMDEVLSN.
+                    p(style="color:white")
+                .right-text.col-lg-6.col-md-6.col-sm-12.col-xs-12(data-scroll-reveal="enter right move 30px over 0.6s after 0.4s")
+                    img.rounded.img-fluid.d-block.mx-auto  
+block content 
+    .container
+        .row.row-cols-1.row-cols-sm-2.row-cols-md-3.g-3
+            // ADD Tests into res.render('index') of '/'
+            each course in courses
+                .col
+                    .card.shadow
+                        img.bd-placeholder-img.card-img-top(width='100%', src='https://i.imgur.com/tzKT4lz.jpeg', role='img', aria-label='Placeholder:', preserveaspectratio='xMidYMid slice', focusable='true')
+                        title 123
+                        rect(width='100%', height='100%', fill='#55595c')
+                        text(x='50%', y='50%', fill='#eceeef', dy='.3em')
+                        .card-body
+                            p.card-text.h4= course.name
+                            p.card-text= course.note
+                            .d-flex.justify-content-between.align-items-center
+                                .btn-group
+                                    a.btn.btn-outline-success(href="/courses/"+course._id+"/view") Xem
+                                small.text-muted=course.price    

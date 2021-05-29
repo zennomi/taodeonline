@@ -12,8 +12,11 @@ router.get('/:id/true-choices', async (req, res) => {
       res.status(404).json({error: 'Không thấy bài kiểm tra tương ứng.'});
       return;
     }
+    
+    let trueChoicesIds = [];
+    matchedTest.questions.map(q => q.choices.filter(c => c.isTrue)).forEach(c => trueChoicesIds.push(...c.map(i => i._id)));
     res.status(200).json({
-        result: matchedTest.questions.map(q => q.choices.filter(c => c.isTrue)[0]._id),
+        result: trueChoicesIds,
         isPublic: matchedTest.isPublic
     });
 })

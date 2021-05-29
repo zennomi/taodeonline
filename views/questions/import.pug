@@ -6,9 +6,13 @@ block script-header
 block content
     h1 Thêm nhiều câu hỏi
     form#importForm(action="/questions/import" method="POST")
+        .form-check.form-switch
+            input.form-check-input(type="checkbox" name="addToMemory" checked)
+            label.form-check-label Thêm vào bộ nhớ
         textarea(name="content")
-        button.btn.btn-primary(type="submit") Xem trước
-        button.btn.btn-primary#importBtn(type="button") Lưu lại
+        .d-flex.justify-content-around
+            button.d-block.btn.btn-primary(type="submit") Xem trước
+            button.d-block.btn.btn-primary#importBtn(type="button") Lưu lại
 block script-footer
     script(src="/js/questions/import.js")
     

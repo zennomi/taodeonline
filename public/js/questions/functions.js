@@ -1,6 +1,6 @@
 var numberEle;
 getMethod('/api/questions/memory', (res) => {
-    document.getElementById('userName').innerHTML += `  <span id="numMemQues" class="badge rounded-pill bg-success">${res.questionsIds.length}</span>`
+    document.getElementById('userName').innerHTML += `  <span id="numMemQues" class="badge badge-default">${res.questionsIds.length}</span>`
     numberEle = document.getElementById('numMemQues');
 });
 
