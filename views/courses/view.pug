@@ -4,9 +4,9 @@ block content
     .col-xl-4.order-xl-2
       .card.card-profile
         img.card-img-top(src=course.img_link, alt='Khóa học')
-        .card-header.border-0.pt-8.pt-md-4.pb-0.pb-md-4.text-end
-            if course.logged_user_ids.includes(user.id)
-                button.btn.btn-success.btn-lg.btn-block(type='button' disabled) Đã mua khoá luyện đề
+        .card-header.border-0.pb-4.text-end
+            if ((course).isOpenTo(user))
+                button.btn.btn-success.btn-lg.btn-block(type='button' disabled) Bạn có thể tham gia khoá luyện đề này
             else 
                     if course.original_price
                         .text-danger.fs-4
@@ -22,7 +22,7 @@ block content
                     .text-end
                         small.card-text.text-muted= course.note
                     a.btn.btn-success.btn-lg.btn-block(type='button' href="/courses/"+course._id+"/enroll") Hướng dẫn đăng ký khoá học
-      .card.card-profile
+      .card.card-profile.d-none.d-xl-block
         .card-body
           .row.gy-2
               .col.col-12
@@ -122,7 +122,7 @@ block content
                               h5.card-title.text-uppercase.text-muted.mb-0 Số đề trong khóa học 
                               //- Span ở dưới = số đề đã làm
                               span.h2.font-weight-bold.mb-0= tests.length
-                            .col-auto
+                            .col-auto.d-none.d-xl-block
                               .icon.icon-shape.bg-gradient-red.text-white.rounded-circle.shadow
                                 i.ni.ni-archive-2
                           p.mt-3.mb-0.text-sm
@@ -135,28 +135,27 @@ block content
                             .col
                               h5.card-title.text-uppercase.text-muted.mb-0 Thời hạn khóa học
                               span.h2.font-weight-bold.mb-0 08/07/2021
-                            .col-auto
+                            .col-auto.d-none.d-xl-block
                               .icon.icon-shape.bg-gradient-info.text-white.rounded-circle.shadow
                                 i.ni.ni-hat-3
                           p.mt-3.mb-0.text-sm
                 h3.h3 Danh sách các đề có trong khóa học
-                .table-responsive-md
-                    table.table.text-wrap
-                        thead
-                            tr
-                                th(scope="col") Tên đề
-                                th(scope="col") Số câu
-                                th(scope="col") Thời gian
-                                if course.logged_user_ids.includes(user.id)
-                                    th(scope="col") Thao tác
-                        tbody
-                            each test in tests
+                if tests.length > 0
+                    .table-responsive-md
+                        table.table
+                            thead
                                 tr
-                                    td.align-middle= test.name ? test.name : "Đề kiểm tra"
-                                    td.align-middle= test.questions.length
-                                    td.align-middle= test.time + " phút"
-                                    if course.logged_user_ids.includes(user.id)
-                                        td.align-middle
-                                            a.btn.btn-outline-primary.btn-sm(href="/tests/premium/"+test._id+"/view") Xem
-                            //- each test_id in test_ids 
-                            //- sdfsdf
+                                    th(scope="col") Tên đề
+                                    th(scope="col") Tổng quan
+                                    if course.isOpenTo(user)
+                                        th(scope="col") Thao tác
+                            tbody
+                                each test in tests.sort((a, b) => a.name.localeCompare(b.name))
+                                    tr
+                                        td.text-wrap.align-middle= test.name ? test.name : "Đề kiểm tra"
+                                        td.text-wrap.align-middle= test.questions.length + " câu/" + test.time + " phút"
+                                        if course.isOpenTo(user)
+                                            td.align-middle
+                                                a.btn.btn-outline-primary.btn-sm(href="/courses/" + course._id + "/tests/"+test._id+"/view") Chi tiết
+                else 
+                    .alert.alert-info Danh sách đề sẽ được cập nhật sau.

@@ -19,11 +19,11 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                     });
                 }
             }
-        style
-            include /css/premium-test.css
+        link(rel="stylesheet" href="/css/premium-test.css")
         //- link(rel="stylesheet" href="/css/premium-test.css")
         include ../../layouts/favicon.pug
         link(rel='stylesheet', type='text/css', href='//cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@8af0edd/css/all.css')
+        link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Quicksand:300,400,600,700')
         script(src='//w.soundcloud.com/player/api.js') 
     body
         // None
@@ -33,7 +33,7 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
         #sidemenu.offcanvas.offcanvas-start(data-bs-scroll="true"  tabindex="-1" aria-labelledby="offcanvasScrollingLabel")
             .offcanvas-header.align-items-start
                 //- h5.offcanvas-title Menu hỗ trợ
-                iframe#sc-widget.d-none(src="//w.soundcloud.com/player/?url=//soundcloud.com/dabootlegboy/sets/study-chill-lofi-hiphop?show_artwork=false")
+                iframe#sc-widget.d-none(src= "//w.soundcloud.com/player/?url=//soundcloud.com/dabootlegboy/sets/study-chill-lofi-hiphop?show_artwork=false")
                 .d-flex.flex-wrap
                     button.d-block.me-2.btn.btn-outline-success.mb-1(onclick="toggleNightMode(this)")
                         if (style=config.darkmode == 'on')
@@ -42,35 +42,38 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                         else
                             i.fas.fa-moon
                             |  Dark Mode
-                    button#timeBtn.d-block.me-2.btn.btn-outline-success.mb-1(onclick="playOrPauseTime(this)")
-                        i.fas.fa-pause
-                        |  Tạm dừng
                     button.d-block.me-2.btn.btn-outline-success.mb-1(onclick="zoomOut()")
                         i.fas.fa-search-plus
                         |  Phóng to
                     button.d-block.me-2.btn.btn-outline-success.mb-1(onclick="zoomIn()")
                         i.fas.fa-search-minus
                         |  Thu nhỏ
-                    button.d.block.me-2.btn.btn-outline-success.mb-2(onclick="fullScreenOrEsc(this)")
+                    button.d.block.me-2.btn.btn-outline-success.mb-1(onclick="fullScreenOrEsc(this)")
                         i.fas.fa-expand-wide
                         |  Toàn màn hình
-                    .flex-grow-1.d-flex.justify-content-between.mb-1
-                        button#preBtn.d-block.btn.btn-outline-success.mb-1(disabled)
-                            i.fas.fa-step-backward
-                        button#playBtn.d-block.btn.btn-outline-success.mb-1(disabled)
-                            i.fas.fa-play
-                        button#nextBtn.d-block.btn.btn-outline-success.mb-1(disabled)
-                            i.fas.fa-step-forward
-                        button#shuffleBtn.d-block.btn.btn-outline-success.mb-1(disabled)
-                            i.fas.fa-exchange-alt
-                    select#musicSelect.form-select.mb-1
-                        option(value="//soundcloud.com/dabootlegboy/sets/study-chill-lofi-hiphop" selected) Lofi Chill
-                        option(value="//soundcloud.com/user-11544854/sets/baroque-study") Baroque
-                        option(value="//soundcloud.com/thenhan2501/sets/vn-remix") Vinahouse
                 button(type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close")
             .offcanvas-body.sidenav
-                h5 Thời gian còn lại: 
-                p#leftTime= test.time + " phút"
+                h5.text-center Thời gian còn lại
+                button#timeBtn.me-2.btn.btn-outline-success.mb-1(onclick="playOrPauseTime(this)")
+                    i.fas.fa-pause
+                    |  Tạm dừng
+                span#leftTime= test.time + " phút"
+                hr.my-1
+                h5.text-center Nhạc tập trung
+                .flex-grow-1.d-flex.justify-content-between.mb-1
+                    button#preBtn.d-block.btn.btn-outline-success.mb-1(disabled)
+                        i.fas.fa-step-backward
+                    button#playBtn.d-block.btn.btn-outline-success.mb-1(disabled)
+                        i.fas.fa-play
+                    button#nextBtn.d-block.btn.btn-outline-success.mb-1(disabled)
+                        i.fas.fa-step-forward
+                    button#shuffleBtn.d-block.btn.btn-outline-success.mb-1(disabled)
+                        i.fas.fa-exchange-alt
+                select#musicSelect.form-select.mb-1
+                    option(value="//soundcloud.com/dabootlegboy/sets/study-chill-lofi-hiphop" selected) Lofi Chill
+                    option(value="//soundcloud.com/user-11544854/sets/baroque-study") Baroque
+                    option(value="//soundcloud.com/thenhan2501/sets/vn-remix") Vinahouse
+                hr.my-1
                 h5 Lối tắt
                 .d-flex.justify-content-around.flex-wrap
                     each q, i in test.questions
@@ -81,9 +84,12 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                     a.mb-1(href="/")
                         i.fad.fa-home
                         |    Trang chủ
+                    a.mb-1(href="/courses/"+course._id+"/view")
+                        i.fad.fa-undo-alt
+                        |    Trỏ về khoá học
 
         // setting modal
-        .modal.fade.hide#init-modal(tab-index=-1 data-bs-backdrop="static" data-bs-keyboard="false").text-center
+        .modal.fade.show#init-modal(tab-index=-1 data-bs-backdrop="static" data-bs-keyboard="false").text-center
             .modal-dialog.modal-dialog-centered
                 .modal-content
                     .modal-header.justify-content-center
@@ -113,42 +119,36 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                                 a.w-100.btn.btn-danger(href="/tests/premium")
                                     i.fad.fa-undo-alt
                                     |   Trở về
-                    if results.length > 0
-                        .modal-body.border-top
-                            .h5.d-inline.border-success.text-success.border-bottom.border-5
-                                i.fad.fa-history
-                                |   Lịch sử làm bài
-                            table.table.text-center
-                                thead
-                                    tr
-                                        th Bắt đầu lúc
-                                        th Nộp bài lúc
-                                tbody
-                                    each result in results
-                                        tr
-                                            td
-                                                a(href="/tests/"+test._id+"/view-result/"+result._id target="_blank")= result.started_time.toLocaleString('vi-VN')
-                                            td
-                                                a(href="/tests/"+test._id+"/view-result/"+result._id target="_blank")= result.finished_time ? result.finished_time.toLocaleString('vi-VN') : "Chưa nộp bài"
         // Notify
         .fixed-bottom(aria-live="polite" aria-atomic="true")
             .toast-container.position-absolute.bottom-0.end-0.p-4
         // Main Area
-        .container(style="zoom: 1;")
+        .container(style="zoom: " + (config.zoomout == 'on' ? "1.5" : "1"))
             .card#resultCard.mt-5(style="display:none;")
                 .card-header
-                    .h5 Kết quả
+                    .h4.my-0.text-success.fw-bold Kết quả
                 .card-body
-                    p Số câu đúng: 
-                        span#result
-                        span= "/" + test.questions.length + " câu"
-                    p Số lần rời khỏi khu vực thi: 
-                        span#leaveTimes 0
-                    p Thời điểm bắt đầu: 
-                        span= (new Date()).toLocaleString('vi-VN')
-                    p Thời gian còn lại: 
-                        span#leftTimes
-
+                    .row.row-cols-1.row-cols-md-2.mb-2
+                        .col 
+                            b Số câu đúng: 
+                            span#result
+                            span= "/" + test.questions.length + " câu"
+                            br
+                            b Thời điểm bắt đầu: 
+                            span= (new Date()).toLocaleString('vi-VN')
+                            br
+                            b Thời gian còn lại: 
+                            span#leftTimes
+                            canvas#scatterChart(height='100')
+                        .col
+                            canvas#radarchart(height='100')
+                    .d-flex.justify-content-around
+                        a.d-block.btn.btn-success.btn-lg.mb-1(href="/courses/"+course._id+"/view")
+                            i.fad.fa-undo-alt
+                            |    Trỏ về khoá học
+                        a.d-block.btn.btn-success.btn-lg.mb-1(href="/")
+                            i.fad.fa-home
+                            |    Trang chủ
 
 
             h1.mt-2.text-success.text-center= test.name ? test.name : "Đề thi"
@@ -168,7 +168,7 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                 each q, i in test.questions
                     .question(id="q-"+q._id data-id=q._id)
                         .question-wrap
-                            b.text-success Câu #{i+1}: 
+                            b.text-success.sans-serif Câu #{i+1}: 
                             span !{q.question}
                         form.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0(class = q.getMaxLengthChoice() < 24 ? "row-cols-md-4" : q.getMaxLengthChoice() < 48 ? "row-cols-md-2" : "row-cols-md-1")
                             each a,j in q.choices
@@ -183,10 +183,14 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                         if q.answer
                             | !{q.answer}
                         else
-                            | Câu này chưa có lời giải chi tiết.
+                            .sans-serif
+                                | Câu này chưa có lời giải chi tiết nhưng không sao đã có 
+                                a.btn.btn-primary.btn-sm.btn-icon(href="https://www.facebook.com/groups/giaimoibaily" target="_blank")
+                                    i.fab.fa-facebook
+                                    span   Ở đây giải mọi bài tập Lý
 
                     hr
-            button.d-block.mx-auto.btn.btn-success.mb-5#submit(onclick=`submitTest("${test._id}")`)
+            button.d-block.mx-auto.btn.btn-success.mb-5#submit(type="button")
                 i.fad.fa-paper-plane
                 span.fw-bold   NỘP BÀI
         script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous")
@@ -195,10 +199,14 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
         script
             include /js/tests/premium/init.js
             include /js/helper/copy.js
+            include /js/countdown.js
             include /js/helper/fetch.js
             include /js/helper/notify.js
             include /js/tests/premium/helper.js
             include /js/tests/premium/player.js
+        script(src="https://cdn.jsdelivr.net/npm/chart.js")
+        script
+            include /js/tests/premium/viewresult.js
 
         script.
             //- document.getElementById('qr-image').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+location.href

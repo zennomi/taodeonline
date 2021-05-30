@@ -3,6 +3,11 @@ block header
     include ../../layouts/mathjax.pug
     link(rel="stylesheet" href="/css/premium-test.css")
     link(rel='stylesheet', type='text/css', href='//cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@8af0edd/css/all.css')
+    style.
+        :root {
+            --bs-success: #2dce89;
+        }
+
 block content
     #configModal.modal.fade(tabindex='-1' aria-hidden='true')
         .modal-dialog
@@ -11,25 +16,52 @@ block content
                     h5.modal-title Chuẩn bị đề
                     button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
                 .modal-body
-                    form#configForm(action=`/tests/premium/${test._id}/do` method="POST")
-                        .d-flex.justify-content-evenly
-                            .form-check.form-switch
-                                input.form-check-input(name="shuffleQuestions" type="checkbox" checked)
-                                label.form-check-label Trộn câu hỏi
-                            .form-check.form-switch
-                                input.form-check-input(name="shuffleOptions" type="checkbox" checked)
-                                label.form-check-label Trộn đáp án
-                            .form-check.form-switch
-                                input.form-check-input(type="checkbox" name="darkmode")
-                                label.form-check-label Chế độ ban đêm
-                        .mb-2.mx-auto.w-75
+                    .alert.alert-primary 
+                        | Nhằm giúp các bạn luyện đề được chủ động nhất, các bạn hãy lựa chọn chế độ luyện đề phù hợp với mình nhé!
+                    form.container#configForm(action=`/courses/${course._id}/tests/${test._id}/do` method="GET")
+                        .row.row-cols-md-2
+                            .col
+                                .form-check.form-switch
+                                    input.form-check-input(name="shuffleQuestions" type="checkbox" checked)
+                                    label.form-check-label Trộn câu hỏi
+                            .col 
+                                .text-muted Vẫn giữ đúng thứ tự từ dễ đến khó
+                        .row.row-cols-md-2
+                            .col
+                                .form-check.form-switch
+                                    input.form-check-input(name="shuffleOptions" type="checkbox" checked)
+                                    label.form-check-label Trộn đáp án
+                            .col 
+                                .text-muted Tráo 4 đáp án cho khỏi nhớ đề
+                        .row.row-cols-md-2.mb-2
+                            .col
+                                .form-check.form-switch
+                                    input.form-check-input(type="checkbox" name="darkmode")
+                                    label.form-check-label Chế độ ban đêm
+                            .col 
+                                .text-muted Bật chế độ này giúp tránh gây mỏi mắt
+                        .row.row-cols-md-2.mb-2
+                            .col
+                                .form-check.form-switch
+                                    input.form-check-input(type="checkbox" name="zoomout")
+                                    label.form-check-label Cỡ chữ lớn
+                            .col 
+                                .text-muted Thích hợp cho màn hình máy tính
+                        .mb-2.mx-auto
                             .input-group
-                                .input-group-text Thời gian làm bài
+                                .input-group-text.bg-primary.text-white Thời gian làm bài
                                 input.form-control(type="number" min=0 max=200 name="time" value=test.time)
                                 .input-group-text phút
+                        .mb-2
+                            .input-group
+                                .input-group-text.bg-primary.text-white Độ dễ nhất
+                                input.form-control(type="number" min=0 max=10 name="min" value=0)
+                                .input-group-text.bg-primary.text-white Độ khó nhất
+                                input.form-control(type="number" min=0 max=10 name="max" value=10)
                         button#submitBtn.d-block.mx-auto.btn.btn-primary(type='submit')
                             i.fad.fa-paper-plane.me-2
                             | Lấy đề
+                    #prArea
 
     .row.row-cols-md-2
         .col.col-md-3
@@ -39,29 +71,35 @@ block content
             h5.text-success
                 i.fad.fa-file-alt.me-2
                 span= test.name ? test.name : "Đề thi"
-            .d-flex.justify-content-around.justify-content-md-start
-                .text-center.me-1
-                    img.d-block.mx-auto.mb-1#qr-image(alt="QR Code" style="width: 150px;")
-                table.table.align-middle
-                    tr
-                        td
-                            i.fad.fa-list-ol
-                        td #{test.questions.length} câu
-                    tr
-                        td
-                            i.fad.fa-hourglass-start
-                        td #{test.time} phút
-                    tr
-                        td 
-                            i.fad.fa-copy 
-                        td 
-                            button#button-addon2.btn.btn-success.btn-sm(type="button" onclick=`copyToClipboard(window.location.origin + "/tests/${test._id}/view")`) Link
+            .text-center.me-1
+                img.d-block.mx-auto.mb-1#qr-image(alt="QR Code" style="width: 150px;")
+            .row.row-cols-2
+                .col-3
+                    i.fad.fa-list-ol
+                .col-9 #{test.questions.length} câu
+                .col-3
+                    i.fad.fa-hourglass-start
+                .col-9 #{test.time} phút
+                .col-3
+                    i.fad.fa-copy 
+                .col-9
+                    button#button-addon2.btn.btn-success.btn-sm(type="button" onclick=`copyToClipboard(window.location.href);`) Copy Link 
+                if test.link_fb_live
+                    .col-3
+                        i.fab.fa-facebook 
+                    .col-9 
+                        a(href=test.link_fb_live target="_blank") Video chữa
+                if test.link_pdf
+                    .col-3
+                        i.fas.fa-file-pdf 
+                    .col-9 
+                        a(href=test.link_pdf target="_blank") PDF
             h5.text-success.mt-2
                 i.fad.fa-history.me-2
                 | Lịch sử làm đề
             .d-flex.flex-wrap
                 each r in results 
-                    a.d-block.btn.btn-outline-success.btn-sm.mx-1.my-1.text-success(href=`/tests/${test._id}/view-result/${r._id}` target="_blank")= r.started_time.toLocaleString('vi-VN')
+                    a.d-block.badge.badge-success.mx-1.my-1(href=`/tests/${test._id}/view-result/${r._id}` target="_blank")= r.started_time.toLocaleString('vi-VN')
                     br
         .col.col-md-9
             .d-flex.justify-content-evenly
@@ -113,13 +151,18 @@ block content
                             .ms-2
                                 | !{q.answer}
                         else
-                            | Câu này chưa có lời giải chi tiết.
-                    hr
+                            .sans-serif
+                                | Câu này chưa có lời giải chi tiết nhưng không sao đã có 
+                                a.btn.btn-primary.btn-sm.btn-icon(href="https://www.facebook.com/groups/giaimoibaily" target="_blank")
+                                    i.fab.fa-facebook
+                                    span Ở đây giải mọi bài tập Lý
+                    hr.my-1
 block script-footer
     script.
         document.getElementById('qr-image').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + window.location.origin + "/tests/premium/#{test._id}/do"
     script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js" integrity="sha512-VMsZqo0ar06BMtg0tPsdgRADvl0kDHpTbugCBBrL55KmucH6hP9zWdLIWY//OTfMnzz6xWQRxQqsUFefwHuHyg==" crossorigin="anonymous")
     script(src="/js/helper/fetch.js")
     script(src="/js/helper/copy.js")
+    script(src="/js/helper/notify.js")
     script(src="/js/helper/randomfacts.js")
     script(src="/js/tests/premium/view.js")

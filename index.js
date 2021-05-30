@@ -61,50 +61,53 @@ const Strategy = require('passport-facebook').Strategy;
 
 // toggle comment for develop env
 // Configure Passport authenticated session persistence.
-// passport.serializeUser(function (user, cb) {
-//   cb(null, user);
-// });
+passport.serializeUser(function(user, cb) {
+    cb(null, user);
+});
 
-// passport.deserializeUser(function (obj, cb) {
-//   cb(null, obj);
-// });
+passport.deserializeUser(function(obj, cb) {
+    cb(null, obj);
+});
 
 
-// // Configure the Facebook strategy for use by Passport.
-// passport.use(new Strategy({
-//   clientID: process.env['FACEBOOK_CLIENT_ID'],
-//   clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
-//   callbackURL: process.env['CALLBACK_URL']
-// },
-//   function (accessToken, refreshToken, profile, done) {
-//     process.nextTick(function () {
-//       if (fbAdminIds.indexOf(profile.id) > -1) {
-//         profile.role = 'admin';
-//         profile.isAdmin = true;
-//       }
-//       else profile.role = 'user';
-//       return done(null, profile);
-//     });
-//   }
-// ));
-// app.use(passport.initialize());
-// app.use(passport.session());
+// Configure the Facebook strategy for use by Passport.
+passport.use(new Strategy({
+        clientID: process.env['FACEBOOK_CLIENT_ID'],
+        clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
+        callbackURL: process.env['CALLBACK_URL']
+    },
+    function(accessToken, refreshToken, profile, done) {
+        process.nextTick(function() {
+            console.log(profile);
+            if (fbAdminIds.indexOf(profile.id) > -1) {
+                profile.role = 'admin';
+                profile.isAdmin = true;
+            } else profile.role = 'user';
+            return done(null, profile);
+        });
+    }
+));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Begin init user for dev env
-app.use((req, res, next) => {
-        req.user = {
-            isAdmin: true,
-            displayName: "Dcm Web",
-            id: "69696969"
-        };
-        next();
-    })
-    // End
+// app.use((req, res, next) => {
+//         req.user = {
+//             isAdmin: true,
+//             displayName: "Dcm Web",
+//             id: "69696969"
+//         };
+//         next();
+//     })
+// End
 
 app.use(function(req, res, next) {
     app.locals.basedir = './public';
-    if (req.user) res.locals.user = req.user;
-    else res.locals.user = undefined;
+    if (req.user) {
+        console.log(req.user);
+        res.locals.user = req.user;
+        res.locals.user.software = req.get("User-Agent");
+    } else res.locals.user = undefined;
     if (req.path != '/auth' && req.path != '/history') res.locals.history = req.originalUrl;
     next();
 })
@@ -164,9 +167,23 @@ app.post('/api/result/view', authMiddlewares.authRequire, async(req, res) => {
     } catch (err) {
         res.json({ status: 404 });
     }
+
+    let topics = {};
+
+
     let trueChoices = [];
+    let selectedChoices = result.choices.map(c => String(c.choice_id));
+    console.log(selectedChoices);
+
     result.test_id.questions.forEach(q => {
-        trueChoices.push(...q.getTrueChoiceArray().map(c => String(c)));
+        let trueChoicesOfQues = q.getTrueChoiceArray().map(c => String(c));
+        q.main_tags.forEach(tag => {
+            tag = tag.value;
+            if (!topics[tag]) topics[tag] = { count: 0, total: 0 };
+            if (trueChoicesOfQues.some(c => selectedChoices.includes(c))) topics[tag].count += q.level;
+            topics[tag].total += q.level
+        })
+        trueChoices.push(...trueChoicesOfQues);
     })
     let choices = result.choices.map(c => {
         return {
@@ -183,7 +200,8 @@ app.post('/api/result/view', authMiddlewares.authRequire, async(req, res) => {
             index: i + 1
         }
     });
-    res.json({ status: 200, result, choices });
+    console.log(topics);
+    res.json({ status: 200, result, choices, topics });
 })
 
 app.get('*', function(req, res) {

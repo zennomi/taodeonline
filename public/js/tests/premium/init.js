@@ -1,12 +1,14 @@
 let resultId, submitBtn;
-document.addEventListener("DOMContentLoaded", function(){
+let questionList = [];
+
+document.addEventListener("DOMContentLoaded", function() {
     //dom is fully loaded, but maybe waiting on images & css files
-    
-    
+
+
     submitBtn = document.getElementById('submit');
     var initModal = document.getElementById('init-modal');
-    
-    initModal.addEventListener('hidden.bs.modal', function (event) {
+
+    initModal.addEventListener('hidden.bs.modal', function(event) {
         anotherMethod('/api/results', 'POST', { testId }, (res) => {
             document.querySelector('.test-wrap').style.display = 'block';
             resultId = res.result._id;
@@ -14,48 +16,14 @@ document.addEventListener("DOMContentLoaded", function(){
             scrollToTop();
         })
     });
-    
+
     initModal = new bootstrap.Modal(initModal, {
         backdrop: 'static',
         keyboard: false
     });
-    // initModal.show();
-    
+    initModal.show();
 
-    
-    
-    
-    function Question(element) {
-        this._element = element;
-        this._id = element.dataset['id'];
-        this._title = element.querySelector("b");
-        this._choices = element.querySelectorAll('input[type="radio"]');
-        this.choiceId = "";
-        this.shortcut = document.querySelector(`a[href="#q-${this._id}"]`);
-        this.moment;
-        this.getSelectedChoice = () => {
-            return this._element.querySelector('input:checked');
-        }
-        this.getChoiceById = (id) => {
-            return this._element.querySelector(`input[data-id=a-${id}]`)
-        }
-        this.getChoiceIdAndMoment = () => {
-            let selectedChoice = this.getSelectedChoice();
-            if (!selectedChoice) return null;
-            let choiceIdAndMoment = {
-                choice_id: this.choiceId || selectedChoice.dataset['id'],
-                moment: this.moment || new Date()
-            };
-            console.log(choiceIdAndMoment);
-            return choiceIdAndMoment;
-        }
-        var self = this;
-        this._choices.forEach(c => {
-            c.addEventListener("input", function () { self.selectChoice() })
-        })
-    }
-    
-    Question.prototype.selectChoice = function () {
+    Question.prototype.selectChoice = function() {
         let selectedChoice = this.getSelectedChoice();
         if (selectedChoice) {
             this.choiceId = selectedChoice.dataset['id'];
@@ -66,22 +34,27 @@ document.addEventListener("DOMContentLoaded", function(){
             this.getSelectedChoice().nextSibling.style["border"] = "solid 1px var(--bs-white)";
         }
     }
-    
-    let questionList = [];
+
     document.querySelectorAll(".question").forEach(q => questionList.push(new Question(q)));
-    
-    
-    
+
+
+
     // Menu
-    
+
     let sideNav = document.querySelector("#sidemenu");
     let offcanvas = new bootstrap.Offcanvas(sideNav);
-    
-    
+
+
     document.querySelectorAll(".sidenav a").forEach(a => a.addEventListener("click", () => {
-        setTimeout(function () { offcanvas.hide(); }, 500);
-    
+        setTimeout(function() { offcanvas.hide(); }, 500);
+
     }));
+
+    // Submit btn
+    submitBtn.addEventListener('click', () => {
+        if (!confirm("Nộp bài nhé?")) return;
+        submitTest();
+    })
 });
 
 
@@ -94,17 +67,49 @@ function submitChoices(isFinished) {
             choicesList.push(choiceIdAndMoment)
         }
     })
-    anotherMethod('/api/results/' + resultId, 'PUT',
-        { choices: choicesList, isFinished },
+    anotherMethod('/api/results/' + resultId, 'PUT', { choices: choicesList, isFinished },
         (res) => {
-            if (isFinished)
+            if (isFinished) {
+                viewResult(resultId);
                 notify("Hệ thống", "Đã lưu lại kết quả làm bài.");
+            }
         });
+}
+
+// questions prototype
+function Question(element) {
+    this._element = element;
+    this._id = element.dataset['id'];
+    this._title = element.querySelector("b");
+    this._choices = element.querySelectorAll('input[type="radio"]');
+    this.choiceId = "";
+    this.shortcut = document.querySelector(`a[href="#q-${this._id}"]`);
+    this.moment;
+    this.getSelectedChoice = () => {
+        return this._element.querySelector('input:checked');
+    }
+    this.getChoiceById = (id) => {
+        return this._element.querySelector(`input[data-id=a-${id}]`)
+    }
+    this.getChoiceIdAndMoment = () => {
+        let selectedChoice = this.getSelectedChoice();
+        if (!selectedChoice) return null;
+        let choiceIdAndMoment = {
+            choice_id: this.choiceId || selectedChoice.dataset['id'],
+            moment: this.moment || new Date()
+        };
+        console.log(choiceIdAndMoment);
+        return choiceIdAndMoment;
+    }
+    var self = this;
+    this._choices.forEach(c => {
+        c.addEventListener("input", function() { self.selectChoice() })
+    })
 }
 
 // Submit test
 function submitTest() {
-    if (!confirm("Nộp bài nhé?")) return;
+
     document.getElementById('timeBtn').remove();
     progressBtn.parentNode.remove();
     clearInterval(countdownCtrl);
@@ -115,10 +120,11 @@ function submitTest() {
     getMethod('/api/tests/' + testId + '/true-choices',
         (res) => {
             submitChoices(1);
-            let trueChoicesId = [...res.result], falseCounts = 0;
+            let trueChoicesId = [...res.result],
+                falseCounts = 0;
             questionList.forEach(q => {
                 let checkedRadio, trueRadio;
-                q._choices.forEach(function (i) {
+                q._choices.forEach(function(i) {
                     if (i.checked) checkedRadio = i;
                     if (trueChoicesId.indexOf(i.dataset.id) > -1) trueRadio = i;
                     i.disabled = true;
@@ -137,7 +143,7 @@ function submitTest() {
                         q.shortcut.style.border = "solid 2px var(--bs-danger)";
                         q._title.classList.add("btn-danger");
                         checkedRadio.nextSibling.style.background = "var(--bs-danger)";
-    
+
                         falseCounts++;
                     } else q._title.classList.add("btn-success");
                     trueRadio.nextSibling.style.background = "var(--bs-success)";
@@ -145,7 +151,7 @@ function submitTest() {
                     trueRadio.nextSibling.style.border = "none";
                     q._title.style.color = "var(--bs-white)";
                     q._title.classList.remove("text-success");
-                    q._title.nextElementSibling.innerHTML = `   <a class="text-decoration-none btn btn-success btn-sm" data-bs-toggle="collapse" href="#ans-${q._id}" role="button" aria-expanded="false">
+                    q._title.nextElementSibling.innerHTML = `   <a class="text-decoration-none btn btn-success btn-sm sans-serif" data-bs-toggle="collapse" href="#ans-${q._id}" role="button" aria-expanded="false">
                     lời giải chi tiết
                   </a><br>` + q._title.nextElementSibling.innerHTML;
                 }

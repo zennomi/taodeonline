@@ -5,7 +5,7 @@ const shuffle = require('shuffle-array');
 const groupArray = require('group-array');
 
 module.exports.index = (req, res) => {
-    Test.find({}).sort({_id: -1}).exec((err, tests) => {
+    Test.find({}).sort({ _id: -1 }).exec((err, tests) => {
         if (err) return res.send("Error.");
 
         res.render('tests/index', { tests });
@@ -33,14 +33,14 @@ module.exports.do = (req, res) => {
             questionGroups[level] = shuffle(questionGroups[level]);
             test.questions.push(...questionGroups[level])
         }
-        Result.find({"user.facebook_id": req.user.id, test_id: test._id}).exec((err, results) => {
+        Result.find({ "user.facebook_id": req.user.id, test_id: test._id }).exec((err, results) => {
 
-            res.render('tests/do', { test, link: `${req.hostname}${req.originalUrl}`, results});
+            res.render('tests/do', { test, link: `${req.hostname}${req.originalUrl}`, results });
         })
     })
 }
 
-module.exports.create = async (req, res) => {
+module.exports.create = async(req, res) => {
     let ids = req.cookies.questions ? req.cookies.questions.ids : [];
 
     let matchedQuestions = await Question.find({ _id: { $in: ids } });
@@ -59,7 +59,7 @@ module.exports.autoCreate = (req, res) => {
     res.render('tests/auto-create.pug')
 }
 
-module.exports.postAutoCreate = async (req, res) => {
+module.exports.postAutoCreate = async(req, res) => {
     let numberOfGroups = req.body.numberOfQuestions.length;
     let matchedQuestions = [];
     for (let i = 0; i < numberOfGroups; i++) {
@@ -81,9 +81,10 @@ module.exports.postAutoCreate = async (req, res) => {
     res.redirect('/tests/create');
 }
 
-module.exports.view = async (req, res) => {
+module.exports.view = async(req, res) => {
     let matchedTest = await Test.findById(req.params.id).populate('questions');
-    let trueChoiceIds = [], trueChoices = [];
+    let trueChoiceIds = [],
+        trueChoices = [];
     matchedTest.questions.forEach((q, i) => {
         trueChoices.push(...q.getTrueChoiceArray().map(q => { return { id: q, index: i } }));
     });
@@ -93,8 +94,8 @@ module.exports.view = async (req, res) => {
     matchedTest.questions.forEach(q => {
         q.question = toInlineElement(q.question);
         q.choices.forEach(a => {
-            a.content = toInlineElement(a.content);
-        }),
+                a.content = toInlineElement(a.content);
+            }),
             q.trueTimes = 0;
     });
     matchedResults.forEach(result => {
@@ -127,11 +128,13 @@ module.exports.postEdit = (req, res) => {
     Test.findById(req.params.id).exec((err, test) => {
         if (err) return res.send(err);
         test.name = req.body.name;
+        test.link_pdf = req.body.link_pdf;
+        test.link_fb_live = req.body.link_fb_live;
         test.time = req.body.time;
         test.grade = req.body.grade || undefined;
         if (req.body.deadline) test.deadline = new Date(req.body.deadline);
         test.isPublic = req.body.isPublic == 'on';
-        console.log(test.isPublic);
+        test.isPremium = req.body.isPremium == 'on';
         test.save((err, test) => {
             if (err) return res.send(err);
             res.redirect('/tests/' + test._id + '/view');
@@ -146,22 +149,26 @@ module.exports.delete = (req, res) => {
     })
 }
 
-module.exports.viewResult = async (req, res) => {
+module.exports.viewResult = async(req, res) => {
     let result;
     try {
         result = await Result.findById(req.params.resultId).populate({ path: 'test_id', populate: { path: 'questions' } });
         if (!result.test_id) throw new Error('Not Found Test');
+        if (result.user.facebook_id != req.user.id && !req.user.isAdmin) throw new Error('Cấm.');
     } catch (err) {
         return res.status(404).send(err);
     }
-    let trueChoiceIds = [], selectedChoiceIds = result.choices.map(c => String(c.choice_id));
+    let trueChoiceIds = [],
+        selectedChoiceIds = result.choices.map(c => String(c.choice_id)),
+        falseChoiceIds = [];
     result.test_id.questions.forEach(q => {
         trueChoiceIds.push(...q.getTrueChoiceArray());
+        falseChoiceIds.push(...q.getFalseChoiceArray());
     })
-    res.render('tests/view-result', {result, trueChoiceIds, selectedChoiceIds});
+    res.render('tests/view-result', { result, trueChoiceIds, selectedChoiceIds });
 }
 
-module.exports.postDelete = async (req, res) => {
+module.exports.postDelete = async(req, res) => {
     await Test.findByIdAndDelete(req.params.id);
     await Result.deleteMany({ test_id: req.params.id });
     res.redirect('/tests')

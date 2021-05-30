@@ -17,4 +17,8 @@ const courseSchema = new Schema({
     logged_user_ids: [String]
 })
 
+courseSchema.methods.isOpenTo = function(user) {
+    return this.logged_user_ids.includes(user.id) || this.public_price == 0 || user.isAdmin
+}
+
 module.exports = mongoose.model('Course', courseSchema);

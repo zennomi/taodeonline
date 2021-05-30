@@ -21,8 +21,7 @@ function playOrPauseTime(btn) {
         clearInterval(countdownCtrl);
         countdownCtrl = false;
         btn.innerHTML = '<i class="fas fa-play"></i>';
-    }
-    else {
+    } else {
         btn.innerHTML = '<i class="fas fa-pause"></i>';
         countdown(distance);
     };
@@ -31,18 +30,19 @@ function playOrPauseTime(btn) {
 // effect for menu button
 let menuBtn = document.getElementById('menuBtn');
 var prevScrollpos = window.pageYOffset;
-window.onscroll = function () {
+window.onscroll = function() {
     var currentScrollPos = window.pageYOffset;
     if (prevScrollpos > currentScrollPos) {
         menuBtn.style.left = "10px";
     } else {
-        menuBtn.style.left = "-50px";
+        menuBtn.style.left = "-80px";
     }
     prevScrollpos = currentScrollPos;
 }
 
 // zoom function
 let containerEle = document.querySelector('.container');
+
 function zoomOut() {
     let size = Number(containerEle.style.zoom);
     let backDrop = document.querySelector('.modal-backdrop.show');
@@ -51,6 +51,7 @@ function zoomOut() {
         containerEle.style.zoom = size + 0.1;
     }
 }
+
 function zoomIn() {
     let size = Number(containerEle.style.zoom);
     let backDrop = document.querySelector('.modal-backdrop.show');
@@ -96,24 +97,21 @@ function IsFullScreenCurrently() {
 
 let fullScrennBtn;
 
-const fullScreenOrEsc = function (ele) {
+const fullScreenOrEsc = function(ele) {
     fullScrennBtn = ele;
     if (IsFullScreenCurrently()) {
         GoOutFullscreen();
-    }
-    else {
+    } else {
         GoInFullscreen(document.querySelector('html'));
     }
 };
 
-for (let evt of ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange']) {
-    console.log(evt);
+for (let evt of['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange']) {
     document.addEventListener(evt, () => {
         if (IsFullScreenCurrently()) {
             containerEle.style.zoom = '1.3';
             fullScrennBtn.innerHTML = '<i class="fas fa-compress"></i>  Thoát toàn màn hình';
-        }
-        else {
+        } else {
             containerEle.style.zoom = '1';
             fullScrennBtn.innerHTML = '<i class="fas fa-expand-wide"></i>';
         }

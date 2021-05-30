@@ -4,10 +4,16 @@ block content
         .row
             .col-12.mb-1
                 label Tên
-                input.form-control(name="name" type="text" placeholder="Tên bài kiểm tra" value=test.name)
+                input.form-control(name="name" type="text" placeholder="Tên bài kiểm tra" value=test.name required)
+            .col-12.mb-1
+                label Link livestream
+                input.form-control(name="link_fb_live" type="text" placeholder="Tên bài kiểm tra" value=test.link_fb_live)
+            .col-12.mb-1
+                label Link đề PDF
+                input.form-control(name="link_pdf" type="text" placeholder="Tên bài kiểm tra" value=test.link_pdf)
             .col-12.mb-1
                 label Thời gian (phút)
-                input.form-control(name="time" type="number" placeholder="Thời gian" value=test.time)
+                input.form-control(name="time" type="number" placeholder="Thời gian" value=test.time required)
             .col-6.mb-1
                 label Khối
                 select.form-select(name="grade")
@@ -16,13 +22,16 @@ block content
                     option 11
                     option 12
                     option(value="") Trống
-            .col-3.col-sm-2.mb-1
-                label Deadline
-                input.form-control.w-100(type="datetime-local" name="deadline" value=test.deadline.toLocaleString('vi-vn'))
-            .col-3.col-sm-2.mb-1
+            //- .col-3.col-sm-2.mb-1
+            //-     label Deadline (chưa có tính năng)
+            //-     input.form-control.w-100(type="datetime-local" name="deadline" value=test.deadline.toLocaleString('vi-vn'))
+            .col-6.col-sm-6.mb-1
                 .form-check.form-switch
                     input.form-check-input(type="checkbox" name="isPublic" checked=test.isPublic ? true : false)
-                    label.form-check-label Công khai
+                    label.form-check-label Công bố kết quả
+                .form-check.form-switch
+                    input.form-check-input(type="checkbox" name="isPremium" checked=test.isPremium ? true : false)
+                    label.form-check-label Đề vip
         button.mr-2.btn.btn-primary(type="submit") Lưu
         |     
         button.btn.btn-danger(type="button") Xóa

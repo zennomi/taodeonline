@@ -24,11 +24,11 @@ const questionSchema = new Schema({
     side_tags: [tagSchema]
 });
 
-questionSchema.methods.getMaxLengthChoice = function () {
+questionSchema.methods.getMaxLengthChoice = function() {
     return Math.max(...this.choices.map(c => c.content.replace(/<.*>/g, "").length))
 }
 
-questionSchema.methods.getTrueChoice = function () {
+questionSchema.methods.getTrueChoice = function() {
     let keyArr = [];
     this.choices.forEach((c, i) => {
         if (c.isTrue == true) keyArr.push(String.fromCharCode(65 + i));
@@ -36,8 +36,12 @@ questionSchema.methods.getTrueChoice = function () {
     return keyArr.join(",");
 }
 
-questionSchema.methods.getTrueChoiceArray = function () {
+questionSchema.methods.getTrueChoiceArray = function() {
     return this.choices.filter(c => c.isTrue).map(c => String(c._id));
+}
+
+questionSchema.methods.getFalseChoiceArray = function() {
+    return this.choices.filter(c => !c.isTrue).map(c => String(c._id));
 }
 
 questionSchema.plugin(random);

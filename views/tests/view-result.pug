@@ -22,6 +22,11 @@ block content
 				| Kết thúc: #{result.finished_time.toLocaleString('vi-VN')}.
 	p
 		| Họ tên: #{result.user.display_name}
+	.container.row.row-cols-1.row-cols-md-2 
+		.col 
+			canvas#scatterChart(height='100')
+		.col
+			canvas#radarchart(height='100')
 	if (result.test_id.isPublic || user.isAdmin)
 		.alert.alert-danger
 			| Thứ tự các câu có thể không giống với ký ức của bạn vì trước đó các câu, các đáp án đã bị tráo.
@@ -51,15 +56,28 @@ block content
 							| &nbsp;
 						br
 						span.test-wrap !{q.question}
+					if (q.getTrueChoiceArray().some(c => selectedChoiceIds.includes(c)))
+						.alert.alert-success.my-0 Khoanh chuẩn 
+					else if (q.getFalseChoiceArray().some(c => selectedChoiceIds.includes(c)))
+						.alert.alert-danger.my-0 Khoanh sai 
+					else 
+						.alert.alert-warning.my-0 Chưa khoanh mới chán
 					form.test-wrap.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0
 						each a,j in q.choices
 							.col.mb-1
 								.radio.radio-before.d-flex.align-items-center
 									label.radio__input
 										input.bg-success(type="radio" name="radio" disabled)
-										.radio__control(class= a.isTrue ? "text-white bg-success" : selectedChoiceIds.indexOf(a._id) > -1 ? "text-white bg-danger" : "")= String.fromCharCode(65+j)
+										.radio__control(class= a.isTrue ? "text-white bg-success" : selectedChoiceIds.includes(a._id) ? "text-white bg-danger" : "")= String.fromCharCode(65+j)
 									.radio__label
 										| !{a.content}
 	else
 		.alert.alert-danger
 			| Bài thi chưa được công bố đáp án.
+	script(src="https://cdn.jsdelivr.net/npm/chart.js")
+	script
+		include /js/helper/fetch.js
+		include /js/tests/premium/viewresult.js
+	script.
+		let resultId = "#{result._id}";
+		viewResult(resultId);

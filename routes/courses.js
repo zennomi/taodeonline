@@ -18,4 +18,8 @@ router.get('/manage/:id/edit', authMiddlewares.authRequire, authMiddlewares.admi
 router.post('/manage/:id/edit', authMiddlewares.authRequire, authMiddlewares.adminRequire, controller.postCourseEdit);
 router.get('/manage/:id/delete', authMiddlewares.authRequire, authMiddlewares.adminRequire, controller.delete);
 
+router.get('/:id/tests/:testId/view', authMiddlewares.authRequire, controller.viewTest);
+router.get('/:id/tests/:testId/do', authMiddlewares.authRequire, controller.doTest);
+router.post('/:id/tests/:testId/do', authMiddlewares.authRequire, controller.doTest);
+
 module.exports = router;

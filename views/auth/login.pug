@@ -1,17 +1,35 @@
 extends ../layouts/common.pug
 block title
     title Đăng nhập bằng FB
-block content
-    .mx-auto
-        .text-center#waitingArea
-            a#loginBtn.btn.btn-primary(href="/auth/facebook") Đăng nhập bằng Facebook
-            .text-muted.text-tiny
-                | Đọc thêm về chính sách sử dụng thông tin cá nhân của chúng tôi tại 
-                a(href="/privacy-policy" target="_blank") đây
-                | .
-            br
-            .h5.text-danger Ơ thôi để khi khác?
-            a.btn.btn-danger(href="/") Trở về trang chủ
-    script(src="/js/helper/randomfacts.js")
-    script(src="/js/login.js")
+block header-text 
+    section.section.section-shaped.section-lg.h-100
+        .shape.shape-style-1.bg-gradient-success
+            span
+            span
+            span
+            span
+            span
+            span
+            span
+            span
+        .container.pt-lg-7
+            .row.justify-content-center.text-center
+                .col-lg-5
+                    .card.bg-secondary.shadow
+                        #waitingArea.card-body.bg-white.pb-5
+                            .text-muted.text-center.mb-3
+                                small Đăng nhập bằng
+                            .btn-wrapper.text-center.mb-2
+                                a#loginBtn.btn.btn-neutral.btn-icon(href="/auth/facebook")
+                                    span.btn-inner--icon
+                                        i.fab.fa-facebook.fs-3
+                                    span.btn-inner--text Facebook
 
+                            .text-muted.text-tiny
+                                | Đọc thêm về chính sách sử dụng thông tin cá nhân của chúng tôi tại 
+                                a(href="/privacy-policy" target="_blank") đây
+                                | .
+    script(src="/js/helper/randomfacts.js") 
+    script(src="/js/login.js") 
+        //- include /js/helper/randomfacts.js
+        //- include /js/login.js

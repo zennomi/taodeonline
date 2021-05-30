@@ -163,6 +163,9 @@ block content
                                     span= course.name
                                     |  
                                     .badge.badge-warning Hot
+                                    if course.public_price == 0
+                                        |  
+                                        .badge.badge-warning Free
                                 .card-text.d-flex.justify-content-end.align-items-end
                                     if course.original_price
                                         .text-danger.fs-4.text-decoration-line-through= course.original_price.toLocaleString()
@@ -176,9 +179,10 @@ block content
                                         a.me-1.btn.btn-success.btn-sm.btn-icon(href="/courses/"+course._id+"/view")
                                             i.fas.fa-eye
                                             span Chi tiết
-                                        a.btn.btn-success.btn-sm.btn-icon(href="/courses/"+course._id+"/enroll")
-                                            i.fas.fa-shopping-cart
-                                            span Hướng dẫn mua
+                                        if course.public_price != 0
+                                            a.btn.btn-success.btn-sm.btn-icon(href="/courses/"+course._id+"/enroll")
+                                                i.fas.fa-shopping-cart
+                                                span Hướng dẫn mua
             //- nav#courses(aria-label='Page navigation example')
             //-     ul.pagination.justify-content-center
             //-         if !page || page == 1

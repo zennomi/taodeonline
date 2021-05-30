@@ -109,7 +109,7 @@ html(lang="en")
                                       img(alt='avatar', src=user.avatar)
                                     else  
                                       img(src='/img/logo.jpg')
-                                .media-body.ml-2.d-none.d-lg-block
+                                .media-body.ml-2.d-none.d-lg-block.text-truncate
                                  span#userName.mb-0.text-sm.font-weight-bold= user.displayName
                             .dropdown-menu.dropdown-menu-end
                                 .dropdown-header.noti-title
@@ -138,7 +138,7 @@ html(lang="en")
                                     i.fad.fa-sign-out
                                     span Đăng xuất    
             else
-                a.btn.btn-warning.nav-item(href="/auth/facebook") Đăng nhập
+                a.btn.btn-warning.nav-item.btn-sm(href="/auth/login") Đăng nhập
     block header-text
     .container.mt-3
         if messages.warning

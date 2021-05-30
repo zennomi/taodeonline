@@ -2,7 +2,7 @@ let loginBtn = document.getElementById('loginBtn');
 let waitingArea = document.getElementById('waitingArea');
 
 loginBtn.addEventListener("click", () => {
-	waitingArea.innerHTML = `
+    waitingArea.innerHTML = `
 	<figure>
 	<blockquote class="blockquote mt-2">
 	<p>${getRandomFacts()}</p>
@@ -11,6 +11,6 @@ loginBtn.addEventListener("click", () => {
 	Có thể học sinh chưa biết
 	</figcaption>
 	</figure>
-	<a class="btn btn-primary"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>  Đang chuyển hướng...
+	<a class="btn btn-primary text-white"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>  Đang chuyển hướng...
 	</a>`
 })

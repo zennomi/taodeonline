@@ -12,7 +12,7 @@ const testSchema = new Schema({
         type: Boolean,
         default: false
     },
-    link_ggdrive: String,
+    link_pdf: String,
     link_fb_live: String
 })
 

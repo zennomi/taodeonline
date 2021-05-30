@@ -1,8 +1,11 @@
-const texToMathML = require('../ultils/mathml').texToMathML;
-const entities = require("entities");
 const Test = require("../models/test.model");
+const Result = require("../models/result.model");
 const Question = require("../models/question.model");
 const Course = require("../models/course.model");
+
+const shuffle = require('shuffle-array');
+const groupArray = require('group-array');
+const { toInlineElement } = require("../ultils/handleFormat");
 
 //----------------------------INDEX(/courses)------------------------------//
 module.exports.index = async(req, res) => {
@@ -41,7 +44,7 @@ module.exports.all = async(req, res) => {
 // /courses/:id/view
 module.exports.courseView = async(req, res) => {
         let course = await Course.findById(req.params.id).populate('test_ids');
-        res.render('courses/view', { course: course, tests: course.test_ids });
+        res.render('courses/view', { course, tests: course.test_ids });
     }
     // /courses/:id/enroll => Construction 
 module.exports.courseEnroll = async(req, res) => {
@@ -156,4 +159,58 @@ module.exports.delete = (req, res) => {
         if (err) return res.send("<h1 style=\"text-align:center;\">ERROR</h1>");
     });
     res.redirect('/courses/manage')
+}
+
+//--------------------------------do(/courses/:id/tests/:id/)--------------------------------------//
+
+module.exports.viewTest = async(req, res) => {
+    let course, test, results;
+    try {
+        course = await Course.findById(req.params.id);
+        test = await Test.findById(req.params.testId).populate('questions');
+        if (!course || !test) throw new Error("Không tim thấy bài test có id này.");
+        if (!course.isOpenTo(req.user) || !(course.test_ids.includes(String(test._id)))) throw new Error("Sai ID.");
+        results = await Result.find({ "user.facebook_id": req.user.id, test_id: test._id });
+    } catch (err) {
+        return res.send(err);
+    }
+    res.render('tests/premium/view', { course, test, results });
+}
+
+module.exports.doTest = async(req, res) => {
+    let config = req.query;
+    let course, test, results;
+    try {
+        course = await Course.findById(req.params.id);
+        test = await Test.findById(req.params.testId).populate('questions');
+        if (!course || !test) throw new Error("Không tim thấy bài test có id này.");
+        if (!course.isOpenTo(req.user) || !(course.test_ids.map(id => String(id)).includes(String(test._id)))) throw new Error("Sai ID.");
+    } catch (err) {
+        return res.send(err);
+    }
+    test.questions = test.questions.filter(q => q.level == 11 || (q.level <= config.max && q.level >= config.min))
+    test.questions.forEach(q => {
+        q.question = toInlineElement(q.question);
+        q.choices.forEach(a => {
+            a.content = toInlineElement(a.content);
+        })
+        q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
+        if (!q.level) q.level = 11;
+        if (config.shuffleOptions == 'on')
+            q.choices = shuffle(q.choices);
+    });
+    if (config.time > 0 && config.time < 200) {
+        test.time = config.time
+    }
+    test.questions.sort((a, b) => a.level - b.level);
+    // shuffle
+    if (config.shuffleQuestions == 'on') {
+        questionGroups = groupArray(test.questions, 'level');
+        test.questions = [];
+        for (const level in questionGroups) {
+            questionGroups[level] = shuffle(questionGroups[level]);
+            test.questions.push(...questionGroups[level])
+        }
+    }
+    res.render('tests/premium/do', { course, test, link: `${req.hostname}${req.originalUrl}`, config });
 }

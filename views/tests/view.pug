@@ -3,6 +3,11 @@ block header
     include ../layouts/mathjax.pug
     link(rel="stylesheet" href="/css/do-the-test.css")
     style.
+        :root {
+            --bs-success: #2dce89;
+            --bs-danger: #f5365c;
+        }
+
         .table>:not(:last-child)>:last-child>* {
             border-bottom-color: currentColor;
         }

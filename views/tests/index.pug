@@ -12,15 +12,16 @@ block content
                     th(scope="col") Thao tác
             tbody
                 each test in tests
-                    tr
-                        td.align-middle.text-wrap= test.grade
-                        td.align-middle.text-wrap= test.name ? test.name : "Đề kiểm tra"
-                        td.align-middle.text-wrap= test.questions.length + " câu/" + test.time + " phút"
-                        td.align-middle
-                            if user && user.isAdmin
-                                a.btn.btn-primary.btn-icon.btn-sm(href="/tests/"+test._id+"/view" title="Xem chi tiết")
-                                    i.fas.fa-eye
-                            a.btn.btn-success.btn-icon.btn-sm(href="/tests/"+test._id+"/do" title="Làm đề")
-                                i.fas.fa-pencil
+                    if !test.isPremium || (user && user.isAdmin)
+                        tr
+                            td.align-middle.text-wrap= test.grade
+                            td.align-middle.text-wrap= test.name ? test.name : "Đề kiểm tra"
+                            td.align-middle.text-wrap= test.questions.length + " câu/" + test.time + " phút"
+                            td.align-middle
+                                if user && user.isAdmin
+                                    a.btn.btn-primary.btn-icon.btn-sm(href="/tests/"+test._id+"/view" title="Xem chi tiết")
+                                        i.fas.fa-eye
+                                a.btn.btn-success.btn-icon.btn-sm(href="/tests/"+test._id+"/do" title="Làm đề")
+                                    i.fas.fa-pencil
 
                     
