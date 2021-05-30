@@ -1,11 +1,13 @@
 extends ../layouts/common
+block title 
+    title= course.name
 block content   
   .row
     .col-xl-4.order-xl-2
       .card.card-profile
         img.card-img-top(src=course.img_link, alt='Khóa học')
         .card-header.border-0.pb-4.text-end
-            if ((course).isOpenTo(user))
+            if user && ((course).isOpenTo(user))
                 button.btn.btn-success.btn-lg.btn-block(type='button' disabled) Bạn có thể tham gia khoá luyện đề này
             else 
                     if course.original_price
@@ -147,14 +149,14 @@ block content
                                 tr
                                     th(scope="col") Tên đề
                                     th(scope="col") Tổng quan
-                                    if course.isOpenTo(user)
+                                    if user && course.isOpenTo(user)
                                         th(scope="col") Thao tác
                             tbody
                                 each test in tests.sort((a, b) => a.name.localeCompare(b.name))
                                     tr
                                         td.text-wrap.align-middle= test.name ? test.name : "Đề kiểm tra"
                                         td.text-wrap.align-middle= test.questions.length + " câu/" + test.time + " phút"
-                                        if course.isOpenTo(user)
+                                        if user && course.isOpenTo(user)
                                             td.align-middle
                                                 a.btn.btn-outline-primary.btn-sm(href="/courses/" + course._id + "/tests/"+test._id+"/view") Chi tiết
                 else 

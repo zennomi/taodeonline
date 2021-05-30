@@ -18,6 +18,7 @@ const courseSchema = new Schema({
 })
 
 courseSchema.methods.isOpenTo = function(user) {
+    if (!user) return false;
     return this.logged_user_ids.includes(user.id) || this.public_price == 0 || user.isAdmin
 }
 
