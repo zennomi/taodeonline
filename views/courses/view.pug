@@ -9,21 +9,23 @@ block content
         .card-header.border-0.pb-4.text-end
             if user && ((course).isOpenTo(user))
                 button.btn.btn-success.btn-lg.btn-block(type='button' disabled) Bạn có thể tham gia khoá luyện đề này
-            else 
-                    if course.original_price
-                        .text-danger.fs-4
-                            .d-inline.text-decoration-line-through= course.original_price.toLocaleString()
-                            sup đ
-                            |   
-                            .badge.badge-danger
-                            | -
-                            span= Math.round((course.original_price-course.public_price)/course.original_price*100)
-                            | %
-                    .text-success.fw-bold.fs-2= course.public_price.toLocaleString()
+            else if !user && course.public_price == 0
+                a.btn.btn-success.btn-lg.btn-block(type='button' href="/auth/login") Đăng nhập để tham gia khoá học miễn phí
+            else
+                if course.original_price
+                    .text-danger.fs-4
+                        .d-inline.text-decoration-line-through= course.original_price.toLocaleString()
                         sup đ
-                    .text-end
-                        small.card-text.text-muted= course.note
-                    a.btn.btn-success.btn-lg.btn-block(type='button' href="/courses/"+course._id+"/enroll") Hướng dẫn đăng ký khoá học
+                        |   
+                        .badge.badge-danger
+                        | -
+                        span= Math.round((course.original_price-course.public_price)/course.original_price*100)
+                        | %
+                .text-success.fw-bold.fs-2= course.public_price.toLocaleString()
+                    sup đ
+                .text-end
+                    small.card-text.text-muted= course.note
+                a.btn.btn-success.btn-lg.btn-block(type='button' href="/courses/"+course._id+"/enroll") Hướng dẫn đăng ký khoá học
       .card.card-profile.d-none.d-xl-block
         .card-body
           .row.gy-2
