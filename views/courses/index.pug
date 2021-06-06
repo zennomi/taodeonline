@@ -30,15 +30,26 @@ block header-text
                 .fs-1.lead.text-white 
                     .badge.bg-gradient-red.py-2 Khoá luyện đề
                     |  công phá 
-                    .badge.bg-gradient-red #{Math.floor(((new Date('2021-07-07')).valueOf() - (new Date()).valueOf())/(24*3600*1000))} ngày
+                    .badge.bg-gradient-red
+                        span#countDownDate --
+                    |  ngày 
+                    .badge.bg-gradient-red
+                        span#countDownHour --
+                    |  giờ 
+                    .badge.bg-gradient-red
+                        span#countDownMinute --
+                    |  phút 
+                    .badge.bg-gradient-red
+                        span#countDownSecond --
+                    |  giây 
                     |  trước giờ G 
                     i.fas.fa-fire.text-orange
                 .container.d-flex.justify-content-around.flex-wrap
-                    .d-inline-block.badge.badge-success.mb-1 #LAS EDU
-                    .d-inline-block.badge.badge-success.mb-1 #VLSN
-                    .d-inline-block.badge.badge-success.mb-1 #Kỳ thi THPT QG 2021
-                    .d-inline-block.badge.badge-success.mb-1 #Luyện đề online
-                    .d-inline-block.badge.badge-success.mb-1 #VLSN IT
+                    a.d-inline-block.badge.badge-success.mb-1(href="https://www.facebook.com/hashtag/VLSN" target="_blank") #VLSN
+                    a.d-inline-block.badge.badge-success.mb-1(href="https://www.facebook.com/hashtag/THPT_QG_2021" target="_blank") #Kỳ thi THPT QG 2021
+                    a.d-inline-block.badge.badge-success.mb-1(href="#" target="_blank") #Luyện đề online
+                    a.d-inline-block.badge.badge-success.mb-1(href="#" target="_blank") #VLSN IT
+                    a.d-inline-block.badge.badge-success.mb-1(href="https://www.facebook.com/hashtag/b%C3%ACnh_minh_b%E1%BB%ABng_tr%C3%AD_tu%E1%BB%87" target="_blank") #Bình_minh_bừng_trí_tuệ
 
                 .btn-wrapper.my-4.my-md-5
                     a.btn.btn-lg.btn-warning.bg-gradient-red(href="#courses") Đăng ký ngay
@@ -47,10 +58,18 @@ block header-text
                     #carouselExampleInterval.carousel.slide.w-100.bg-gradient-success.shadow(data-bs-ride='carousel')
                         .carousel-inner
                             .carousel-item.active(data-bs-interval='2000')
-                                img.d-block.w-100(src='/img/pre-courses-img.png' alt='Giới thiệu khoá học')
-                            .carousel-item(data-bs-interval='2000')
-                                img.d-block.w-100(src='/img/pre-courses-img.png' alt='Giới thiệu khoá học')
-                            .carousel-item
+                                img.d-block.w-100(src='/img/pr1.jpg' alt='Giới thiệu khoá học')
+                            .carousel-item(data-bs-interval='3000')
+                                img.d-block.w-100(src='/img/pr2.jpg' alt='Giới thiệu khoá học')
+                            .carousel-item(data-bs-interval='3000')
+                                img.d-block.w-100(src='/img/pr3.jpg' alt='Giới thiệu khoá học')
+                            .carousel-item(data-bs-interval='3000')
+                                img.d-block.w-100(src='/img/pr4.jpg' alt='Giới thiệu khoá học')
+                            .carousel-item(data-bs-interval='3000')
+                                img.d-block.w-100(src='/img/pr5.jpg' alt='Giới thiệu khoá học')
+                            .carousel-item(data-bs-interval='3000')
+                                img.d-block.w-100(src='/img/pr6.jpg' alt='Giới thiệu khoá học')
+                            .carousel-item(data-bs-interval='3000')
                                 img.d-block.w-100(src='/img/pre-courses-img.png' alt='Giới thiệu khoá học')
                         button.carousel-control-prev(type='button' data-bs-target='#carouselExampleInterval' data-bs-slide='prev')
                             span.carousel-control-prev-icon(aria-hidden='true')
@@ -217,4 +236,5 @@ block content
             //-             li.page-item.active
             //-                 a.page-link(href='/courses?page=3#courses') 3
             //-             li.page-item.disabled
-            //-                 a.page-link(href='#') >>                            
+            //-                 a.page-link(href='#') >>           
+    script(src="/js/courses/countdown.js")   

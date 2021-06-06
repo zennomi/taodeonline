@@ -1,3 +1,5 @@
+// view result
+
 function splitBreak(label) {
     if (/\s/.test(label)) {
         label = label.split(" ").slice(0, 2);
@@ -11,7 +13,6 @@ function splitBreak(label) {
 
 function viewResult(id) {
     anotherMethod('/api/result/view', 'POST', { id }, res => {
-        console.log(id, res);
         let result = res.result;
         var scatterChart = new Chart(document.getElementById('scatterChart'), {
             type: 'line',

@@ -48,7 +48,7 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                     button.d-block.me-2.btn.btn-outline-success.mb-1(onclick="zoomIn()")
                         i.fas.fa-search-minus
                         |  Thu nhỏ
-                    button.d.block.me-2.btn.btn-outline-success.mb-1(onclick="fullScreenOrEsc(this)")
+                    button.d-none.d-md-block.me-2.btn.btn-outline-success.mb-1(onclick="fullScreenOrEsc(this)")
                         i.fas.fa-expand-wide
                         |  Toàn màn hình
                 button(type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close")
@@ -84,9 +84,10 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                     a.mb-1(href="/")
                         i.fad.fa-home
                         |    Trang chủ
-                    a.mb-1(href="/courses/"+course._id+"/view")
-                        i.fad.fa-undo-alt
-                        |    Trỏ về khoá học
+                    if course
+                        a.mb-1(href="/courses/"+course._id+"/view")
+                            i.fad.fa-undo-alt
+                            |    Trở về khoá học
 
         // setting modal
         .modal.fade.show#init-modal(tab-index=-1 data-bs-backdrop="static" data-bs-keyboard="false").text-center
@@ -107,18 +108,36 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                                     |  
                                     span= test.questions.length + " câu"
                         //- img#qr-image(alt="QR Code")
+                        .alert.alert-danger.d-block.d-md-none.mb-0
+                            .fs-1.text-center 
+                                i.fad.fa-exclamation-triangle
+                            .mt-1
+                                b Không làm đề 
+                                | trên trình duyệt mặc định của Messenger, Facebook. Khuyến khích làm đề trên trình duyệt xịn như Safari, Chrome, Edge,... để có trải nghiệm nuột nhất 
+                                i.fas.fa-heart
+                    hr.my-0
                     .modal-body
                         button.d-block.w-75.btn.btn-success.btn-lg.mx-auto.mb-2#start-btn(type="button" data-bs-dismiss="modal" disabled)
-                            | Chuẩn bị đề
+                            span(class="spinner-border spinner-border-sm" role="status" aria-hidden="true")
+                            |  Đang chuẩn bị đề
                         .row.w-75.mx-auto.g-0
                             .col.me-2
                                 button.w-100.btn.btn-warning(onclick="copyToClipboard('"+link+"')")
                                     i.fad.fa-copy
-                                    |   Copy Link Đề
+                                    |   Copy Link
                             .col
                                 a.w-100.btn.btn-danger(href="/tests/premium")
                                     i.fad.fa-undo-alt
                                     |   Trở về
+                    if results 
+                        hr.my-0
+                        .modal-body
+                            h5.text-success.mt-2
+                                i.fad.fa-history.me-2
+                                | Lịch sử làm đề
+                            .d-flex.flex-wrap.justify-content-around
+                                each r in results 
+                                    a.text-decoration-none.d-block.badge.bg-success.mx-1.my-1(href=`/tests/${test._id}/view-result/${r._id}` target="_blank")= r.started_time.toLocaleString('vi-VN')
         // Notify
         .fixed-bottom(aria-live="polite" aria-atomic="true")
             .toast-container.position-absolute.bottom-0.end-0.p-4
@@ -143,9 +162,10 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                         .col
                             canvas#radarchart(height='100')
                     .d-flex.justify-content-around
-                        a.d-block.btn.btn-success.btn-lg.mb-1(href="/courses/"+course._id+"/view")
-                            i.fad.fa-undo-alt
-                            |    Trỏ về khoá học
+                        if course
+                            a.d-block.btn.btn-success.btn-lg.mb-1(href="/courses/"+course._id+"/view")
+                                i.fad.fa-undo-alt
+                                |    Trở về khoá học
                         a.d-block.btn.btn-success.btn-lg.mb-1(href="/")
                             i.fad.fa-home
                             |    Trang chủ
@@ -204,6 +224,13 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
             include /js/helper/notify.js
             include /js/tests/premium/helper.js
             include /js/tests/premium/player.js
+        //- script(src="/js/tests/premium/init.js")
+        //- script(src="/js/helper/copy.js")
+        //- script(src="/js/countdown.js")
+        //- script(src="/js/helper/fetch.js")
+        //- script(src="/js/helper/notify.js")
+        //- script(src="/js/tests/premium/helper.js")
+        //- script(src="/js/tests/premium/player.js")
         script(src="https://cdn.jsdelivr.net/npm/chart.js")
         script
             include /js/tests/premium/viewresult.js

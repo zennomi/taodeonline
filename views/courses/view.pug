@@ -106,14 +106,10 @@ block content
     .col-xl-8.order-xl-1
         .card
             .card-header
-                .row.align-items-center
-                    .col-8
-                        h3.mb-0 Thông tin khóa học
+                h3.mb-0 Thông tin khóa học
             .card-body
                 h1.h1= course.name
                 | !{course.description}
-            .pb-6
-              .container-fluid
                 .header-body
                   // Card stats
                   .row
@@ -150,16 +146,15 @@ block content
                             thead
                                 tr
                                     th(scope="col") Tên đề
-                                    th(scope="col") Tổng quan
-                                    if user && course.isOpenTo(user)
-                                        th(scope="col") Thao tác
+                                    th(scope="col") Chi tiết
                             tbody
                                 each test in tests.sort((a, b) => a.name.localeCompare(b.name))
                                     tr
-                                        td.text-wrap.align-middle= test.name ? test.name : "Đề kiểm tra"
+                                        td.text-wrap.align-middle
+                                            if user && course.isOpenTo(user)
+                                                a(href="/courses/" + course._id + "/tests/"+test._id+"/view")= test.name ? test.name : "Đề kiểm tra"
+                                            else 
+                                                span= test.name ? test.name : "Đề kiểm tra"
                                         td.text-wrap.align-middle= test.questions.length + " câu/" + test.time + " phút"
-                                        if user && course.isOpenTo(user)
-                                            td.align-middle
-                                                a.btn.btn-outline-primary.btn-sm(href="/courses/" + course._id + "/tests/"+test._id+"/view") Chi tiết
                 else 
                     .alert.alert-info Danh sách đề sẽ được cập nhật sau.

@@ -12,7 +12,7 @@ block content
                         .badge.badge-success Bước 1
                         .h3.ms-3 Xác nhận tài khoản
                     .card-body.text-center
-                        .mb-2 Chụp lại đơn thanh toán khoá luyện đề phía dưới
+                        .mb-2 Copy ID facebook bên dưới gửi cho cộng tác viên
                         .card.bg-primary.text-white.mb-2
                             .card-body
                                 .row.align-items-center.mb-2
@@ -22,6 +22,9 @@ block content
                                     .col.text-start
                                         .fw-bold= user.displayName 
                                         span= user.id
+                                        |  
+                                        button.btn.btn-outline-white.btn-sm(onclick="copyToClipboard('" + user.id + "')") copy
+
                                 hr.my-2
                                 .fs-5.fw-bold.text-uppercase=course.name 
                                 .badge.badge-primary.mb-2= course._id 
@@ -33,7 +36,7 @@ block content
                                             sup đ
                         i.mx-auto.fas.fa-angle-down.fs-1.text-success
                         .mb-2
-                            | Gửi ảnh đã chụp tới facebook của cộng tác viên VLSN.
+                            | Gửi ID đã copy tới facebook của cộng tác viên VLSN.
                         .mb-2
                             a.btn.btn-facebook.btn-icon(href="https://www.facebook.com/ngdatuananh/" target="_blank")
                                 i.fab.fa-facebook

@@ -13,6 +13,9 @@ module.exports.index = (req, res) => {
 }
 
 module.exports.do = (req, res) => {
+    let config = {};
+    let hour = (new Date()).getHours();
+    if (hour > 22 || hour < 5) config.darkmode = 'on';
     Test.findById(req.params.id).populate('questions').exec((err, test) => {
         if (err || !test) return res.send('Error');
         if (!test.time) test.time = 40;
@@ -35,7 +38,7 @@ module.exports.do = (req, res) => {
         }
         Result.find({ "user.facebook_id": req.user.id, test_id: test._id }).exec((err, results) => {
 
-            res.render('tests/do', { test, link: `${req.hostname}${req.originalUrl}`, results });
+            res.render('tests/premium/do', { test, link: `${req.hostname}${req.originalUrl}`, results, config });
         })
     })
 }
@@ -101,7 +104,6 @@ module.exports.view = async(req, res) => {
     matchedResults.forEach(result => {
         let mark = 0;
         let earliest = 0;
-        console.log(result.choices);
         if (result.choices.length > 0) earliest = Math.min(...result.choices.map(c => c.moment ? c.moment.getTime() : 0));
         result.choices.forEach(c => {
             let index = trueChoiceIds.indexOf(String(c.choice_id));

@@ -1,5 +1,3 @@
-
-
 function Question(element) {
     this._element = element;
     this._id = element.dataset['id'];
@@ -21,16 +19,15 @@ function Question(element) {
             choice_id: this.choiceId || selectedChoice.dataset['id'],
             moment: this.moment || new Date()
         };
-        console.log(choiceIdAndMoment);
         return choiceIdAndMoment;
     }
     var self = this;
     this._choices.forEach(c => {
-        c.addEventListener("input", function () { self.selectChoice() })
+        c.addEventListener("input", function() { self.selectChoice() })
     })
 }
 
-Question.prototype.selectChoice = function () {
+Question.prototype.selectChoice = function() {
     let selectedChoice = this.getSelectedChoice();
     if (selectedChoice) {
         this.choiceId = selectedChoice.dataset['id'];
@@ -54,7 +51,7 @@ let offcanvas = new bootstrap.Offcanvas(sideNav);
 
 
 document.querySelectorAll(".sidenav a").forEach(a => a.addEventListener("click", () => {
-    setTimeout(function () { offcanvas.hide(); }, 1000);
+    setTimeout(function() { offcanvas.hide(); }, 1000);
 
 }));
 
@@ -67,18 +64,18 @@ function submitChoices(isFinished) {
             choicesList.push(choiceIdAndMoment)
         }
     })
-    fetch('/api/results/'+resultId, {
-        method: 'PUT',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify({ choices: choicesList, isFinished, leavesAreaTimes })
-    })
+    fetch('/api/results/' + resultId, {
+            method: 'PUT',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({ choices: choicesList, isFinished, leavesAreaTimes })
+        })
         .then(res => res.json())
         .then(res => {
             if (isFinished)
@@ -87,7 +84,7 @@ function submitChoices(isFinished) {
 }
 
 // Submit test
-function submitTest(testId) {
+function submitTest() {
     if (!confirm("Nộp bài nhé?")) return;
     progressBtn.parentNode.remove();
     clearInterval(countdownCtrl);
@@ -105,10 +102,12 @@ function submitTest(testId) {
             //     return;
             // }
             submitChoices(1);
-            let trueChoicesId = [...data.result], falseCounts = 0, isPublic = data.isPublic;
+            let trueChoicesId = [...data.result],
+                falseCounts = 0,
+                isPublic = data.isPublic;
             questionList.forEach(q => {
                 let checkedRadio, trueRadio;
-                q._choices.forEach(function (i) {
+                q._choices.forEach(function(i) {
                     if (i.checked) checkedRadio = i;
                     if (trueChoicesId.indexOf(i.dataset.id) > -1) trueRadio = i;
                     i.disabled = true;

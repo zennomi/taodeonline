@@ -1,3 +1,5 @@
+// soundcloud player
+
 (function() {
     var playBtn = document.getElementById('playBtn');
     var shuffleBtn = document.getElementById('shuffleBtn');

@@ -56,8 +56,12 @@ block content
                             .input-group
                                 .input-group-text.bg-primary.text-white Độ dễ nhất
                                 input.form-control(type="number" min=0 max=10 name="min" value=0)
+                                .input-group-text điểm
+                        .mb-2
+                            .input-group
                                 .input-group-text.bg-primary.text-white Độ khó nhất
                                 input.form-control(type="number" min=0 max=10 name="max" value=10)
+                                .input-group-text điểm
                         button#submitBtn.d-block.mx-auto.btn.btn-primary(type='submit')
                             i.fad.fa-paper-plane.me-2
                             | Lấy đề
@@ -68,6 +72,8 @@ block content
             button.d-block.mx-auto.btn.btn-success.btn-lg.fw-bold.mb-2(data-bs-toggle="modal" data-bs-target="#configModal")
                 i.fad.fa-pencil
                 |    Làm đề ngay
+            .mb-2.text-center
+                a.btn.btn-danger.btn-sm(href="/courses/" + course._id + "/view") Trở về khoá học
             h5.text-success
                 i.fad.fa-file-alt.me-2
                 span= test.name ? test.name : "Đề thi"
@@ -102,6 +108,7 @@ block content
                     a.d-block.badge.badge-success.mx-1.my-1(href=`/tests/${test._id}/view-result/${r._id}` target="_blank")= r.started_time.toLocaleString('vi-VN')
                     br
         .col.col-md-9
+            h5.text-success Nội dung đề
             .d-flex.justify-content-evenly
                 .form-check.form-switch
                     input.form-check-input(type="checkbox" oninput="showOrHideKey(this)")

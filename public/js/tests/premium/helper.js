@@ -136,3 +136,16 @@ function onBeforeUnload(e) {
 }
 
 window.addEventListener('beforeunload', onBeforeUnload);
+
+// leaving this window
+function userCheated() {
+    // The user cheated by leaving this window (e.g opening another window)
+    // Do something
+    leavesAreaTimes++;
+    notify('Cảnh báo', `Bạn đã rời khỏi khu vực làm bài thi ${leavesAreaTimes} lần.`);
+}
+
+// handle error
+const handleError = (err) => {
+    notify('Lỗi', err);
+}

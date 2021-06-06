@@ -1,5 +1,6 @@
 let resultId, submitBtn;
 let questionList = [];
+let leavesAreaTimes = 0;
 
 document.addEventListener("DOMContentLoaded", function() {
     //dom is fully loaded, but maybe waiting on images & css files
@@ -13,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.querySelector('.test-wrap').style.display = 'block';
             resultId = res.result._id;
             countdown(totalTimes);
+            window.onblur = userCheated;
             scrollToTop();
         })
     });
@@ -67,13 +69,15 @@ function submitChoices(isFinished) {
             choicesList.push(choiceIdAndMoment)
         }
     })
-    anotherMethod('/api/results/' + resultId, 'PUT', { choices: choicesList, isFinished },
+    anotherMethod('/api/results/' + resultId, 'PUT', { choices: choicesList, isFinished, leavesAreaTimes },
         (res) => {
             if (isFinished) {
                 viewResult(resultId);
                 notify("Hệ thống", "Đã lưu lại kết quả làm bài.");
             }
-        });
+        },
+        handleError
+    );
 }
 
 // questions prototype
@@ -98,7 +102,6 @@ function Question(element) {
             choice_id: this.choiceId || selectedChoice.dataset['id'],
             moment: this.moment || new Date()
         };
-        console.log(choiceIdAndMoment);
         return choiceIdAndMoment;
     }
     var self = this;
@@ -110,16 +113,19 @@ function Question(element) {
 // Submit test
 function submitTest() {
 
-    document.getElementById('timeBtn').remove();
-    progressBtn.parentNode.remove();
     clearInterval(countdownCtrl);
-    window.onblur = undefined;
     submitBtn.disabled = true;
     submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>  Đang nộp`;
     notify("Hệ thống", "Đừng thoát vội, chờ hệ thống lưu lại kết quả cái đã...");
     getMethod('/api/tests/' + testId + '/true-choices',
         (res) => {
+            window.onblur = undefined;
+            document.getElementById('timeBtn').remove();
+            progressBtn.parentNode.remove();
+            window.onblur = undefined;
+            let isPublic = res.isPublic;
             submitChoices(1);
+
             let trueChoicesId = [...res.result],
                 falseCounts = 0;
             questionList.forEach(q => {
@@ -131,29 +137,37 @@ function submitTest() {
                     i.nextSibling.style["box-shadow"] = "";
                 })
                 if (trueRadio) {
-                    q._title.classList.add("btn", "btn-sm", "fw-bold");
-                    q.shortcut.style.color = "var(--bs-white)";
+                    if (isPublic) {
+                        q._title.classList.add("btn", "btn-sm", "fw-bold");
+                        q.shortcut.style.color = "var(--bs-white)";
+                    }
                     if (!checkedRadio) {
                         falseCounts++;
-                        q._title.classList.add("btn-danger");
-                        q.shortcut.style.background = "var(--bs-danger)";
-                        q.shortcut.style.border = "solid 2px var(--bs-danger)";
+                        if (isPublic) {
+                            q._title.classList.add("btn-danger");
+                            q.shortcut.style.background = "var(--bs-danger)";
+                            q.shortcut.style.border = "solid 2px var(--bs-danger)";
+                        }
                     } else if (trueRadio.dataset.id != checkedRadio.dataset.id) {
-                        q.shortcut.style.background = "var(--bs-danger)";
-                        q.shortcut.style.border = "solid 2px var(--bs-danger)";
-                        q._title.classList.add("btn-danger");
-                        checkedRadio.nextSibling.style.background = "var(--bs-danger)";
+                        if (isPublic) {
+                            q.shortcut.style.background = "var(--bs-danger)";
+                            q.shortcut.style.border = "solid 2px var(--bs-danger)";
+                            q._title.classList.add("btn-danger");
+                            checkedRadio.nextSibling.style.background = "var(--bs-danger)";
+                        }
 
                         falseCounts++;
-                    } else q._title.classList.add("btn-success");
-                    trueRadio.nextSibling.style.background = "var(--bs-success)";
-                    trueRadio.nextSibling.style.color = "var(--bs-white)";
-                    trueRadio.nextSibling.style.border = "none";
-                    q._title.style.color = "var(--bs-white)";
-                    q._title.classList.remove("text-success");
-                    q._title.nextElementSibling.innerHTML = `   <a class="text-decoration-none btn btn-success btn-sm sans-serif" data-bs-toggle="collapse" href="#ans-${q._id}" role="button" aria-expanded="false">
-                    lời giải chi tiết
-                  </a><br>` + q._title.nextElementSibling.innerHTML;
+                    } else if (isPublic) q._title.classList.add("btn-success");
+                    if (isPublic) {
+                        trueRadio.nextSibling.style.background = "var(--bs-success)";
+                        trueRadio.nextSibling.style.color = "var(--bs-white)";
+                        trueRadio.nextSibling.style.border = "none";
+                        q._title.style.color = "var(--bs-white)";
+                        q._title.classList.remove("text-success");
+                        q._title.nextElementSibling.innerHTML = `   <a class="text-decoration-none btn btn-success btn-sm sans-serif" data-bs-toggle="collapse" href="#ans-${q._id}" role="button" aria-expanded="false">
+                        lời giải chi tiết
+                      </a><br>` + q._title.nextElementSibling.innerHTML;
+                    }
                 }
             });
             document.getElementById('result').innerHTML = questionList.length - falseCounts;

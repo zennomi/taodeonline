@@ -14,7 +14,7 @@ module.exports.create = (req, res) => {
     res.render('questions/create');
 }
 
-module.exports.postCreate = async (req, res) => {
+module.exports.postCreate = async(req, res) => {
     let question = new Question({
         question: texToMathML(req.body.question_content),
         grade: req.body.grade ? req.body.grade : undefined,
@@ -36,7 +36,7 @@ module.exports.postCreate = async (req, res) => {
     res.redirect('/questions/' + question._id);
 }
 
-module.exports.index = async (req, res) => {
+module.exports.index = async(req, res) => {
 
     // Search
     let tagsList = req.query.tags ? JSON.parse(req.query.tags).map(t => t.value) : [];
@@ -98,7 +98,7 @@ module.exports.index = async (req, res) => {
 
 }
 
-module.exports.export = async (req, res) => {
+module.exports.export = async(req, res) => {
 
     let ids = req.cookies.questions ? req.cookies.questions.ids : [];
 
@@ -123,14 +123,14 @@ module.exports.export = async (req, res) => {
 }
 
 module.exports.view = (req, res) => {
-    Question.findById(req.params.id, null, function (err, question) {
+    Question.findById(req.params.id, null, function(err, question) {
         if (err || !question) return res.send('Error.');
         res.render('questions/view', { question })
     })
 }
 
 module.exports.edit = (req, res) => {
-    Question.findById(req.params.id, null, function (err, question) {
+    Question.findById(req.params.id, null, function(err, question) {
         if (err || !question) return res.send('Error.');
 
         question.question = texToMathML(question.question);
@@ -143,7 +143,7 @@ module.exports.edit = (req, res) => {
     })
 }
 
-module.exports.postEdit = async (req, res) => {
+module.exports.postEdit = async(req, res) => {
     let question = await Question.findById(req.params.id);
     question.question = texToMathML(req.body.question_content);
     question.answer = texToMathML(req.body.detailed_answer);
@@ -152,7 +152,6 @@ module.exports.postEdit = async (req, res) => {
     question.side_tags = req.body.side_tags ? JSON.parse(req.body.side_tags) : undefined;
     question.level = req.body.level ? req.body.level : undefined;
     let truthyChoices = req.body.answer_true ? req.body.answer_true.map(a => Number(a)) : [];
-    console.log(question.choices);
     req.body.answer_content.forEach((ans, i) => {
         question.choices[i] = question.choices[i] || {};
         question.choices[i].content = texToMathML(ans);
@@ -160,12 +159,11 @@ module.exports.postEdit = async (req, res) => {
         else question.choices[i].isTrue = false;
     })
     await question.save();
-    console.log(question.choices);
     res.redirect('/questions/' + question._id);
 }
 
 module.exports.delete = (req, res) => {
-    Question.findByIdAndDelete(req.params.id, null, function (err, question) {
+    Question.findByIdAndDelete(req.params.id, null, function(err, question) {
         res.redirect('/questions');
     })
 }
@@ -221,11 +219,9 @@ function questionfy(content) {
                 if (/\s{3,}/gi.test(p)) {
                     choiceList.push(...p.split(/\s{3,}/).filter(c => isChoice(c)));
                 } else choiceList.push(p);
-            }
-            else {
+            } else {
                 let levelRegex = /<p>\s*\[&lt;level:(\d{1,})&gt;\]\s*<\/p>/g;
                 if (levelRegex.test(p)) {
-                    console.log(levelRegex.exec(p));
                     level = Number([...levelRegex.exec(p)][1]);
                 } else
                     quesContent.push(p);
