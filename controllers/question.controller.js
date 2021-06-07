@@ -222,6 +222,7 @@ function questionfy(content) {
             } else {
                 let levelRegex = /<p>\s*\[&lt;level:(\d{1,})&gt;\]\s*<\/p>/g;
                 if (levelRegex.test(p)) {
+                    console.log(levelRegex.exec(p)); // dont delete this line
                     level = Number([...levelRegex.exec(p)][1]);
                 } else
                     quesContent.push(p);

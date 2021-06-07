@@ -61,45 +61,45 @@ const Strategy = require('passport-facebook').Strategy;
 
 // toggle comment for develop env
 // Configure Passport authenticated session persistence.
-passport.serializeUser(function(user, cb) {
-    cb(null, user);
-});
+// passport.serializeUser(function(user, cb) {
+//     cb(null, user);
+// });
 
-passport.deserializeUser(function(obj, cb) {
-    cb(null, obj);
-});
+// passport.deserializeUser(function(obj, cb) {
+//     cb(null, obj);
+// });
 
 
-// Configure the Facebook strategy for use by Passport.
-passport.use(new Strategy({
-        clientID: process.env['FACEBOOK_CLIENT_ID'],
-        clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
-        callbackURL: process.env['CALLBACK_URL']
-    },
-    function(accessToken, refreshToken, profile, done) {
-        process.nextTick(function() {
-            console.log(profile);
-            if (fbAdminIds.indexOf(profile.id) > -1) {
-                profile.role = 'admin';
-                profile.isAdmin = true;
-            } else profile.role = 'user';
-            return done(null, profile);
-        });
-    }
-));
-app.use(passport.initialize());
-app.use(passport.session());
+// // Configure the Facebook strategy for use by Passport.
+// passport.use(new Strategy({
+//         clientID: process.env['FACEBOOK_CLIENT_ID'],
+//         clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
+//         callbackURL: process.env['CALLBACK_URL']
+//     },
+//     function(accessToken, refreshToken, profile, done) {
+//         process.nextTick(function() {
+//             console.log(profile);
+//             if (fbAdminIds.indexOf(profile.id) > -1) {
+//                 profile.role = 'admin';
+//                 profile.isAdmin = true;
+//             } else profile.role = 'user';
+//             return done(null, profile);
+//         });
+//     }
+// ));
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 // Begin init user for dev env
-// app.use((req, res, next) => {
-//         req.user = {
-//             // isAdmin: true,
-//             displayName: "Chàm Cẩm Vì Đề",
-//             id: "69696969"
-//         };
-//         next();
-//     })
-// End
+app.use((req, res, next) => {
+        req.user = {
+            isAdmin: true,
+            displayName: "Chàm Cẩm Vì Đề",
+            id: "69696969"
+        };
+        next();
+    })
+    // End
 
 app.use(function(req, res, next) {
     app.locals.basedir = './public';
