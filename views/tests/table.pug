@@ -1,0 +1,26 @@
+extends ../layouts/common.pug
+block content
+	h5.text-primary Bảng điểm
+	.table-responsive
+		table.table
+			tr
+				th(style="cursor: pointer;" scope="col") Tên
+				th(style="cursor: pointer;" scope="col") Điểm
+				th(style="cursor: pointer;" scope="col") Số lần thoát
+				th(style="cursor: pointer;" scope="col") Bắt đầu
+				th(style="cursor: pointer;" scope="col") Kết thúc
+				th(style="cursor: pointer;" scope="col") IP
+				th(style="cursor: pointer;" scope="col") Thiết bị
+				th Thao tác
+			each result in results
+				tr
+					td.align-middle= result.user.display_name
+					td.align-middle= Math.round(result.mark*100)/100
+					td.align-middle= result.leaves_area_times
+					td.align-middle= result.started_time.toLocaleString('vi-VN')
+					td.align-middle= result.finished_time ? result.finished_time.toLocaleString('vi-VN') : "Chưa nộp"
+					td= result.user.ip
+					td=result.user.software
+
+block script-footer
+	script(src="/js/helper/tablesorting.js")

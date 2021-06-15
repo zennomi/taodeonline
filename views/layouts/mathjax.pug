@@ -23,6 +23,10 @@ script.
         parseError: function (node) {        // function to process parsing errors
             this.error(this.adaptor.textContent(node).replace(/\n.*/g, ''));
         }
+    },
+    chtml: {
+        minScale: 1,
+        matchFontHeight: false,
     }
     };
 script.
@@ -32,3 +36,16 @@ script.
     script_CHTML.async = true;
     document.head.appendChild(script_CHTML);    //Parent Tags
     })();
+style.
+    mjx-frac mjx-mn[size="s"],
+    mjx-frac mjx-mrow[size="s"],
+    mjx-frac mjx-mi[size="s"],
+    mjx-frac mjx-texatom[size="s"] {
+        font-size: 100%;
+    }
+    mjx-frac mjx-line {
+        margin: .15em -.1em;
+    }
+    mjx-frac mjx-msub mjx-mrow[size="s"] {
+        font-size: 70.7%;
+    }

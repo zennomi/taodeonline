@@ -1,4 +1,4 @@
-var tagLists = [
+﻿var tagLists = [
     {value: "Dao Động Cơ", grade: 12, searchKeys: "dđc, dđđh"},
     {value: "Dao Động Điều hòa", grade: 12, searchKeys: "dđc dđđh ddc dddh"},
     {value: "Dao động tắt dần", grade: 12, searchKeys: ""},
@@ -42,12 +42,16 @@ var tagLists = [
     {value: "Định Luật Cu-lông", grade: 11, searchKeys: ""},
     {value: "Thuyết Electron", grade: 11, searchKeys: "êlectron"},
     {value: "Định Luật Bảo Toàn Điện Tích", grade: 11, searchKeys: ""},
-    {value: "Điện Cường. Cường Độ Điện Trường", grade: 11, searchKeys: ""},
+    {value: "Điện Trường. Cường Độ Điện Trường", grade: 11, searchKeys: ""},
     {value: "Đường Sức Điện", grade: 11, searchKeys: ""},
     {value: "Công của lực điện", grade: 11, searchKeys: ""},
     {value: "Điện Thế. Hiệu Điện Thế", grade: 11, searchKeys: ""},
     {value: "Tụ Điện", grade: 11, searchKeys: ""},
     {value: "Từ Trường", grade: 11, searchKeys: "tt"},
+{value: "Dòng Điện Trong Các Môi Trường", grade: 11, searchKeys: "tt"},
+{value: "Dòng Điện Không Đổi", grade: 11, searchKeys: "tt"},
+	{value: "Quang Học", grade: 11, searchKeys: "qh"},
+{value: "Cảm Ứng Điện Từ", grade: 11, searchKeys: "qh"},
     {value: "Bẫy lý thuyết", searchKeys: ""},
     {value: "Bẫy ngôn từ", searchKeys: ""},
 ];

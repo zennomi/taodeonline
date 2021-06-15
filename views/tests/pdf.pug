@@ -1,0 +1,63 @@
+html(lang="en")
+	head
+		meta(charset="UTF-8")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous")
+		//- link(rel='stylesheet', href='/template/css/argon.min.css', type='text/css')
+		title= test.name ? test.name : "Đề thi"			
+		include ../layouts/mathjax.pug
+		//- script.
+		//-	 window.MathJax.startup = {
+		//-		 ready: () => {
+		//-			 MathJax.startup.defaultReady();
+		//-			 MathJax.startup.promise.then(() => {
+		//-				 window.onload = function() {
+		//-					 var startBtn = document.getElementById('start-btn');
+		//-					 startBtn.innerHTML = '<i class="fad fa-pencil"></i>	Bắt đầu làm bài';
+		//-					 startBtn.disabled = false;
+		//-				 }
+		//-			 });
+		//-		 }
+		//-	 }
+		link(rel="stylesheet" href="/css/premium-test.css")
+		link(rel="stylesheet" href="/css/pdf.css")
+		//- link(rel="stylesheet" href="/css/premium-test.css")
+		include ../layouts/favicon.pug
+		link(rel='stylesheet', type='text/css', href='//cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@8af0edd/css/all.css')
+		link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Quicksand:300,400,600,700')
+	body
+		// Main Area
+		.container
+			h1.mt-2.text-success.text-center= test.name ? test.name : "Đề thi"
+			.d-flex.justify-content-around
+				p Đề thi gồm #{test.questions.length} câu.
+				p
+					| Thời gian 
+					span#totalTimes= test.time ? test.time : 40
+					|  phút.
+			p 
+				b Họ và tên: __________________________
+			.test-wrap.p-1
+				each q, i in test.questions
+					.question(id="q-"+q._id data-id=q._id)
+						.question-wrap
+							b.text-success Câu #{i+1}: 
+							span !{q.question}
+						form.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0(class = q.getMaxLengthChoice() < 24 ? "row-cols-md-4" : q.getMaxLengthChoice() < 48 ? "row-cols-md-2" : "row-cols-md-1")
+							each a,j in q.choices
+								.col.mb-1.d-flex.align-items-center
+									b= String.fromCharCode(65+j)
+									| .
+									|   
+									| !{a.content}
+					//- .collapse(id="ans-"+q._id)
+					//-	 if q.answer
+					//-		 | !{q.answer}
+					//-	 else
+					//-		 .sans-serif
+					//-			 | Câu này chưa có lời giải chi tiết nhưng không sao đã có 
+					//-			 a.btn.btn-primary.btn-sm.btn-icon(href="https://www.facebook.com/groups/giaimoibaily" target="_blank")
+					//-				 i.fab.fa-facebook
+					//-				 span   Ở đây giải mọi bài tập Lý
+
+					//- hr

@@ -17,7 +17,7 @@ const resultSchema = new Schema({
     },
     started_time: Date,
     finished_time: Date,
-    last_updates: Date,
+    last_updated: Date,
     leaves_area_times: Number,
     choices: [choiceSchema]
 })

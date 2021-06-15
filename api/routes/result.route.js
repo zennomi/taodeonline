@@ -15,7 +15,7 @@ router.post('/', authMiddlewares.authRequire, (req, res) => {
       },
       leaves_area_times: 0,
       started_time: new Date(),
-      last_update: new Date()
+      last_updated: new Date()
     });
     newResult.save((err, result) => {
       if (err) {
@@ -38,7 +38,7 @@ router.put('/:id', authMiddlewares.authRequire, async (req, res) => {
     }
     matchedResult.leaves_area_times = req.body.leavesAreaTimes;
     matchedResult.choices = [...req.body.choices];
-    matchedResult.last_update = new Date();
+    matchedResult.last_updated = new Date();
     if (req.body.isFinished) matchedResult.finished_time = new Date();
     matchedResult.save((err, result) => {
       res.status(200).json(result);

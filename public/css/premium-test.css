@@ -13,6 +13,13 @@ body {
     font-family: inherit !important;
 }
 
+
+mjx-frac mjx-mn[size="s"],
+mjx-frac mjx-mrow[size="s"],
+mjx-frac mjx-mi[size="s"] {
+    font-size: 100%;
+}
+
 p {
     font-size: large;
 }
