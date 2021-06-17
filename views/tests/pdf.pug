@@ -27,37 +27,86 @@ html(lang="en")
 		link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Quicksand:300,400,600,700')
 	body
 		// Main Area
-		.container
-			h1.mt-2.text-success.text-center= test.name ? test.name : "Đề thi"
-			.d-flex.justify-content-around
-				p Đề thi gồm #{test.questions.length} câu.
-				p
-					| Thời gian 
-					span#totalTimes= test.time ? test.time : 40
-					|  phút.
-			p 
-				b Họ và tên: __________________________
-			.test-wrap.p-1
-				each q, i in test.questions
-					.question(id="q-"+q._id data-id=q._id)
-						.question-wrap
-							b.text-success Câu #{i+1}: 
-							span !{q.question}
-						form.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0(class = q.getMaxLengthChoice() < 24 ? "row-cols-md-4" : q.getMaxLengthChoice() < 48 ? "row-cols-md-2" : "row-cols-md-1")
-							each a,j in q.choices
-								.col.mb-1.d-flex.align-items-center
-									b= String.fromCharCode(65+j)
-									| .
-									|   
-									| !{a.content}
-					//- .collapse(id="ans-"+q._id)
-					//-	 if q.answer
-					//-		 | !{q.answer}
-					//-	 else
-					//-		 .sans-serif
-					//-			 | Câu này chưa có lời giải chi tiết nhưng không sao đã có 
-					//-			 a.btn.btn-primary.btn-sm.btn-icon(href="https://www.facebook.com/groups/giaimoibaily" target="_blank")
-					//-				 i.fab.fa-facebook
-					//-				 span   Ở đây giải mọi bài tập Lý
+		//- .fixed-top(style="margin-top: -10px;")
+		.page-header
+			.d-flex.justify-content-between
+				.text-center.text-success VẬT LÝ SIÊU NHẨM
+				.text-center.fst-italic Chinh phục vật lý từ con số 0
+		//- .fixed-bottom(style="margin-bottom: 10px;")
 
-					//- hr
+		.page-footer 
+			.d-flex.justify-content-between
+				.text-center.fst-italic
+					b Hotline: 
+					| 0326 425 111
+				if course
+					.text-center 
+						| Mua khóa luyện đề tại 
+						a.text-success(href=(domainName + "/courses/" + course._id + "/view")) Web LamDeVLSN
+		table 
+			thead 
+				tr
+					td 
+						.page-header-space
+
+			tbody
+				tr 
+					td
+						.d-flex.justify-content-around
+							.text-center 
+								img(src='/img/logo-no-background.png' style='width: 200px;')
+							.text-center
+								h1.mt-2.text-success.text-center= test.name ? test.name : "Đề thi"
+								p
+									| Đề thi gồm #{test.questions.length} câu.
+								p
+									| Thời gian 
+									span#totalTimes= test.time ? test.time : 40
+									|  phút.
+								p 
+									| Làm online tại 
+									- var link = course ? (domainName +"/courses/" + course._id + "/tests/" + test._id + "/view") : (domainName + "/tests/" + test._id + "/do");
+									a.text-success(href=(link)) Web LamDeVLSN
+									| .
+						p 
+							b Họ và tên: __________________________
+						.test-wrap.p-1
+							each q, i in test.questions
+								.question(id="q-"+q._id data-id=q._id)
+									.question-wrap
+										b.text-success Câu #{i+1}: 
+										span !{q.question}
+									form.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0(class = q.getMaxLengthChoice() < 24 ? "row-cols-md-4" : q.getMaxLengthChoice() < 30 ? "row-cols-md-2" : "row-cols-md-1")
+										each a,j in q.choices
+											.col.mb-1.d-flex.align-items-center
+												b.text-success
+													span= String.fromCharCode(65+j)
+													| .
+													| &nbsp;
+												| !{a.content}
+								//- .collapse(id="ans-"+q._id)
+								//-	 if q.answer
+								//-		 | !{q.answer}
+								//-	 else
+								//-		 .sans-serif
+								//-			 | Câu này chưa có lời giải chi tiết nhưng không sao đã có 
+								//-			 a.btn.btn-primary.btn-sm.btn-icon(href="https://www.facebook.com/groups/giaimoibaily" target="_blank")
+								//-				 i.fab.fa-facebook
+								//-				 span   Ở đây giải mọi bài tập Lý
+
+								//- hr
+						.key
+							h1.mt-2.text-success.text-center Đáp án
+							.d-flex.justify-content-around.flex-wrap
+								each q, i in test.questions
+									.mx-1.my-1
+										- var link = course ? (domainName +"/courses/" + course._id + "/tests/" + test._id + "/view#q-" + q._id) : (domainName + "/questions/" + q._id + "/view");
+										.text-center Câu #{i+1}: #{q.getTrueChoice()}
+										.text-center.mb-1
+											img(src=("https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" + encodeURIComponent(link) + "") alt="qr-code" title="qr-code")
+										.text-center
+											a.badge.text-success.border.border-success(href=link target="_blank") Đáp án chi tiết
+			tfoot 
+				tr 
+					td
+						.page-footer-space

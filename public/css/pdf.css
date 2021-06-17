@@ -1,5 +1,14 @@
+@page {
+    size: A4;
+    margin: .2in;
+}
+
 @media print {
-	form {
+	.container {
+		padding: 20px;
+		page-break-after: always;
+	}
+	form, .key {
 	  page-break-inside: avoid;
 	}
 	.row-cols-md-4>* {
@@ -14,4 +23,42 @@
 		flex: 0 0 auto;
     	width: 100%;
 	}
+}
+
+
+/* Styles go here */
+
+.page-header, .page-header-space {
+	height: 50px;
+  }
+  
+  .page-footer, .page-footer-space {
+	height: 50px;
+  
+  }
+  
+  .page-footer {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+
+  }
+  
+  .page-header {
+	position: fixed;
+	top: 0mm;
+	width: 100%;
+  }
+  
+  .page {
+	page-break-after: always;
+  }
+  
+  @media print {
+	 thead {display: table-header-group;} 
+	 tfoot {display: table-footer-group;}
+	 
+	 button {display: none;}
+	 
+	 body {margin: 0;}
   }

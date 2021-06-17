@@ -46,7 +46,6 @@ module.exports.do = (req, res) => {
 module.exports.pdf = (req, res) => {
     let config = {};
     let hour = (new Date()).getHours();
-    if (hour > 22 || hour < 5) config.darkmode = 'on';
     Test.findById(req.params.id).populate('questions').exec((err, test) => {
         if (err || !test) return res.send('Error');
         if (!test.time) test.time = 40;

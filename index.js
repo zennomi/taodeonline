@@ -103,6 +103,7 @@ app.use((req, res, next) => {
 
 app.use(function(req, res, next) {
     app.locals.basedir = './public';
+    res.locals.domainName = process.env.DOMAIN_NAME;
     if (req.user) {
         res.locals.user = req.user;
         res.locals.user.software = req.get("User-Agent");

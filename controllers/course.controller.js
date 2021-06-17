@@ -179,7 +179,7 @@ module.exports.viewTest = async(req, res) => {
 
 module.exports.doTest = async(req, res) => {
     let config = req.query;
-    let course, test, results;
+    let course, test;
     try {
         course = await Course.findById(req.params.id);
         test = await Test.findById(req.params.testId).populate('questions');
@@ -213,4 +213,41 @@ module.exports.doTest = async(req, res) => {
         }
     }
     res.render('tests/premium/do', { course, test, link: `${req.hostname}${req.originalUrl}`, config });
+}
+
+module.exports.pdfTest = async(req, res) => {
+    let config = req.query || {};
+    let course, test;
+    try {
+        course = await Course.findById(req.params.id);
+        test = await Test.findById(req.params.testId).populate('questions');
+        if (!course || !test) throw new Error("Không tim thấy bài test có id này.");
+        if (!course.isOpenTo(req.user) || !(course.test_ids.map(id => String(id)).includes(String(test._id)))) throw new Error("Sai ID.");
+    } catch (err) {
+        return res.send(err);
+    }
+    test.questions.forEach(q => {
+        q.question = toInlineElement(q.question);
+        q.choices.forEach(a => {
+            a.content = toInlineElement(a.content);
+        })
+        q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
+        if (!q.level) q.level = 11;
+        if (config.shuffleOptions == 'on')
+            q.choices = shuffle(q.choices);
+    });
+    if (config.time > 0 && config.time < 200) {
+        test.time = config.time
+    }
+    test.questions.sort((a, b) => a.level - b.level);
+    // shuffle
+    if (config.shuffleQuestions == 'on') {
+        questionGroups = groupArray(test.questions, 'level');
+        test.questions = [];
+        for (const level in questionGroups) {
+            questionGroups[level] = shuffle(questionGroups[level]);
+            test.questions.push(...questionGroups[level])
+        }
+    }
+    res.render('tests/pdf', { course, test, link: `${req.hostname}${req.originalUrl}`, config });
 }

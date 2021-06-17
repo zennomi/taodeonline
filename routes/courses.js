@@ -20,6 +20,7 @@ router.get('/manage/:id/delete', authMiddlewares.authRequire, authMiddlewares.ad
 
 router.get('/:id/tests/:testId/view', authMiddlewares.authRequire, controller.viewTest);
 router.get('/:id/tests/:testId/do', authMiddlewares.authRequire, controller.doTest);
+router.get('/:id/tests/:testId/pdf', authMiddlewares.authRequire, controller.pdfTest);
 router.post('/:id/tests/:testId/do', authMiddlewares.authRequire, controller.doTest);
 
 module.exports = router;
