@@ -6,19 +6,17 @@ html(lang="en")
 		//- link(rel='stylesheet', href='/template/css/argon.min.css', type='text/css')
 		title= test.name ? test.name : "Đề thi"			
 		include ../layouts/mathjax.pug
-		//- script.
-		//-	 window.MathJax.startup = {
-		//-		 ready: () => {
-		//-			 MathJax.startup.defaultReady();
-		//-			 MathJax.startup.promise.then(() => {
-		//-				 window.onload = function() {
-		//-					 var startBtn = document.getElementById('start-btn');
-		//-					 startBtn.innerHTML = '<i class="fad fa-pencil"></i>	Bắt đầu làm bài';
-		//-					 startBtn.disabled = false;
-		//-				 }
-		//-			 });
-		//-		 }
-		//-	 }
+		script.
+			 window.MathJax.startup = {
+				 ready: () => {
+					 MathJax.startup.defaultReady();
+					 MathJax.startup.promise.then(() => {
+						optionArea();
+						 window.onload = function() {
+						 }
+					 });
+				 }
+			 }
 		link(rel="stylesheet" href="/css/premium-test.css")
 		link(rel="stylesheet" href="/css/pdf.css")
 		//- link(rel="stylesheet" href="/css/premium-test.css")
@@ -76,14 +74,15 @@ html(lang="en")
 									.question-wrap
 										b.text-success Câu #{i+1}: 
 										span !{q.question}
-									form.row.row-cols-1.row-cols-sm-2.no-gutters.mb-0(class = q.getMaxLengthChoice() < 24 ? "row-cols-md-4" : q.getMaxLengthChoice() < 30 ? "row-cols-md-2" : "row-cols-md-1")
+									form.optionArea.row.row-cols-1.no-gutters.mb-0
 										each a,j in q.choices
 											.col.mb-1.d-flex.align-items-center
 												b.text-success
 													span= String.fromCharCode(65+j)
 													| .
 													| &nbsp;
-												| !{a.content}
+												span.contentOption
+													| !{a.content}
 								//- .collapse(id="ans-"+q._id)
 								//-	 if q.answer
 								//-		 | !{q.answer}
@@ -110,3 +109,4 @@ html(lang="en")
 				tr 
 					td
 						.page-footer-space
+	script(src="/js/tests/pdf.js") 
