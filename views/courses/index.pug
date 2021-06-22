@@ -173,10 +173,7 @@ block content
                 each course in courses
                     .col
                         .card.shadow
-                            img.bd-placeholder-img.card-img-top(width='100%', src='https://i.imgur.com/tzKT4lz.jpeg', role='img', aria-label='Placeholder:', preserveaspectratio='xMidYMid slice', focusable='true')
-                            title 123
-                            rect(width='100%', height='100%', fill='#55595c')
-                            text(x='50%', y='50%', fill='#eceeef', dy='.3em')
+                            img.bd-placeholder-img.card-img-top(width='100%', src=course.img_link, alt='Khóa học' role='img', aria-label='Placeholder:', preserveaspectratio='xMidYMid slice', focusable='true')
                             .card-body
                                 .card-text
                                     span= course.name

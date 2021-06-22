@@ -8,7 +8,7 @@ block content
         img.card-img-top(src=course.img_link, alt='Khóa học')
         .card-header.border-0.pb-4.text-end
             if user && ((course).isOpenTo(user))
-                button.btn.btn-success.btn-lg.btn-block(type='button' disabled) Bạn có thể tham gia khoá luyện đề này
+                button.btn.btn-success.btn-lg.btn-block(type='button' disabled) Bạn đã có thể tham gia khoá luyện đề này
             else if !user && course.public_price == 0
                 a.btn.btn-success.btn-lg.btn-block(type='button' href="/auth/login") Đăng nhập để tham gia khoá học miễn phí
             else

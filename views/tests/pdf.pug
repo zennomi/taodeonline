@@ -11,7 +11,7 @@ html(lang="en")
 				 ready: () => {
 					 MathJax.startup.defaultReady();
 					 MathJax.startup.promise.then(() => {
-						optionArea();
+						optionArea(710);
 						 window.onload = function() {
 						 }
 					 });
@@ -102,11 +102,12 @@ html(lang="en")
 										- var link = course ? (domainName +"/courses/" + course._id + "/tests/" + test._id + "/view#q-" + q._id) : (domainName + "/questions/" + q._id + "/view");
 										.text-center Câu #{i+1}: #{q.getTrueChoice()}
 										.text-center.mb-1
-											img(src=("https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" + encodeURIComponent(link) + "") alt="qr-code" title="qr-code")
+											img(src=("https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=" + encodeURIComponent(link) + "") alt="qr-code" title="qr-code")
 										.text-center
 											a.badge.text-success.border.border-success(href=link target="_blank") Đáp án chi tiết
 			tfoot 
 				tr 
 					td
 						.page-footer-space
+	script(src="/js/tests/fixUi.js") 
 	script(src="/js/tests/pdf.js") 

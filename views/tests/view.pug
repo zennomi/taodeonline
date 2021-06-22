@@ -35,16 +35,39 @@ block content
     .row.row-cols-md-2
         .col
             h5.text-primary Mã QR
-            .text-center
-                img.mb-1#qr-image(alt="QR Code")
-                br
-                button#button-addon2.btn.btn-outline-primary(type="button" onclick=`copyToClipboard(window.location.origin + "/tests/${test._id}/do")`) Copy
+            .row.row-cols-1.row-cols-md-2
+                .col.text-center
+                    img.mb-1#qr-image(alt="QR Code")
+                    br
+                    button#button-addon2.btn.btn-outline-primary(type="button" onclick=`copyToClipboard(window.location.origin + "/tests/${test._id}/do")`) Copy Link
+                .col 
+                    h5.text-center Thông tin Đề
+                    b Công bố đáp án: 
+                    span= test.isPublic
+                    br
+                    b Đề VIP: 
+                    span= test.isPremium
+                    br
+                    b Công khai PDF: 
+                    span= test.isPublic
+                    br
+                    b Trộn câu: 
+                    span= test.isShuffled
+                    br
+                    b Sắp xếp theo độ khó: 
+                    span= test.isSorted
             if user && user.isAdmin
                 h5.text-primary Thao tác
                 .d-flex.justify-content-around
                     a.d-block.btn.btn-outline-success(href=`/tests/${test._id}/edit`) Sửa
-                    a.d-block.btn.btn-outline-success(href=`/tests/${test._id}/do`) Làm
+                    a.d-block.btn.btn-outline-success(href=`/tests/${test._id}/do`) Làm thử
                     a.d-block.btn.btn-outline-danger(href=`/tests/${test._id}/delete`) Xóa
+                    a.d-block.btn.btn-outline-primary(href=`/tests/${test._id}/table` target="_blank") Bảng điểm chi tiết
+                    a.d-block.btn.btn-outline-primary(href=`/tests/${test._id}/pdf` target="_blank") In PDF
+            if test.note
+                h5.text-primary Ghi chú của trợ giảng 
+                .alert.alert-primary
+                    | !{test.note}
             h5.text-primary Bảng điểm
             .table-responsive
                 table.table
@@ -70,7 +93,7 @@ block content
                     span#totalTimes= test.time ? test.time : 40
                     |  phút.
             .p-1
-                each q, i in test.questions.sort((a, b) => (a.level - b.level))
+                each q, i in test.questions
                     .question(id="q-"+q._id data-id=q._id)
                         .question-wrap
                             b Câu #{i+1}: 
