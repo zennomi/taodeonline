@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", function() {
     initModal.addEventListener('hidden.bs.modal', function(event) {
         anotherMethod('/api/results', 'POST', { testId }, (res) => {
             document.querySelector('.test-wrap').style.display = 'block';
+            optionArea();
+            // fix black color
+            document.querySelectorAll('[style="color:black"]').forEach(s => s.style.color = "var(--bs-dark)");
             resultId = res.result._id;
             countdown(totalTimes);
             window.onblur = userCheated;
@@ -57,6 +60,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!confirm("Nộp bài nhé?")) return;
         submitTest();
     })
+
+
 });
 
 

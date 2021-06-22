@@ -49,6 +49,7 @@ function zoomOut() {
     if (size < 1.5) {
         backDrop.style.opacity = 0;
         containerEle.style.zoom = size + 0.1;
+        optionArea();
     }
 }
 
@@ -58,6 +59,7 @@ function zoomIn() {
     if (size > 0.5) {
         backDrop.style.opacity = 0;
         containerEle.style.zoom = size - 0.1;
+        optionArea();
     }
 }
 /* Get into full screen */

@@ -1,6 +1,6 @@
 body {
     background: var(--bs-white);
-    color: var(--bs-dark);
+    color: var(--bs-dark) !important;
     font-family: 'Quicksand', 'sans-serif';
 }
 
@@ -12,7 +12,6 @@ body {
 .TEX-I {
     font-family: inherit !important;
 }
-
 
 mjx-frac mjx-mn[size="s"],
 mjx-frac mjx-mrow[size="s"],

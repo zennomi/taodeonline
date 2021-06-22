@@ -6,14 +6,23 @@ const testSchema = new Schema({
     time: Number,
     name: String,
     deadline: { type: Date, default: new Date() },
-    isPublic: { type: Boolean, default: false },
     grade: { type: Number, default: 12 },
+    link_pdf: String,
+    link_fb_live: String,
+    note: String,
+    isPublic: { type: Boolean, default: false },
     isPremium: {
         type: Boolean,
         default: false
     },
-    link_pdf: String,
-    link_fb_live: String
+    isShuffled: {
+        type: Boolean,
+        default: true
+    },
+    isSorted: {
+        type: Boolean,
+        default: true
+    }
 })
 
 module.exports = mongoose.model('Test', testSchema);

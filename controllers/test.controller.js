@@ -26,15 +26,17 @@ module.exports.do = (req, res) => {
             })
             q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
             if (!q.level) q.level = 11;
-            q.choices = shuffle(q.choices);
+            if (test.isShuffled) q.choices = shuffle(q.choices);
         });
         // shuffle
-        test.questions.sort((a, b) => a.level - b.level);
-        questionGroups = groupArray(test.questions, 'level');
-        test.questions = [];
-        for (const level in questionGroups) {
-            questionGroups[level] = shuffle(questionGroups[level]);
-            test.questions.push(...questionGroups[level])
+        if (test.isSorted) test.questions.sort((a, b) => a.level - b.level);
+        if (test.isShuffled) {
+            questionGroups = groupArray(test.questions, 'level');
+            test.questions = [];
+            for (const level in questionGroups) {
+                questionGroups[level] = shuffle(questionGroups[level]);
+                test.questions.push(...questionGroups[level])
+            }
         }
         Result.find({ "user.facebook_id": req.user.id, test_id: test._id }).exec((err, results) => {
 
@@ -56,22 +58,24 @@ module.exports.pdf = (req, res) => {
             })
             q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
             if (!q.level) q.level = 11;
-            q.choices = shuffle(q.choices);
+            if (test.isShuffled) q.choices = shuffle(q.choices);
         });
         // shuffle
-        test.questions.sort((a, b) => a.level - b.level);
-        questionGroups = groupArray(test.questions, 'level');
-        test.questions = [];
-        for (const level in questionGroups) {
-            questionGroups[level] = shuffle(questionGroups[level]);
-            test.questions.push(...questionGroups[level])
+        if (test.isSorted) test.questions.sort((a, b) => a.level - b.level);
+        if (test.isShuffled) {
+            questionGroups = groupArray(test.questions, 'level');
+            test.questions = [];
+            for (const level in questionGroups) {
+                questionGroups[level] = shuffle(questionGroups[level]);
+                test.questions.push(...questionGroups[level])
+            }
         }
 
         res.render('tests/pdf', { test, link: `${req.hostname}${req.originalUrl}`, config });
     })
 }
 
-module.exports.create = async (req, res) => {
+module.exports.create = async(req, res) => {
     let ids = req.cookies.questions ? req.cookies.questions.ids : [];
 
     let matchedQuestions = await Question.find({ _id: { $in: ids } });
@@ -90,7 +94,7 @@ module.exports.autoCreate = (req, res) => {
     res.render('tests/auto-create.pug')
 }
 
-module.exports.postAutoCreate = async (req, res) => {
+module.exports.postAutoCreate = async(req, res) => {
     let numberOfGroups = req.body.numberOfQuestions.length;
     let matchedQuestions = [];
     for (let i = 0; i < numberOfGroups; i++) {
@@ -112,7 +116,7 @@ module.exports.postAutoCreate = async (req, res) => {
     res.redirect('/tests/create');
 }
 
-module.exports.view = async (req, res) => {
+module.exports.view = async(req, res) => {
     let matchedTest = await Test.findById(req.params.id).populate('questions');
     let trueChoiceIds = [],
         trueChoices = [];
@@ -125,10 +129,13 @@ module.exports.view = async (req, res) => {
     matchedTest.questions.forEach(q => {
         q.question = toInlineElement(q.question);
         q.choices.forEach(a => {
-            a.content = toInlineElement(a.content);
-        }),
+                a.content = toInlineElement(a.content);
+            }),
             q.trueTimes = 0;
     });
+
+    if (matchedTest.isSorted) matchedTest.questions.sort((a, b) => a.level - b.level);
+
     matchedResults.forEach(result => {
         let mark = 0;
         let earliest = 0;
@@ -148,7 +155,7 @@ module.exports.view = async (req, res) => {
 
 
 
-module.exports.table = async (req, res) => {
+module.exports.table = async(req, res) => {
     let matchedTest = await Test.findById(req.params.id).populate('questions');
     let trueChoiceIds = [],
         trueChoices = [];
@@ -193,6 +200,9 @@ module.exports.postEdit = (req, res) => {
         if (req.body.deadline) test.deadline = new Date(req.body.deadline);
         test.isPublic = req.body.isPublic == 'on';
         test.isPremium = req.body.isPremium == 'on';
+        test.isShuffled = req.body.isShuffled == 'on';
+        test.isSorted = req.body.isSorted == 'on';
+        test.note = req.body.note;
         test.save((err, test) => {
             if (err) return res.send(err);
             res.redirect('/tests/' + test._id + '/view');
@@ -207,7 +217,7 @@ module.exports.delete = (req, res) => {
     })
 }
 
-module.exports.viewResult = async (req, res) => {
+module.exports.viewResult = async(req, res) => {
     let result;
     try {
         result = await Result.findById(req.params.resultId).populate({ path: 'test_id', populate: { path: 'questions' } });
@@ -226,7 +236,7 @@ module.exports.viewResult = async (req, res) => {
     res.render('tests/view-result', { result, trueChoiceIds, selectedChoiceIds });
 }
 
-module.exports.postDelete = async (req, res) => {
+module.exports.postDelete = async(req, res) => {
     await Test.findByIdAndDelete(req.params.id);
     await Result.deleteMany({ test_id: req.params.id });
     res.redirect('/tests')
