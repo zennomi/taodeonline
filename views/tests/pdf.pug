@@ -96,16 +96,16 @@ html(lang="en")
 
 								//- hr
 						.key
-							h1.mt-2.text-success.text-center Đáp án
+							h1.my-0.text-success.text-center Đáp án
 							.d-flex.justify-content-around.flex-wrap
 								each q, i in test.questions
 									.mx-1.my-1
 										- var link = course ? (domainName +"/courses/" + course._id + "/tests/" + test._id + "/view#q-" + q._id) : (domainName + "/questions/" + q._id + "/view");
 										.text-center Câu #{i+1}: #{q.getTrueChoice()}
 										.text-center.mb-1
-											img(src=("https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" + encodeURIComponent(link) + "") alt="qr-code" title="qr-code")
+											img(src=("https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=" + encodeURIComponent(link) + "") alt="qr-code" title="qr-code")
 										.text-center
-											a.badge.text-success.border.border-success(href=link target="_blank") Đáp án chi tiết
+											a.badge.text-success.border.border-success(href=link target="_blank") Link lời giải
 			tfoot 
 				tr 
 					td
