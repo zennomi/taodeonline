@@ -4,12 +4,28 @@ const Result = require("../models/result.model");
 const shuffle = require('shuffle-array');
 const groupArray = require('group-array');
 
-module.exports.index = (req, res) => {
-    Test.find({}).sort({ _id: -1 }).exec((err, tests) => {
-        if (err) return res.send("Error.");
+module.exports.index = async (req, res) => {
+    let tests, results = [];
 
-        res.render('tests/index', { tests });
+    // Pagination
+    const perPage = 10;
+    let indexPage = req.query.p ? Number(req.query.p) - 1 : 0;
+    let maxPage = await Test.countDocuments();
+    maxPage = Math.ceil(maxPage / perPage);
+
+    try {
+        tests = await Test.find({}).limit(perPage).skip(indexPage * perPage).sort({ _id: -1 });
+        results = req.user ? await Result.find({ "user.facebook_id": req.user.id }) : [];
+    } catch (err) {
+        return res.send(err);
+    }
+    tests.forEach(t => {
+        t.count = results.filter(r => String(r.test_id) == String(t._id)).length;
     })
+    res.render('tests/index', {
+        tests, currentPage: indexPage + 1,
+        maxPage: maxPage
+    });
 }
 
 module.exports.do = (req, res) => {
@@ -75,7 +91,7 @@ module.exports.pdf = (req, res) => {
     })
 }
 
-module.exports.create = async(req, res) => {
+module.exports.create = async (req, res) => {
     let ids = req.cookies.questions ? req.cookies.questions.ids : [];
 
     let matchedQuestions = await Question.find({ _id: { $in: ids } });
@@ -94,7 +110,7 @@ module.exports.autoCreate = (req, res) => {
     res.render('tests/auto-create.pug')
 }
 
-module.exports.postAutoCreate = async(req, res) => {
+module.exports.postAutoCreate = async (req, res) => {
     let numberOfGroups = req.body.numberOfQuestions.length;
     let matchedQuestions = [];
     for (let i = 0; i < numberOfGroups; i++) {
@@ -116,7 +132,7 @@ module.exports.postAutoCreate = async(req, res) => {
     res.redirect('/tests/create');
 }
 
-module.exports.view = async(req, res) => {
+module.exports.view = async (req, res) => {
     let matchedTest = await Test.findById(req.params.id).populate('questions');
     let trueChoiceIds = [],
         trueChoices = [];
@@ -129,8 +145,8 @@ module.exports.view = async(req, res) => {
     matchedTest.questions.forEach(q => {
         q.question = toInlineElement(q.question);
         q.choices.forEach(a => {
-                a.content = toInlineElement(a.content);
-            }),
+            a.content = toInlineElement(a.content);
+        }),
             q.trueTimes = 0;
     });
 
@@ -155,7 +171,7 @@ module.exports.view = async(req, res) => {
 
 
 
-module.exports.table = async(req, res) => {
+module.exports.table = async (req, res) => {
     let matchedTest = await Test.findById(req.params.id).populate('questions');
     let trueChoiceIds = [],
         trueChoices = [];
@@ -217,7 +233,7 @@ module.exports.delete = (req, res) => {
     })
 }
 
-module.exports.viewResult = async(req, res) => {
+module.exports.viewResult = async (req, res) => {
     let result;
     try {
         result = await Result.findById(req.params.resultId).populate({ path: 'test_id', populate: { path: 'questions' } });
@@ -236,7 +252,7 @@ module.exports.viewResult = async(req, res) => {
     res.render('tests/view-result', { result, trueChoiceIds, selectedChoiceIds });
 }
 
-module.exports.postDelete = async(req, res) => {
+module.exports.postDelete = async (req, res) => {
     await Test.findByIdAndDelete(req.params.id);
     await Result.deleteMany({ test_id: req.params.id });
     res.redirect('/tests')

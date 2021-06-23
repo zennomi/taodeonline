@@ -18,7 +18,7 @@ block header
             box-shadow: none;
         }
 block content
-    .modal.fade#resultModal(tabindex='-1')
+    .modal.fade#resultModal(tabindex='-1' data-bs-backdrop="false")
         .modal-dialog
             .modal-content
                 .modal-header
@@ -47,9 +47,6 @@ block content
                     br
                     b Đề VIP: 
                     span= test.isPremium
-                    br
-                    b Công khai PDF: 
-                    span= test.isPublic
                     br
                     b Trộn câu: 
                     span= test.isShuffled

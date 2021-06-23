@@ -43,7 +43,17 @@ module.exports.all = async(req, res) => {
 
 // /courses/:id/view
 module.exports.courseView = async(req, res) => {
-        let course = await Course.findById(req.params.id).populate('test_ids');
+        let course, results;
+        try {
+            course = await Course.findById(req.params.id).populate('test_ids');
+            if (!course) throw "not found"
+            results = req.user ? await Result.find({ "user.facebook_id": req.user.id }) : [];
+        } catch(err) {
+            return res.send(err);
+        }
+        course.test_ids.forEach(t => {
+            t.count = results.filter(r => String(r.test_id) == String(t._id)).length;
+        })
         res.render('courses/view', { course, tests: course.test_ids });
     }
     // /courses/:id/enroll => Construction 

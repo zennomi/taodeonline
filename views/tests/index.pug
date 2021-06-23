@@ -15,13 +15,31 @@ block content
                     if !test.isPremium || (user && user.isAdmin)
                         tr
                             td.align-middle.text-wrap= test.grade
-                            td.align-middle.text-wrap= test.name ? test.name : "Đề kiểm tra"
+                            td.align-middle.text-wrap
+                                
+                                span= test.name ? test.name : "Đề kiểm tra"
                             td.align-middle.text-wrap= test.questions.length + " câu/" + test.time + " phút"
                             td.align-middle
                                 if user && user.isAdmin
                                     a.btn.btn-primary.btn-icon.btn-sm(href="/tests/"+test._id+"/view" title="Xem chi tiết")
                                         i.fas.fa-eye
+                                .badge.badge-md.badge-circle.badge-floating.badge-success.border-white.me-1= test.count
                                 a.btn.btn-success.btn-icon.btn-sm(href="/tests/"+test._id+"/do" title="Làm đề")
                                     i.fas.fa-pencil
 
-                    
+    if (maxPage > 1)
+        nav(aria-label='Page navigation')
+            ul.pagination.justify-content-center
+                if currentPage != 1
+                    li.page-item
+                        a.page-link(href=`/tests?p=1`)= "1"
+                    li.page-item
+                        a.page-link(href=`/tests?p=`+(currentPage-1))= "<"
+
+                li.page-item.active
+                    a.page-link(href=`/tests?p=`+currentPage)= currentPage
+                if currentPage != maxPage
+                    li.page-item
+                        a.page-link(href=`/tests?p=`+(currentPage+1))= ">"
+                    li.page-item
+                        a.page-link(href=`/tests?p=`+maxPage)= maxPage

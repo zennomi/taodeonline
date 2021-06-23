@@ -27,16 +27,18 @@ function countdown(totalTimes) {
         progressBtn.style.width = 100 - distance / totalTimes * 100 + "%";
 
         // If the count down is over, write some text 
-        if (Math.round(distance / 1000) % (5 * 60) == 0) {
+        if (Math.round(distance / 1000) % (15 * 60) == 0) {
             notify("Thời gian", "Còn " + timeStr);
             submitChoices(0);
         }
         if (Math.round(distance / 1000) == (5 * 60)) {
+            bellAudio.play();
             notify("Nhắc nhở nho nhỏ", "Còn mỗi 5 phút...");
         }
         if (distance < 1000) {
             clearInterval(countdownCtrl);
             notify("Thời gian", `Hết giờ!!!`);
+            bellAudio.play();
             submitTest();
         }
     }, 1000);

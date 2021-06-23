@@ -4,10 +4,11 @@ const randomFacts = [
     "Thưa thầy Quý tăng lương anh Đăng Anh để web load nhanh hơn.",
     "Nhận thông báo đề thi thử mới tại <a href='https://www.facebook.com/HocLyThayQuy/' target='_blank'> fanpage</a> nhó.",
     "Nếu các bạn đang cày đề đêm thì có thể bật chế độ dark mode để đỡ mỏi mắt",
-    "Rất nhiều chức năng mới được thêm vào ở khoá làm đề nhaaaa",
+    "Bản cập nhật ngày 23/6 sửa rất chi là nhiều lỗii",
     "Chủ động lựa chọn độ khó dễ, thời gian làm đề khi chọn đề của các khoá luyện đề tại <a href='https://www.facebook.com/HocLyThayQuy/' target='_blank'>đây</a>.",
     "Bộ 20 đề trên web Luyện đề full lời giải chi tiết sẽ được công khai bán tròn 30 ngày trước thi tại <a href='/courses/60b1f2438d326938745bb8a0/view' target='_blank'>đây</a> nhaa.",
-    "Web mới update nhiều nên có thể dính một số lỗi, có lỗi gì các em hãy báo với các anh trợ giảng nhaa"
+    "Một buổi chiều nọ nghe tin web bị sập, người lập trình web đã trầm ngâm suốt 30 phút đồng hồ",
+    "Quên lamdevlsn đi vì giờ chúng ta đã có lamdevlsnzzzzzz"
 ]
 
 const getRandomFacts = () => {

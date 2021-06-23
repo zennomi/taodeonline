@@ -1,9 +1,19 @@
 extends ../layouts/common.pug
 block stylesheet
-    link(rel="stylesheet", href="/css/do-the-test.css")
+    link(rel="stylesheet", href="/css/premium-test.css")
     link(rel="stylesheet", href="https://unpkg.com/@yaireo/tagify/dist/tagify.css")
 block script-header
     include ../layouts/mathjax.pug
+    script.
+            window.MathJax.startup = {
+                ready: () => {
+                    MathJax.startup.defaultReady();
+                    MathJax.startup.promise.then(() => {
+                        optionArea();
+                        
+                    });
+                }
+            }
 block content
     if user && user.isAdmin
         .mb-2
@@ -35,7 +45,7 @@ block content
                         option(value=4) Khó nhất
             button.btn.btn-primary(type="submit") Tìm
     each q, i in questions
-        .border-start.border-success.border-5.rounded.mb-2.p-2.shadow-sm
+        .border-start.border-success.border-5.rounded.mb-2.p-2.shadow
             .badge.bg-success
                 a.text-decoration-none.text-reset(href="/questions/"+q._id+"/view" target="_blank") Xem
             | &nbsp;
@@ -70,16 +80,15 @@ block content
                 .question-wrap.ml-2.mt-1
                     | !{q.question}
                 
-                form.row.row-cols-1.row-cols-sm-2.row-cols-md-4.no-gutters.mb-0
+                form.row.row-cols-1.no-gutters.mb-0.optionArea
                     each a,j in q.choices
-                        .col.mb-1
-                            .radio.radio-before
+                        .col.mb-1.d-flex.align-items-center
+                            .radio.radio-before.d-flex.align-items-center
                                 label.radio__input
-                                    input(type="radio" name="radio" data-value=(a.isTrue==true) ? 1 : 0 data-order=j)
+                                    input(type="radio" name="radio" data-id=a._id)
                                     .radio__control= String.fromCharCode(65+j)
-                                .radio__label.ms-md-2
-                                    span
-                                        | !{a.content}
+                                .radio__label.ms-2
+                                    | !{a.content}
         
     if (maxPage > 1)
         nav(aria-label='Page navigation')
@@ -97,12 +106,35 @@ block content
                         a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=`+(currentPage+1))= ">"
                     li.page-item
                         a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=`+maxPage)= maxPage
+                li.page-item
+                    button.page-link(type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pageModal" href="#pageModal")
+                        i.fas.fa-dice-four
+    #pageModal.modal.fade(tabindex='-1' aria-labelledby='pageModalLabel' aria-hidden='true' data-bs-backdrop="false")
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5#pageModalLabel.modal-title Các trang tồn tại
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body
+                    ul.pagination.justify-content-around.flex-wrap
+                        each _, i in Array(maxPage)
+                            li.page-item.mx-1.my-1(class= ((i+1 == currentPage) ? "active" : "") )
+                                a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=${i+1}`)= (i+1)
+
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+
+
     script.
         document.querySelectorAll("input[type='radio']").forEach(i => {i.disabled = true});
 block script-footer
+    script(src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.0/dist/tagify.min.js")
+    script(src="/js/questions/init-tagify.js")
+    script 
+        include /js/tests/fixUi.js
+    script.
+        window.addEventListener('resize', () => {optionArea()});
     if user && user.isAdmin
         script(src="/js/helper/notify.js")
         script(src="/js/helper/fetch.js")
         script(src="/js/questions/functions.js")
-    script(src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.0/dist/tagify.min.js")
-    script(src="/js/questions/init-tagify.js")

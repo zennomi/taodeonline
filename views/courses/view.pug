@@ -145,11 +145,16 @@ block content
                         table.table
                             thead
                                 tr
+                                    if user && course.isOpenTo(user)
+                                        th(scope="col")
+                                            span.d-none.d-md-inline Đã làm
                                     th(scope="col") Tên đề
                                     th(scope="col") Chi tiết
                             tbody
                                 each test in tests.sort((a, b) => a.name.localeCompare(b.name))
                                     tr
+                                        if user && course.isOpenTo(user)
+                                            td.align-middle= test.count
                                         td.text-wrap.align-middle
                                             if user && course.isOpenTo(user)
                                                 a(href="/courses/" + course._id + "/tests/"+test._id+"/view")= test.name ? test.name : "Đề kiểm tra"

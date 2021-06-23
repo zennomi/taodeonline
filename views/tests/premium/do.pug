@@ -55,7 +55,7 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                 button(type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close")
             .offcanvas-body.sidenav
                 h5.text-center Thời gian còn lại
-                if test.isPublic
+                if test.isPublic || user.isAdmin
                     button#timeBtn.me-2.btn.btn-outline-success.mb-1(onclick="playOrPauseTime(this)")
                         i.fas.fa-pause
                         |  Tạm dừng
@@ -129,17 +129,22 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                             span(class="spinner-border spinner-border-sm" role="status" aria-hidden="true")
                             |  Đang chuẩn bị đề
                         .row.w-75.mx-auto.g-1.justify-content-evenly
-                            .col.col-auto
-                                button.btn.btn-warning(onclick="copyToClipboard('"+link+"')")
+                            if test.link_pdf
+                                .col.col-6
+                                    a.btn.btn-primary.w-100(href=test.link_pdf target="_blank")
+                                        i.fad.fa-file-pdf 
+                                        .d-none.d-md-inline   PDF
+                            if test.link_pdf
+                                .col.col-6
+                                    a.btn.btn-primary.w-100(href=test.link_pdf target="_blank")
+                                        i.fab.fa-youtube 
+                                        .d-none.d-md-inline   Video chữa            
+                            .col.col-6
+                                button.btn.btn-warning.w-100(onclick="copyToClipboard('"+link+"')")
                                     i.fad.fa-copy
                                     .d-none.d-md-inline   Copy Link
-                            if test.link_pdf
-                                .col.col-auto
-                                    a.btn.btn-primary(href=test.link_pdf target="_blank")
-                                        i.fad.fa-file-pdf 
-                                        .d-none.d-md-inline   Link PDF
-                            .col.col-auto
-                                a.btn.btn-danger(href="/tests/premium")
+                            .col.col-6
+                                a.btn.btn-danger.w-100(href= course ? ("/courses/"+course._id+"/view") : ("/tests"))
                                     i.fad.fa-undo-alt
                                     .d-none.d-md-inline   Trở về
                     if results && results.length > 0
@@ -175,10 +180,9 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
                         .col
                             canvas#radarchart(height='100')
                     .d-flex.justify-content-around
-                        if course
-                            a.d-block.btn.btn-success.btn-lg.mb-1(href="/courses/"+course._id+"/view")
-                                i.fad.fa-undo-alt
-                                |    Trở về khoá học
+                        a.d-block.btn.btn-success.btn-lg.mb-1(href= course ? ("/courses/"+course._id+"/view") : ("/tests"))
+                            i.fad.fa-undo-alt
+                            |    Trở về
                         a.d-block.btn.btn-success.btn-lg.mb-1(href="/")
                             i.fad.fa-home
                             |    Trang chủ

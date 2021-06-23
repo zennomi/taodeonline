@@ -1,6 +1,7 @@
 let resultId, submitBtn;
 let questionList = [];
 let leavesAreaTimes = 0;
+let bellAudio = new Audio('/sound/bell.wav');
 
 document.addEventListener("DOMContentLoaded", function() {
     //dom is fully loaded, but maybe waiting on images & css files
@@ -13,12 +14,14 @@ document.addEventListener("DOMContentLoaded", function() {
         anotherMethod('/api/results', 'POST', { testId }, (res) => {
             document.querySelector('.test-wrap').style.display = 'block';
             optionArea();
+            bellAudio.play();
             // fix black color
             document.querySelectorAll('[style="color:black"]').forEach(s => s.style.color = "var(--bs-dark)");
             resultId = res.result._id;
             countdown(totalTimes);
             window.onblur = userCheated;
             scrollToTop();
+            window.addEventListener('resize', () => {optionArea()});
         })
     });
 
