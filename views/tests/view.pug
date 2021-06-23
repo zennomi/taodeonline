@@ -55,12 +55,17 @@ block content
                     span= test.isSorted
             if user && user.isAdmin
                 h5.text-primary Thao tác
-                .d-flex.justify-content-around
-                    a.d-block.btn.btn-outline-success(href=`/tests/${test._id}/edit`) Sửa
-                    a.d-block.btn.btn-outline-success(href=`/tests/${test._id}/do`) Làm thử
-                    a.d-block.btn.btn-outline-danger(href=`/tests/${test._id}/delete`) Xóa
-                    a.d-block.btn.btn-outline-primary(href=`/tests/${test._id}/table` target="_blank") Bảng điểm chi tiết
-                    a.d-block.btn.btn-outline-primary(href=`/tests/${test._id}/pdf` target="_blank") In PDF
+                .d-flex.justify-content-around.flex-wrap
+                    a.my-1.btn.btn-outline-success(href=`/tests/${test._id}/edit`) Sửa
+                    a.my-1.btn.btn-outline-success(href=`/tests/${test._id}/do`) Làm thử
+                    a.my-1.btn.btn-outline-danger(href=`/tests/${test._id}/delete`) Xóa
+                    a.my-1.btn.btn-outline-primary(href=`/tests/${test._id}/table` target="_blank") Bảng điểm chi tiết
+                    a.my-1.btn.btn-outline-primary(href=`/tests/${test._id}/pdf` target="_blank") In PDF
+                    if test.link_fb_live
+                        a.my-1.btn.btn-outline-primary(href=test.link_fb_live target="_blank") Video chữa
+                    if test.link_pdf
+                        a.my-1.btn.btn-outline-primary(href=test.link_pdf target="_blank") Link PDF
+
             if test.note
                 h5.text-primary Ghi chú của trợ giảng 
                 .alert.alert-primary

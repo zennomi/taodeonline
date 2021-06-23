@@ -23,7 +23,8 @@ block content
                                 if user && user.isAdmin
                                     a.btn.btn-primary.btn-icon.btn-sm(href="/tests/"+test._id+"/view" title="Xem chi tiết")
                                         i.fas.fa-eye
-                                .badge.badge-md.badge-circle.badge-floating.badge-success.border-white.me-1= test.count
+                                if user
+                                    .badge.badge-md.badge-circle.badge-floating.badge-success.border-white.me-1= test.count
                                 a.btn.btn-success.btn-icon.btn-sm(href="/tests/"+test._id+"/do" title="Làm đề")
                                     i.fas.fa-pencil
 
