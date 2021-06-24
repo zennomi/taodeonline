@@ -1,4 +1,4 @@
-// 
+// fix option width
 function optionArea(containerWidth) {
     document.querySelectorAll('.optionArea').forEach(area => {
         area.classList.remove("row-cols-4", "row-cols-2");

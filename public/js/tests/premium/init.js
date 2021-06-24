@@ -1,4 +1,5 @@
-let resultId, submitBtn;
+// init test
+let resultId, submitBtn, timeBtn;
 let questionList = [];
 let leavesAreaTimes = 0;
 let bellAudio = new Audio('/sound/bell.wav');
@@ -8,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     submitBtn = document.getElementById('submit');
+    timeBtn = document.getElementById('timeBtn');
     var initModal = document.getElementById('init-modal');
 
     initModal.addEventListener('hidden.bs.modal', function(event) {
@@ -128,9 +130,8 @@ function submitTest() {
     getMethod('/api/tests/' + testId + '/true-choices',
         (res) => {
             window.onblur = undefined;
-            document.getElementById('timeBtn').remove();
+            if(timeBtn) timeBtn.remove();
             progressBtn.parentNode.remove();
-            window.onblur = undefined;
             let isPublic = res.isPublic;
             submitChoices(1);
 
@@ -184,8 +185,9 @@ function submitTest() {
             document.getElementById('resultCard').style.display = 'block';
             scrollToTop();
         },
-        (res) => {
+        (err) => {
             notify("Hệ thống", "Không ổn, nộp lại xem nào.");
+            console.log(err);
             submitBtn.disabled = false;
             submitBtn.innerHTML = "Nộp lại";
         })

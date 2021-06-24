@@ -234,14 +234,14 @@ html(lang="en" style=config.darkmode =='on' ? "--bs-white:#121212; --bs-dark:#ee
         script.
             let testId = "#{test._id}", totalTimes = #{test.time*60*1000};
         script
-            include /js/tests/premium/init.js
             include /js/helper/copy.js
-            include /js/countdown.js
+            include /js/tests/fixUi.js
             include /js/helper/fetch.js
             include /js/helper/notify.js
             include /js/tests/premium/helper.js
+            include /js/tests/premium/init.js
+            include /js/countdown.js
             include /js/tests/premium/player.js
-            include /js/tests/fixUi.js
         //- script(src="/js/tests/premium/init.js")
         //- script(src="/js/helper/copy.js")
         //- script(src="/js/countdown.js")

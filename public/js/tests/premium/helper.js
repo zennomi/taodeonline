@@ -149,5 +149,6 @@ function userCheated() {
 
 // handle error
 const handleError = (err) => {
+    console.log(err);
     notify('Lỗi', err);
 }
