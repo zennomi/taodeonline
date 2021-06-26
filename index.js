@@ -59,47 +59,47 @@ const authMiddlewares = require('./middlewares/auth.middleware');
 
 // toggle comment for develop env
 // Configure Passport authenticated session persistence.
-const passport = require('passport');
-const Strategy = require('passport-facebook').Strategy;
+// const passport = require('passport');
+// const Strategy = require('passport-facebook').Strategy;
 
-passport.serializeUser(function(user, cb) {
-    cb(null, user);
-});
+// passport.serializeUser(function(user, cb) {
+//     cb(null, user);
+// });
 
-passport.deserializeUser(function(obj, cb) {
-    cb(null, obj);
-});
+// passport.deserializeUser(function(obj, cb) {
+//     cb(null, obj);
+// });
 
 
-// Configure the Facebook strategy for use by Passport.
-passport.use(new Strategy({
-        clientID: process.env['FACEBOOK_CLIENT_ID'],
-        clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
-        callbackURL: process.env['CALLBACK_URL']
-    },
-    function(accessToken, refreshToken, profile, done) {
-        process.nextTick(function() {
-            console.log(profile);
-            if (fbAdminIds.indexOf(profile.id) > -1) {
-                profile.role = 'admin';
-                profile.isAdmin = true;
-            } else profile.role = 'user';
-            return done(null, profile);
-        });
-    }
-));
-app.use(passport.initialize());
-app.use(passport.session());
+// // Configure the Facebook strategy for use by Passport.
+// passport.use(new Strategy({
+//         clientID: process.env['FACEBOOK_CLIENT_ID'],
+//         clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
+//         callbackURL: process.env['CALLBACK_URL']
+//     },
+//     function(accessToken, refreshToken, profile, done) {
+//         process.nextTick(function() {
+//             console.log(profile);
+//             if (fbAdminIds.indexOf(profile.id) > -1) {
+//                 profile.role = 'admin';
+//                 profile.isAdmin = true;
+//             } else profile.role = 'user';
+//             return done(null, profile);
+//         });
+//     }
+// ));
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 // Begin init user for dev env
-// app.use((req, res, next) => {
-//         req.user = {
-//             isAdmin: true,
-//             displayName: "Chàm Cẩm Vì Đề",
-//             id: "69696969"
-//         };
-//         next();
-//     })
+app.use((req, res, next) => {
+        req.user = {
+            isAdmin: true,
+            displayName: "Chàm Cẩm Vì Đề",
+            id: "69696969"
+        };
+        next();
+    })
     // End
 
 app.use(function(req, res, next) {
@@ -134,8 +134,23 @@ app.use('/api/questions', quesApiRoutes);
 app.use('/api/tests', testApiRoutes);
 app.use('/api/results', resultApiRoutes);
 
-app.get('/user', authMiddlewares.authRequire, (req, res) => {
-    res.render('users/profile');
+// app.get('/user/me', authMiddlewares.authRequire, (req, res) => {
+
+//     res.render('users/profile');
+// })
+
+app.get('/user/:id', authMiddlewares.authRequire, (req, res) => {
+    Result.find({"user.facebook_id": req.params.id}).populate({path: 'test_id', populate: { path: 'questions' }}).exec((err, results) => {
+        if (err) return res.send(err);
+        results.forEach(r => {
+            // console.log(r);
+            let trueChoicesId = [];
+            r.test_id.questions.forEach(q => trueChoicesId.push(...q.getTrueChoiceArray()));
+            r.mark = r.choices.map(c => String(c.choice_id)).filter(c => trueChoicesId.includes(c)).length / r.test_id.questions.length * 10;
+            // r.test_id.questions = undefined;
+        })
+        res.render('users/profile', {results});
+    })
 })
 
 app.post('/api/tests/save', (req, res) => {

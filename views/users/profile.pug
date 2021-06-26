@@ -38,6 +38,30 @@ block outofcontent
                     span= user.school
                   else
                     span Vật Lý Siêu Nhẩm 
+      h5.text-primary Bảng điểm
+      .table-responsive
+          table.table
+              tr
+                  th(style="cursor: pointer;" scope="col") Tên
+                  th(style="cursor: pointer;" scope="col") Bài kiểm tra
+                  th(style="cursor: pointer;" scope="col") Ngày làm
+                  th(style="cursor: pointer;" scope="col") Điểm
+                  th Thao tác
+              each result in results
+                  if user && (user.isAdmin || user.id == result.user.facebook_id)
+                      tr(style="cursor: pointer;")
+                          td.align-middle(onclick="viewResult('" + result._id + "');")= result.user.display_name
+                          td.align-middle= result.test_id.name
+                          td.align-middle= result.started_time.toLocaleDateString()
+                          td.align-middle= Math.round(result.mark*100)/100
+                          td
+                              a.btn.btn-success(href=domainName + '/tests/'+result.test_id._id+'/view-result/'+result._id target="_blank") Xem
+                              if user && user.isAdmin
+                                  button.btn.btn-danger(onclick="deleteResult('" + result._id + "')") Xóa
+    script(src="/js/helper/notify.js")
+    script(src="/js/helper/fetch.js")
+    script(src="/js/helper/tablesorting.js")
+    script(src="/js/tests/view.js")
     //-     .col-xl-8.order-xl-1
     //-       .card
     //-         .card-header
