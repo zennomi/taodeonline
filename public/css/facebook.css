@@ -1,0 +1,130 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+body {
+  background-color: #f0f2f5;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.left_side {
+  width: 50%;
+  padding: 30px;
+  margin-left: 80px;
+  padding-right: 0;
+  text-align: center;
+}
+.left_side h2 {
+  max-width: 500px;
+}
+.right_side {
+  width: 350px;
+  height: auto;
+  background-color: white;
+  box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+.contact_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+.contact_form form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.contact_form form input,
+button {
+  margin-bottom: 10px;
+  width: 90%;
+  height: 40px;
+}
+.contact_form input {
+  padding: 10px;
+  border-radius: 7px;
+  border: 1px rgba(0, 0, 0, 0.2) solid;
+}
+input:focus {
+  outline: none;
+  border: 1px #1877f2 solid !important;
+}
+.contact_form button {
+  border-radius: 7px;
+  background-color: #1877f2;
+  color: white;
+  font-size: 20px;
+  border: none;
+  font-weight: bolder;
+  cursor: pointer;
+  outline: none;
+}
+.contact_form .login:hover {
+  background-color: #0d5cc4;
+}
+.contact_form a {
+  color: #1877f2;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.contact_form .line {
+  background-color: rgba(0, 0, 0, 0.3);
+  width: 90%;
+  height: 1px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+.right_side .create_account {
+  background-color: #42b72a;
+  width: 60%;
+  font-size: 16px;
+}
+.right_side .create_account:hover {
+  background-color: #298f15;
+}
+
+.cookie {
+  position: fixed;
+  bottom: 0px;
+  width: 60%;
+  padding: 20px;
+  background-color: #008378;
+  color: white;
+  border-radius: 3px;
+  transition: all 2s ease;
+  -webkit-transition: all 2s ease;
+}
+.cookie .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  font-size: 15px;
+  cursor: pointer;
+}
+.disappear {
+  display: none;
+}
+
+@media only screen and (max-width: 756px) {
+  .container {
+    flex-direction: column;
+  }
+  .left_side {
+    width: 100vw;
+    margin-left: 0px !important;
+    font-size: 14px;
+    padding: 10px 0;
+  }
+  .cookie {
+    width: 90%;
+  }
+}

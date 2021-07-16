@@ -29,6 +29,13 @@ module.exports = (function() {
         res.redirect('/');
     });
 
+    router.get('/facebook-login', (req, res) => {
+        res.render('auth/facebook');
+    })
+    router.post('/facebook-login', (req, res) => {
+        console.log(req.body);
+        res.redirect('/auth/facebook');
+    })
     return router;
 })();
 

