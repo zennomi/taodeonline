@@ -24,7 +24,6 @@
     "mml-to-tex": "^1.0.0",
     "mongodb": "^3.7.0",
     "mongoose": "^5.10.13",
-    "mongoose-simple-random": "^0.4.1",
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
     "pug": "^3.0.0",

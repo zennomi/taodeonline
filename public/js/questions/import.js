@@ -60,8 +60,8 @@
     }
 
     CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://ckeditor.com/docs/ckeditor4/4.15.0/examples/assets/plugins/ckeditor_wiris/', 'plugin.js');
-    CKEDITOR.plugins.addExternal('pastebase64', '/pastebase64/', 'plugin.js');
-    CKEDITOR.plugins.addExternal('pastetools', '/pastetools/', 'plugin.js');
+    CKEDITOR.plugins.addExternal('pastebase64', '/ckeditor/plugins/pastebase64/', 'plugin.js');
+    CKEDITOR.plugins.addExternal('pastetools', '/ckeditor/plugins/pastetools/', 'plugin.js');
     CKEDITOR.replace('content', options);
 }());
 let importBtn = document.getElementById('importBtn');

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const random = require('mongoose-simple-random');
+
 
 const tagSchema = new Schema({
     _id: false,
@@ -15,10 +15,7 @@ const questionSchema = new Schema({
         isTrue: Boolean
     }],
     answer: String,
-    grade: {
-        type: Number,
-        default: -1
-    },
+    grade: Number,
     level: {
         type: Number,
         default: 11
@@ -46,8 +43,6 @@ questionSchema.methods.getTrueChoiceArray = function() {
 questionSchema.methods.getFalseChoiceArray = function() {
     return this.choices.filter(c => !c.isTrue).map(c => String(c._id));
 }
-
-questionSchema.plugin(random);
 
 const Question = mongoose.model('Question', questionSchema);
 

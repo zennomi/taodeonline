@@ -40,18 +40,21 @@ module.exports.index = async(req, res) => {
 
     // Search
     let tagsList = req.query.tags ? JSON.parse(req.query.tags).map(t => t.value) : [];
+    // const originalChars = ["À","Á","Â","Ã","È","É","Ê","Ì","Í","Ò","Ó","Ô","Õ","Ù","Ú","Ý","à","á","â","ã","è","é","ê","ì","í","ò","ó","ô","õ","ù","ú","ý"];
+    // const encodedChars = ["&Agrave;","&Aacute;","&Acirc;","&Atilde;","&Egrave;","&Eacute;","&Ecirc;","&Igrave;","&Iacute;","&Ograve;","&Oacute;","&Ocirc;","&Otilde;","&Ugrave;","&Uacute;","&Yacute;","&agrave;","&aacute;","&acirc;","&atilde;","&egrave;","&eacute;","&ecirc;","&igrave;","&iacute;","&ograve;","&oacute;","&ocirc;","&otilde;","&ugrave;","&uacute;","&yacute;"]
+    
     let searchOption = {
         question: { $regex: (new RegExp(req.query.query, 'i')) }, // need to fix
         grade: (req.query.grade == -1 && {$exists: false}) || req.query.grade || undefined,
         main_tags: req.query.tags ? { $elemMatch: { value: { $in: tagsList } } } : undefined,
         answer: (Number(req.query.detailed_answer) == 1) ? { $regex: ".{10,}" } : {$not: { $regex: ".{10,}" }}
     }
+    
     if (!req.query.query) delete searchOption.question;
     if (!req.query.grade) delete searchOption.grade;
     if (!req.query.tags) delete searchOption.main_tags;
     if (!req.query.detailed_answer) delete searchOption.answer;
     
-    console.log(searchOption);
     // Sort
     let sortOption;
     switch (Number(req.query.sort)) {
@@ -125,11 +128,22 @@ module.exports.export = async(req, res) => {
     res.render('questions/export', { matchedQuestions, unmatchedQuestions });
 }
 
-module.exports.view = (req, res) => {
-    Question.findById(req.params.id, null, function(err, question) {
-        if (err || !question) return res.send('Error.');
-        res.render('questions/view', { question })
-    })
+module.exports.view = async (req, res) => {
+    let question, altQuestions, altQuery = {};
+    try {
+        question = await Question.findById(req.params.id);
+        if (!question) throw 'Not Found';
+        if (question.main_tags) altQuery.main_tags = { $elemMatch: { value: { $in: question.main_tags.map(t => t.value) } } };
+        else if (question.grade) altQuery.grade = question.grade;
+
+        const count = await Question.countDocuments(altQuery);
+        var random = Math.floor(Math.random() * count);
+        altQuestions = await Question.find(altQuery).limit(10).skip(random);
+    } catch (error) {
+        return res.send(error);
+    }
+
+    return res.render('questions/view', {question, altQuestions})
 }
 
 module.exports.edit = (req, res) => {
