@@ -6,7 +6,7 @@ CKEDITOR.plugins.add( 'crackmathtype', {
 
 			// Define the function that will be fired when the command is executed.
 			exec: function( editor ) {
-				document.querySelectorAll('wrs_tickContainer').forEach(element => {
+				document.querySelectorAll('.wrs_tickContainer').forEach(element => {
 					element.remove();
 				});
 				console.log("Cracked!");
