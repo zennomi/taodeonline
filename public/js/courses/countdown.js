@@ -3,7 +3,7 @@
     let countDownHour = document.getElementById('countDownHour');
     let countDownMinute = document.getElementById('countDownMinute');
     let countDownSecond = document.getElementById('countDownSecond');
-    let deadline = (new Date('2021-07-08T07:35:00')).getTime();
+    let deadline = (new Date('2022-06-27T07:35:00')).getTime();
     let date, hour, minute, second;
     let x = setInterval(() => {
         let now = (new Date()).getTime();
