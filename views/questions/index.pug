@@ -26,23 +26,30 @@ block content
                         
                 .col-12.col-sm-4.mb-1
                     input.tagify.form-control(name="tags" type="text" placeholder="Chủ đề" value=handledQuery.tags style="min-width: 38px;")
-                .col-6.col-sm-2.mb-1
+                .col-4.col-sm-2.mb-1
                     select.form-select(name="grade")
                         if handledQuery.grade
                             option(value=handledQuery.grade hidden)= handledQuery.grade
                         else
                             option(value="" hidden) Khối
-                        option 10
-                        option 11
-                        option 12
-                        option(value="") Trống
-                .col-6.col-sm-2.mb-1
+                        option(selected = (handledQuery.grade == 10)) 10
+                        option(selected = (handledQuery.grade == 11)) 11
+                        option(selected = (handledQuery.grade == 12)) 12
+                        option(value="-1", selected = (handledQuery.grade == -1)) Trống
+                        option(value="") Tất cả
+                .col-4.col-sm-2.mb-1
                     select.form-select(name="sort")
                         option(value="" hidden) Sắp xếp theo
-                        option(value=1) Cũ nhất
-                        option(value=2) Mới nhất
-                        option(value=3) Dễ nhất
-                        option(value=4) Khó nhất
+                        option(value=1, selected = (handledQuery.sort == 1)) Cũ nhất
+                        option(value=2, selected = (handledQuery.sort == 2)) Mới nhất
+                        option(value=3, selected = (handledQuery.sort == 3)) Dễ nhất
+                        option(value=4, selected = (handledQuery.sort == 4)) Khó nhất
+                .col-4.col-sm-2.mb-1
+                    select.form-select(name="detailed_answer")
+                        option(value="" hidden) Đáp án chi tiết
+                        option(value=0, selected = (handledQuery.detailed_answer == 0)) Tất cả
+                        option(value=1, selected = (handledQuery.detailed_answer == 1)) Có chi tiết
+                        option(value=2, selected = (handledQuery.detailed_answer == 2)) Không chi tiết
             button.btn.btn-primary(type="submit") Tìm
     each q, i in questions
         .border-start.border-success.border-5.rounded.mb-2.p-2.shadow
@@ -95,17 +102,17 @@ block content
             ul.pagination.justify-content-center
                 if currentPage != 1
                     li.page-item
-                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=1`)= "1"
+                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&detailed_answer=${handledQuery.detailed_answer}&p=1`)= "1"
                     li.page-item
-                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=`+(currentPage-1))= "<"
+                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&detailed_answer=${handledQuery.detailed_answer}&p=`+(currentPage-1))= "<"
 
                     li.page-item.active
-                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=`+currentPage)= currentPage
+                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&detailed_answer=${handledQuery.detailed_answer}&p=`+currentPage)= currentPage
                 if currentPage != maxPage
                     li.page-item
-                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=`+(currentPage+1))= ">"
+                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&detailed_answer=${handledQuery.detailed_answer}&p=`+(currentPage+1))= ">"
                     li.page-item
-                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=`+maxPage)= maxPage
+                        a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&detailed_answer=${handledQuery.detailed_answer}&p=`+maxPage)= maxPage
                 li.page-item
                     button.page-link(type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pageModal" href="#pageModal")
                         i.fas.fa-dice-four
@@ -119,7 +126,7 @@ block content
                     ul.pagination.justify-content-around.flex-wrap
                         each _, i in Array(maxPage)
                             li.page-item.mx-1.my-1(class= ((i+1 == currentPage) ? "active" : "") )
-                                a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&p=${i+1}`)= (i+1)
+                                a.page-link(href=`/questions?query=${handledQuery.query}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&sort=${handledQuery.sort}&detailed_answer=${handledQuery.detailed_answer}&p=${i+1}`)= (i+1)
 
                 .modal-footer
                     button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close

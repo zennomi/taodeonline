@@ -15,7 +15,10 @@ const questionSchema = new Schema({
         isTrue: Boolean
     }],
     answer: String,
-    grade: Number,
+    grade: {
+        type: Number,
+        default: -1
+    },
     level: {
         type: Number,
         default: 11

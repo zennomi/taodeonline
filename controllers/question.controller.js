@@ -40,15 +40,18 @@ module.exports.index = async(req, res) => {
 
     // Search
     let tagsList = req.query.tags ? JSON.parse(req.query.tags).map(t => t.value) : [];
-    let optionSearch = {
-        question: { $regex: (new RegExp(req.query.query, 'i')) },
-        grade: req.query.grade ? req.query.grade : undefined,
-        main_tags: req.query.tags ? { $elemMatch: { value: { $in: tagsList } } } : undefined
+    let searchOption = {
+        question: { $regex: (new RegExp(req.query.query, 'i')) }, // need to fix
+        grade: (req.query.grade == -1 && {$exists: false}) || req.query.grade || undefined,
+        main_tags: req.query.tags ? { $elemMatch: { value: { $in: tagsList } } } : undefined,
+        answer: (Number(req.query.detailed_answer) == 1) ? { $regex: ".{10,}" } : {$not: { $regex: ".{10,}" }}
     }
-    if (!req.query.query) delete optionSearch.question;
-    if (!req.query.grade) delete optionSearch.grade;
-    if (!req.query.tags) delete optionSearch.main_tags;
-
+    if (!req.query.query) delete searchOption.question;
+    if (!req.query.grade) delete searchOption.grade;
+    if (!req.query.tags) delete searchOption.main_tags;
+    if (!req.query.detailed_answer) delete searchOption.answer;
+    
+    console.log(searchOption);
     // Sort
     let sortOption;
     switch (Number(req.query.sort)) {
@@ -56,10 +59,10 @@ module.exports.index = async(req, res) => {
             sortOption = { _id: -1 };
             break;
         case 3:
-            sortOption = { level: 1 };
+            sortOption = { level: 1, _id: 1 };
             break;
         case 4:
-            sortOption = { level: -1 };
+            sortOption = { level: -1, _id: 1 };
             break;
         default:
             sortOption = { _id: 1 };
@@ -68,25 +71,26 @@ module.exports.index = async(req, res) => {
     // Pagination
     const perPage = 10;
     let indexPage = req.query.p ? Number(req.query.p) - 1 : 0;
-    let maxPage = await Question.countDocuments(optionSearch);
+    let maxPage = await Question.countDocuments(searchOption);
     maxPage = Math.ceil(maxPage / perPage);
 
     // Handle query
     let handledQuery = {
-        query: req.query.query ? req.query.query : "",
-        grade: req.query.grade ? req.query.grade : "",
-        tags: req.query.tags ? req.query.tags : "",
-        sort: req.query.sort ? req.query.sort : ""
+        query: req.query.query || "",
+        grade: req.query.grade || "",
+        tags: req.query.tags || "",
+        sort: req.query.sort || "",
+        detailed_answer: req.query.detailed_answer || ""
     }
 
     // Main
-    let questions = await Question.find(optionSearch).limit(perPage).skip(indexPage * perPage).sort(sortOption);
+    let questions = await Question.find(searchOption).sort(sortOption).limit(perPage).skip(indexPage * perPage);
+
     questions.forEach(q => {
         q.question = toInlineElement(q.question);
         q.choices.forEach(a => {
             a.content = toInlineElement(a.content);
         })
-        q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
     });
     res.render('questions/index', {
         questions: questions,
@@ -95,7 +99,6 @@ module.exports.index = async(req, res) => {
         maxPage: maxPage,
         handledQuery: handledQuery
     });
-
 }
 
 module.exports.export = async(req, res) => {

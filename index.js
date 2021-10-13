@@ -57,52 +57,56 @@ const authMiddlewares = require('./middlewares/auth.middleware');
 
 
 
-// toggle comment for develop env
-// Configure Passport authenticated session persistence.
-const passport = require('passport');
-const Strategy = require('passport-facebook').Strategy;
 
-passport.serializeUser(function(user, cb) {
-    cb(null, user);
-});
+if (process.env['NODE_ENV'] != 'development') {
 
-passport.deserializeUser(function(obj, cb) {
-    cb(null, obj);
-});
+    // Configure Passport authenticated session persistence.
+    const passport = require('passport');
+    const Strategy = require('passport-facebook').Strategy;
 
+    passport.serializeUser(function (user, cb) {
+        cb(null, user);
+    });
 
-// Configure the Facebook strategy for use by Passport.
-passport.use(new Strategy({
+    passport.deserializeUser(function (obj, cb) {
+        cb(null, obj);
+    });
+    // Configure the Facebook strategy for use by Passport.
+    passport.use(new Strategy({
         clientID: process.env['FACEBOOK_CLIENT_ID'],
         clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
         callbackURL: process.env['CALLBACK_URL']
     },
-    function(accessToken, refreshToken, profile, done) {
-        process.nextTick(function() {
-            console.log(profile);
-            if (fbAdminIds.indexOf(profile.id) > -1) {
-                profile.role = 'admin';
-                profile.isAdmin = true;
-            } else profile.role = 'user';
-            return done(null, profile);
-        });
-    }
-));
-app.use(passport.initialize());
-app.use(passport.session());
+        function (accessToken, refreshToken, profile, done) {
+            process.nextTick(function () {
+                console.log(profile);
+                if (fbAdminIds.indexOf(profile.id) > -1) {
+                    profile.role = 'admin';
+                    profile.isAdmin = true;
+                } else profile.role = 'user';
+                return done(null, profile);
+            });
+        }
+    ));
+    app.use(passport.initialize());
+    app.use(passport.session());
 
-// Begin init user for dev env
-// app.use((req, res, next) => {
-//         req.user = {
-//             isAdmin: true,
-//             displayName: "Chàm Cẩm Vì Đề",
-//             id: "69696969"
-//         };
-//         next();
-//     })
-    // End
+} else {
+    // init user for env dev
+    app.use((req, res, next) => {
+        req.user = {
+            isAdmin: true,
+            displayName: "Chàm Cẩm Vì Đề",
+            id: "69696969"
+        };
+        next();
+    })
+}
 
-app.use(function(req, res, next) {
+
+
+
+app.use(function (req, res, next) {
     app.locals.basedir = './public';
     res.locals.domainName = process.env.DOMAIN_NAME;
     if (req.user) {
@@ -140,7 +144,7 @@ app.use('/api/results', resultApiRoutes);
 // })
 
 app.get('/user/:id', authMiddlewares.authRequire, (req, res) => {
-    Result.find({"user.facebook_id": req.params.id}).populate({path: 'test_id', populate: { path: 'questions' }}).exec((err, results) => {
+    Result.find({ "user.facebook_id": req.params.id }).populate({ path: 'test_id', populate: { path: 'questions' } }).exec((err, results) => {
         if (err) return res.send(err);
         results.forEach(r => {
             // console.log(r);
@@ -149,7 +153,7 @@ app.get('/user/:id', authMiddlewares.authRequire, (req, res) => {
             r.mark = r.choices.map(c => String(c.choice_id)).filter(c => trueChoicesId.includes(c)).length / r.test_id.questions.length * 10;
             // r.test_id.questions = undefined;
         })
-        res.render('users/profile', {results});
+        res.render('users/profile', { results });
     })
 })
 
@@ -174,7 +178,7 @@ app.post('/api/tests/save', (req, res) => {
     })
 })
 
-app.post('/api/result/view', authMiddlewares.authRequire, async(req, res) => {
+app.post('/api/result/view', authMiddlewares.authRequire, async (req, res) => {
     let result;
     try {
         result = await Result.findById(req.body.id).populate({ path: 'test_id', populate: { path: 'questions' } });
@@ -218,7 +222,7 @@ app.post('/api/result/view', authMiddlewares.authRequire, async(req, res) => {
     res.json({ status: 200, result, choices, topics });
 })
 
-app.get('*', function(req, res) {
+app.get('*', function (req, res) {
     res.status(404).send('bon le bon not phao.');
 });
 
