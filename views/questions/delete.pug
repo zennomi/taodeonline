@@ -1,0 +1,21 @@
+extends ../layouts/common.pug
+block content
+	.card 
+		.card-header 
+			h4 Xác nhận xóa
+		.card-body
+			form(action="/questions/"+question._id+"/delete" method="POST")
+				label Xóa câu có ID
+				input.form-control.mb-2(name="deleteId" type="text" value=question._id disabled required) 
+				if tests.length > 0
+					label Thay bằng câu có ID
+					input.form-control.mb-2(name="altId" type="text" required)
+				button.btn.btn-danger(type="submit") Xóa
+				a.btn.btn-light(href="/questions/"+question._id+"/view") Trở về
+		if tests.length > 0
+			.card-header 
+				h4 Các đề chứa câu hỏi này 
+			.card-body
+				each t in tests 
+					.mb-1
+						a(href="/tests/"+t._id+"/view#q-"+question._id target="_blank")= t.name

@@ -5,10 +5,10 @@ const randomFacts = [
     "Nhận thông báo đề thi thử mới tại <a href='https://www.facebook.com/HocLyThayQuy/' target='_blank'> fanpage</a> nhó.",
     "Nếu các bạn đang cày đề đêm thì có thể bật chế độ dark mode để đỡ mỏi mắt",
     "Cảm ơn em zai Minh Đức đẹp trai của anh đã giúp anh sửa lỗi web <i class='fas fa-heart'></i> ngày 24/6",
-    "Chủ động lựa chọn độ khó dễ, thời gian làm đề khi chọn đề của các khoá luyện đề tại <a href='https://www.facebook.com/HocLyThayQuy/' target='_blank'>đây</a>.",
-    "Bộ 20 đề trên web Luyện đề full lời giải chi tiết sẽ được công khai bán tròn 30 ngày trước thi tại <a href='/courses/60b1f2438d326938745bb8a0/view' target='_blank'>đây</a> nhaa.",
+    "Chủ động lựa chọn độ khó dễ, thời gian làm đề khi chọn đề của các khoá luyện đề tại <a href='/courses' target='_blank'>đây</a>.",
     "Một buổi chiều nọ nghe tin web bị sập, người lập trình web đã trầm ngâm suốt 30 phút đồng hồ",
-    "Quên lamdevlsn đi vì giờ chúng ta đã có lamdevlsnzzzzzz"
+    '<div class="sans-serif">Giải mọi bài tập Lý miễn phí tại group <a class="btn btn-primary btn-sm btn-icon" href="https://www.facebook.com/groups/giaimoibaily" target="_blank"><i class="fab fa-facebook"></i><span>Ở đây giải mọi bài tập Lý</span></a></div>',
+    '<div class="sans-serif">Tài liệu kèm video chữa chi tiết ôn thi giữa kỳ tại group <a class="btn btn-primary btn-sm btn-icon" href="https://www.facebook.com/groups/giaimoibaily" target="_blank"><i class="fab fa-facebook"></i><span>Ở đây giải mọi bài tập Lý</span></a></div>',
 ]
 
 const getRandomFacts = () => {

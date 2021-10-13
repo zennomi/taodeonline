@@ -16,5 +16,6 @@ router.get('/:id/view', controller.view);
 router.get('/:id/edit', authMiddlewares.authRequire, authMiddlewares.adminRequire, controller.edit);
 router.post('/:id/edit', authMiddlewares.authRequire, authMiddlewares.adminRequire, controller.postEdit);
 router.get('/:id/delete', authMiddlewares.authRequire, authMiddlewares.adminRequire, controller.delete);
+router.post('/:id/delete', authMiddlewares.authRequire, authMiddlewares.adminRequire, controller.postDelete);
 
 module.exports = router;

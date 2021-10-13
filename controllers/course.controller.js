@@ -11,13 +11,13 @@ const { toInlineElement } = require("../ultils/handleFormat");
 module.exports.index = async(req, res) => {
 
     var courses = await Course.find({})
-    var page = parseInt(req.query.page) || 1;
-    var perPage = 3;
-    var start = (page - 1) * perPage;
-    var end = start + perPage;
+    // var page = parseInt(req.query.page) || 1;
+    // var perPage = 3;
+    // var start = (page - 1) * perPage;
+    // var end = start + perPage;
     res.render('courses/index', {
-        courses: courses.slice(start, end),
-        page: page
+        courses: courses,
+        // page: page
     });
 }
 

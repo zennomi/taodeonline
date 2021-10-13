@@ -9,6 +9,7 @@ CKEDITOR.plugins.add( 'crackmathtype', {
 				document.querySelectorAll('wrs_tickContainer').forEach(element => {
 					element.remove();
 				});
+				console.log("Cracked!");
 			}
 		});
 

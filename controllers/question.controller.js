@@ -1,4 +1,5 @@
 const Question = require("../models/question.model");
+const Test = require("../models/test.model");
 const texToMathML = require('../ultils/mathml').texToMathML;
 const entities = require("entities");
 
@@ -179,10 +180,35 @@ module.exports.postEdit = async(req, res) => {
     res.redirect('/questions/' + question._id);
 }
 
-module.exports.delete = (req, res) => {
-    Question.findByIdAndDelete(req.params.id, null, function(err, question) {
-        res.redirect('/questions');
-    })
+module.exports.delete = async (req, res) => {
+    let question, tests;
+    try {
+        question = await Question.findById(req.params.id);
+        if (!question) throw 'Not Found';
+        tests = await Test.find({questions: req.params.id});
+    } catch (error) {
+        return res.send(error);
+    }
+    return res.render('questions/delete', {question, tests});
+}
+
+module.exports.postDelete = async (req, res) => {
+    let question, altQuestion, tests;
+    console.log(req.body);
+    try {
+        if (req.params.id == req.body.altId) throw 'Duplicated ID'
+        question = await Question.findById(req.params.id);
+        if (!question) throw 'Not Found';
+        if (req.body.altId) {
+            altQuestion = await Question.findById(req.body.altId);
+            if (!altQuestion) throw 'Not Found';
+            await Test.updateMany({questions: req.params.id},{"$set": { "questions.$": req.body.altId }});
+        }
+        await Question.findByIdAndDelete(req.params.id);
+    } catch (error) {
+        return res.send(error);
+    }
+    return req.body.altId ? res.redirect("/questions/"+req.body.altId+"/view") : res.redirect("/questions/");
 }
 
 module.exports.import = (req, res) => {

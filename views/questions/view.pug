@@ -20,9 +20,11 @@ block content
             .mx-1
                 a.btn.btn-success(href="/questions/create") Thêm câu hỏi mới
             .mx-1
-                a.d-block.btn.btn-success(href="/questions/"+question._id+"/edit") Sửa câu hỏi này
-            form(action="/questions/"+question._id+"/delete")
-                button.btn.btn-danger(type="submit") Xoá câu hỏi này
+                a.btn.btn-success(href="/questions/"+question._id+"/edit") Sửa câu hỏi này
+            .mx-1
+                button.btn.btn-warning(onclick="copyToClipboard('"+question._id+"');") Copy ID
+            .mx-1
+                a.btn.btn-danger(href="/questions/"+question._id+"/delete") Xoá câu hỏi này
     .border-start.border-success.border-5.rounded.mb-2.p-2.shadow
         | &nbsp;
         if user && user.isAdmin
@@ -73,53 +75,58 @@ block content
             b.text-success Lời giải chi tiết:
             p.ml-1 !{question.answer}
         else 
-            b.text-success Câu này chưa có lời giải chi tiết
-    h4 Các câu tương tự
-    each q in altQuestions
-        .border-start.border-success.border-5.rounded.mb-2.p-2.shadow
-            .badge.bg-success
-                a.text-decoration-none.text-reset(href="/questions/"+q._id+"/view" target="_blank") Xem
-            | &nbsp;
-            if user && user.isAdmin
+            .sans-serif
+                | Câu này chưa có lời giải chi tiết nhưng không sao đã có group 
+                a.btn.btn-primary.btn-sm.btn-icon(href="https://www.facebook.com/groups/giaimoibaily" target="_blank")
+                    i.fab.fa-facebook
+                    span Ở đây giải mọi bài tập Lý
+    if altQuestions.length > 0
+        h4 Các câu tương tự
+        each q in altQuestions
+            .border-start.border-success.border-5.rounded.mb-2.p-2.shadow
                 .badge.bg-success
-                    a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
+                    a.text-decoration-none.text-reset(href="/questions/"+q._id+"/view" target="_blank") Xem
                 | &nbsp;
-                .badge.bg-primary
-                    a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="addQuestion('"+q._id+"')") +
-                | &nbsp;
-            if (q.level)
-                .badge.bg-danger
-                    a.text-decoration-none.text-reset(href="#") Độ khó #{q.level}
-                | &nbsp;
-            if (q.grade)
-                .badge.bg-danger
-                    a.text-decoration-none.text-reset(href="/questions?grade="+q.grade target="_blank") Lớp #{q.grade}
-                | &nbsp;
-            each tag in q.main_tags
-                .badge.bg-danger
-                    a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
-                | &nbsp;
-            each tag in q.side_tags
-                .badge.bg-warning
-                    a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
-                | &nbsp;
-            if q.answer && q.answer.length > 5
-                .badge.bg-success
-                    a.text-decoration-none.text-reset(href="#") Có đáp án chi tiết
-                | &nbsp;
-            .test-wrap
-                .question-wrap.ml-2.mt-1
-                    | !{q.question}
-                
-                form.row.row-cols-1.no-gutters.mb-0.optionArea
-                    each a,j in q.choices
-                        .col.mb-1.d-flex.align-items-center
-                            .radio.radio-before.d-flex.align-items-center
-                                label.radio__input
-                                    input(type="radio" name="radio" data-id=a._id)
-                                    .radio__control= String.fromCharCode(65+j)
-                                .radio__label.ms-2
-                                    | !{a.content}
+                if user && user.isAdmin
+                    .badge.bg-success
+                        a.text-decoration-none.text-reset(href="/questions/"+q._id+"/edit" target="_blank") Sửa
+                    | &nbsp;
+                    .badge.bg-primary
+                        a.text-decoration-none.text-reset(style="cursor: pointer;" onclick="addQuestion('"+q._id+"')") +
+                    | &nbsp;
+                if (q.level)
+                    .badge.bg-danger
+                        a.text-decoration-none.text-reset(href="#") Độ khó #{q.level}
+                    | &nbsp;
+                if (q.grade)
+                    .badge.bg-danger
+                        a.text-decoration-none.text-reset(href="/questions?grade="+q.grade target="_blank") Lớp #{q.grade}
+                    | &nbsp;
+                each tag in q.main_tags
+                    .badge.bg-danger
+                        a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
+                    | &nbsp;
+                each tag in q.side_tags
+                    .badge.bg-warning
+                        a.text-decoration-none.text-reset(href="/questions?tags="+"["+JSON.stringify(tag)+"]" target="_blank")= tag.value
+                    | &nbsp;
+                if q.answer && q.answer.length > 5
+                    .badge.bg-success
+                        a.text-decoration-none.text-reset(href="#") Có đáp án chi tiết
+                    | &nbsp;
+                .test-wrap
+                    .question-wrap.ml-2.mt-1
+                        | !{q.question}
+                    
+                    form.row.row-cols-1.no-gutters.mb-0.optionArea
+                        each a,j in q.choices
+                            .col.mb-1.d-flex.align-items-center
+                                .radio.radio-before.d-flex.align-items-center
+                                    label.radio__input
+                                        input(type="radio" name="radio" data-id=a._id)
+                                        .radio__control= String.fromCharCode(65+j)
+                                    .radio__label.ms-2
+                                        | !{a.content}
     script.
         document.querySelectorAll("input[type='radio']").forEach(i => {i.disabled = true});
 block script-footer
@@ -129,5 +136,6 @@ block script-footer
         window.addEventListener('resize', () => {optionArea()});
     if user && user.isAdmin
         script(src="/js/helper/notify.js")
+        script(src="/js/helper/copy.js")
         script(src="/js/helper/fetch.js")
         script(src="/js/questions/functions.js")
