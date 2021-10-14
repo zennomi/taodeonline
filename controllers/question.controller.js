@@ -54,7 +54,7 @@ module.exports.index = async(req, res) => {
     if (!req.query.query) delete searchOption.question;
     if (!req.query.grade) delete searchOption.grade;
     if (!req.query.tags) delete searchOption.main_tags;
-    if (!req.query.detailed_answer) delete searchOption.answer;
+    if (!req.query.detailed_answer || req.query.detailed_answer == "0") delete searchOption.answer;
     
     // Sort
     let sortOption;
