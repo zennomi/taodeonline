@@ -11,6 +11,7 @@ block content
                 option 11
                 option 12
                 option(value="") Trống
+            input.test-tagify.form-control(name='tags' placeholder='Loại đề')
             .group-questions.mb-2
                 .group-part
                     h5 Nhóm 
@@ -28,6 +29,7 @@ block content
             button.btn.btn-primary#add-group(type="button") Thêm nhóm
             button.btn.btn-primary(type="submit") Tìm
     script(src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.0/dist/tagify.min.js")
+    script(src="/js/tests/init-tagify.js")
     script(src="/js/questions/init-tagify.js")
     script(src="/js/tests/auto-create.js")
     

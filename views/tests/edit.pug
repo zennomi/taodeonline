@@ -1,6 +1,7 @@
 extends ../layouts/common.pug
 block script-header
     script(src="//cdn.ckeditor.com/4.16.0/standard-all/ckeditor.js")
+    link(rel="stylesheet", href="https://unpkg.com/@yaireo/tagify/dist/tagify.css")
 block content
     form(action="/tests/"+test._id+"/edit" method="POST")
         .row
@@ -13,9 +14,12 @@ block content
             .col-12.mb-1
                 label Link đề PDF
                 input.form-control(name="link_pdf" type="text" placeholder="Tên bài kiểm tra" value=test.link_pdf)
-            .col-12.mb-1
+            .col-6.mb-1
                 label Thời gian (phút)
                 input.form-control(name="time" type="number" placeholder="Thời gian" value=test.time required)
+            .col-6.mb-1
+                label Tags 
+                input.test-tagify.form-control(name='tags' placeholder='Gắn thẻ' value= JSON.stringify(test.tags))
             .col-6.mb-1
                 label Khối
                 select.form-select(name="grade")
@@ -63,3 +67,5 @@ block script-footer
         }
         CKEDITOR.replace('note', options);
         })()
+    script(src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.0/dist/tagify.min.js")
+    script(src="/js/tests/init-tagify.js")

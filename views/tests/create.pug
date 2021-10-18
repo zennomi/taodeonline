@@ -24,6 +24,7 @@ block stylesheet
             opacity: 0.5;
         }
     link(rel="stylesheet", href="/css/do-the-test.css")
+    link(rel="stylesheet", href="https://unpkg.com/@yaireo/tagify/dist/tagify.css")
 block script-header
     style.
         body {
@@ -48,6 +49,8 @@ block content
     .row
         .col
             input.form-control(name="name" type="text" placeholder="Tên đề")
+        .col
+            input.test-tagify.form-control(name="tags" type="text" placeholder="Loại đề" style="min-width: 38px;")
         .col
             select.form-select(name="grade")
                 option(value="" hidden) Khối
@@ -106,6 +109,8 @@ block content
     button#submit.btn.btn-success Lưu
 block script-footer
     script(src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.0/dist/tagify.min.js")
+    script(src="/js/tests/init-tagify.js")
     script(src="/js/sortable.js")
     script(src="/js/helper/notify.js")
     script(src="/js/helper/fetch.js")

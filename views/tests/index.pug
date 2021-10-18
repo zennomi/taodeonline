@@ -1,46 +1,104 @@
 extends ../layouts/common.pug
+block stylesheet
+    link(rel="stylesheet", href="https://unpkg.com/@yaireo/tagify/dist/tagify.css")
 block title
     title Kho đề online - Vật Lý Siêu Nhẩm
-block content
-    .table-responsive
-        table.table
-            thead
-                tr
-                    th(scope="col") Khối
-                    th(scope="col") Tên đề
-                    th(scope="col") Chi tiết
-                    th(scope="col") Thao tác
-            tbody
-                each test in tests
-                    if !test.isPremium || (user && user.isAdmin)
-                        tr
-                            td.align-middle.text-wrap= test.grade
-                            td.align-middle.text-wrap
-                                
-                                span= test.name ? test.name : "Đề kiểm tra"
-                            td.align-middle.text-wrap= test.questions.length + " câu/" + test.time + " phút"
-                            td.align-middle
-                                if user && user.isAdmin
-                                    a.btn.btn-primary.btn-icon.btn-sm(href="/tests/"+test._id+"/view" title="Xem chi tiết")
-                                        i.fas.fa-eye
-                                if user
-                                    .badge.badge-md.badge-circle.badge-floating.badge-success.border-white.me-1= test.count
-                                a.btn.btn-success.btn-icon.btn-sm(href="/tests/"+test._id+"/do" title="Làm đề")
-                                    i.fas.fa-pencil
+block header-text
+    .section.section-hero.section-shaped.pt-0.pt-md-3
+        .shape.shape-style-1.position-absolute.shape-primary.bg-success.bg-gradient(style="max-height: 40vh;")
+            span.span-150
+            span.span-50
+            span.span-50
+            span.span-50
+            span.span-75
+            span.span-100
+            span.span-75
+            span.span-50
+            span.span-100
+            span.span-100
+        #courses.container.my-2.my-md-5.text-center
+            .badge.badge-danger.fs-2.shadow-lg Kho Đề Luyện Online
+        .page-header
+            .row.row-cols-1.row-cols-md-2.gy-2.py-lg(style="margin-top: 5rem")
+                .col-lg-3
+                    .card
+                        #headingOne.card-header.text-center
+                            h2.mb-0 Danh Mục
+                        #collapseOne.collapse.show(aria-labelledby='headingOne', data-parent='#accordion')
+                            .card-body
+                                h3 Tìm kiếm 
+                                .mb-2
+                                    form(action="/tests" method="GET")
+                                        input.form-control(name="name" type="text" placeholder="Cụm từ tìm kiếm" value=handledQuery.query)
+                                        br
+                                        input.test-tagify.form-control(name="tags" type="text" placeholder="Loại đề" value=handledQuery.tags style="min-width: 38px")
+                                        br
+                                        select.form-select(name="grade")
+                                            if handledQuery.grade
+                                                option(value=handledQuery.grade hidden)= handledQuery.grade
+                                            else
+                                                option(value="" hidden) Khối
+                                            option(selected = (handledQuery.grade == 10)) 10
+                                            option(selected = (handledQuery.grade == 11)) 11
+                                            option(selected = (handledQuery.grade == 12)) 12
+                                            option(value="-1", selected = (handledQuery.grade == -1)) Trống
+                                            option(value="") Tất cả
+                                        br
+                                        button.btn.btn-primary(type="submit") Tìm                            
+                .col-lg-9
+                    .container 
+                        .row
+                            each test in tests
+                                if !test.isPremium || (user && user.isAdmin)
+                                    .col-lg-6
+                                        div
+                                            .card.card-stats(style="min-height: 13rem")
+                                                // Card body
+                                                .card-body(style="padding-left: 0")
+                                                    .row
+                                                        .col-lg-6
+                                                            //- if test.grade == "10"
+                                                            //-     img.mx-auto.d-block(src="/img/10.png" style="width: 16rem; margin: 0")
+                                                            //- if test.grade == "11"
+                                                            //-     img.mx-auto.d-block(src="/img/11.jpg" style="width: 16rem; margin: 0")
+                                                            //- if test.grade == "12"    
+                                                            //-     img.mx-auto.d-block(src="/img/12.jpg" style="width: 16rem; margin: 0")
+                                                        .col-lg-6
+                                                            h3= test.name
+                                                            i.fas.fa-graduation-cap
+                                                            span= " Khối: " + test.grade
+                                                            br
+                                                            i.fas.fa-question-circle
+                                                            span= " Số câu: " + test.questions.length + " câu"
+                                                            br
+                                                            i.fas.fa-stopwatch
+                                                            span= " Thời gian: " + test.time + " phút"
+                                                            br
+                                                            br
+                                                            if user && user.isAdmin
+                                                                a.btn.btn-primary.btn-icon.btn-sm(href='/tests/'+ test._id +'/view', title='Xem chi tiết')
+                                                                    i.fas.fa-eye
+                                                                    span Xem Đề
+                                                            a.btn.btn-warning.btn-icon.btn-sm(href='/tests/'+ test._id +'/do', title='Làm đề')
+                                                                i.fas.fa-pencil
+                                                                span Làm Đề
 
-    if (maxPage > 1)
-        nav(aria-label='Page navigation')
-            ul.pagination.justify-content-center
-                if currentPage != 1
-                    li.page-item
-                        a.page-link(href=`/tests?p=1`)= "1"
-                    li.page-item
-                        a.page-link(href=`/tests?p=`+(currentPage-1))= "<"
+                    if (maxPage > 1)
+                        nav(aria-label='Page navigation')
+                            ul.pagination.justify-content-center
+                                if currentPage != 1
+                                    li.page-item
+                                        a.page-link(href=`/tests?query=${handledQuery.name}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&p=1`)= "1"
+                                    li.page-item
+                                        a.page-link(href=`/tests?query=${handledQuery.name}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&p=`+(currentPage-1))= "<"
 
-                li.page-item.active
-                    a.page-link(href=`/tests?p=`+currentPage)= currentPage
-                if currentPage != maxPage
-                    li.page-item
-                        a.page-link(href=`/tests?p=`+(currentPage+1))= ">"
-                    li.page-item
-                        a.page-link(href=`/tests?p=`+maxPage)= maxPage
+                                li.page-item.active
+                                    a.page-link(href=`/tests?query=${handledQuery.name}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&p=`+currentPage)= currentPage
+                                if currentPage != maxPage
+                                    li.page-item
+                                        a.page-link(href=`/tests?query=${handledQuery.name}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&p=`+(currentPage+1))= ">"
+                                    li.page-item
+                                        a.page-link(href=`/tests?query=${handledQuery.name}&grade=${handledQuery.grade}&tags=${handledQuery.tags}&p=`+maxPage)= maxPage
+block script-footer
+    script(src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.0/dist/tagify.min.js")
+    script(src="/js/tests/init-tagify.js")

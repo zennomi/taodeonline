@@ -4,8 +4,12 @@ const Result = require("../models/result.model");
 const shuffle = require('shuffle-array');
 const groupArray = require('group-array');
 
+
+
 module.exports.index = async (req, res) => {
     let tests, results = [];
+
+    let tagsList = req.query.tags ? JSON.parse(req.query.tags).map(t => t.value) : [];
 
     // Pagination
     const perPage = 10;
@@ -13,18 +17,42 @@ module.exports.index = async (req, res) => {
     let maxPage = await Test.countDocuments();
     maxPage = Math.ceil(maxPage / perPage);
 
+    let searchOption = {
+        grade: (req.query.grade == -1 && {$exists: false}) || req.query.grade || undefined,
+        tags: req.query.tags ? { $elemMatch: { value: { $in: tagsList } } } : undefined
+    }
+
+    if (!req.query.grade) delete searchOption.grade;
+    if (!req.query.tags) delete searchOption.tags;
+    if(req.query){
+        maxPage = Math.ceil(await Test.find(searchOption).countDocuments() / perPage);
+    }
     try {
-        tests = await Test.find({}).limit(perPage).skip(indexPage * perPage).sort({ _id: -1 });
+        tests = await Test.find(searchOption).limit(perPage).skip(indexPage * perPage).sort({ _id: -1 }).lean();
         results = req.user ? await Result.find({ "user.facebook_id": req.user.id }) : [];
     } catch (err) {
         return res.send(err);
     }
+    if(req.query.name){
+        tests = tests.filter((entry) => {
+            return removeVNeseCharacters(entry.name.toLowerCase()).indexOf(removeVNeseCharacters(req.query.name.toLowerCase())) !== -1;
+        })
+    }
+
     tests.forEach(t => {
         t.count = results.filter(r => String(r.test_id) == String(t._id)).length;
     })
+
+    let handledQuery = {
+        name: req.query.name || "",
+        grade: req.query.grade || "",
+        tags: req.query.tags || ""
+    }
+
     res.render('tests/index', {
         tests, currentPage: indexPage + 1,
-        maxPage: maxPage
+        maxPage: maxPage,
+        handledQuery: handledQuery
     });
 }
 
@@ -103,7 +131,7 @@ module.exports.create = async (req, res) => {
         q.maxLengthAnswer = Math.max(...q.choices.map(a => a.content.length));
     });
     matchedQuestions.sort((a, b) => ids.indexOf(a._id.toString()) - ids.indexOf(b._id.toString()))
-    res.render('tests/create', { matchedQuestions });
+    res.render('tests/create', { matchedQuestions});
 }
 
 module.exports.autoCreate = (req, res) => {
@@ -211,6 +239,7 @@ module.exports.postEdit = (req, res) => {
         test.name = req.body.name;
         test.link_pdf = req.body.link_pdf;
         test.link_fb_live = req.body.link_fb_live;
+        test.tags = req.body.tags ? JSON.parse(req.body.tags) : undefined
         test.time = req.body.time;
         test.grade = req.body.grade || undefined;
         if (req.body.deadline) test.deadline = new Date(req.body.deadline);
@@ -262,10 +291,43 @@ module.exports.guide = (req, res) => {
     res.render('tests/guide');
 }
 
+module.exports.search = async (req,res) => {
+    const name = req.query.name.toLowerCase();
+    const allTest = await Test.find({});
+    const result = allTest.filter((test) => {
+        return test.name.toLowerCase().indexOf(name) !== -1;
+    })
+
+    return res.render('tests/index',{tests: result})
+}
+
 function toInlineElement(ele) {
     // ele = ele.split("");
     // ele.splice(0, 3);
     // ele.splice(ele.length - 4, 4);
     // return ele.join("");
     return ele.replace(/<p>(.*)<\/p>/, "$1");
+}
+
+function removeVNeseCharacters(str) {
+    str = str.toLowerCase();
+//     We can also use this instead of from line 11 to line 17
+//     str = str.replace(/\u00E0|\u00E1|\u1EA1|\u1EA3|\u00E3|\u00E2|\u1EA7|\u1EA5|\u1EAD|\u1EA9|\u1EAB|\u0103|\u1EB1|\u1EAF|\u1EB7|\u1EB3|\u1EB5/g, "a");
+//     str = str.replace(/\u00E8|\u00E9|\u1EB9|\u1EBB|\u1EBD|\u00EA|\u1EC1|\u1EBF|\u1EC7|\u1EC3|\u1EC5/g, "e");
+//     str = str.replace(/\u00EC|\u00ED|\u1ECB|\u1EC9|\u0129/g, "i");
+//     str = str.replace(/\u00F2|\u00F3|\u1ECD|\u1ECF|\u00F5|\u00F4|\u1ED3|\u1ED1|\u1ED9|\u1ED5|\u1ED7|\u01A1|\u1EDD|\u1EDB|\u1EE3|\u1EDF|\u1EE1/g, "o");
+//     str = str.replace(/\u00F9|\u00FA|\u1EE5|\u1EE7|\u0169|\u01B0|\u1EEB|\u1EE9|\u1EF1|\u1EED|\u1EEF/g, "u");
+//     str = str.replace(/\u1EF3|\u00FD|\u1EF5|\u1EF7|\u1EF9/g, "y");
+//     str = str.replace(/\u0111/g, "d");
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    // Some system encode vietnamese combining accent as individual utf-8 characters
+    str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng 
+    str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
+    return str;
 }
