@@ -2,7 +2,7 @@ const randomFacts = [
     "Ít cô gái có thể lọt vào mắt thầy Long Híp...",
     "Nếu là một máy ghim, thầy Nam chỉ là máy ghim vô dụng :))",
     "Thưa thầy Quý tăng lương anh Đăng Anh để web load nhanh hơn.",
-    "Nhận thông báo đề thi thử mới tại <a href='https://www.facebook.com/HocLyThayQuy/' target='_blank'> fanpage</a> nhó.",
+    "Các anh trợ giảng đang tổ chức các buổi livestream hỗ trợ ôn thi giữa kỳ tại <a href='https://www.facebook.com/HocLyThayQuy/' target='_blank'> fanpage Học Lý Thầy Quý</a> nhó.",
     "Nếu các bạn đang cày đề đêm thì có thể bật chế độ dark mode để đỡ mỏi mắt",
     "Cảm ơn em zai Minh Đức đẹp trai của anh đã giúp anh sửa lỗi web <i class='fas fa-heart'></i> ngày 24/6",
     "Chủ động lựa chọn độ khó dễ, thời gian làm đề khi chọn đề của các khoá luyện đề tại <a href='/courses' target='_blank'>đây</a>.",
