@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 
 const port = process.env.PORT ? process.env.PORT : 8080;
 
-// const fbAdminIds = process.env.FACEBOOK_ADMIN_IDS.split(",");
+const fbAdminIds = process.env.FACEBOOK_ADMIN_IDS.split(",");
 
 app.set('views', './views');
 app.set('view engine', 'pug');

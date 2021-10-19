@@ -45,41 +45,42 @@ block header-text
                                             option(value="") Tất cả
                                         br
                                         button.btn.btn-primary(type="submit") Tìm                            
-                .col-lg-9
+                .col-lg-9.p-0
                     .container 
                         .row
                             each test in tests
                                 if !test.isPremium || (user && user.isAdmin)
-                                    .col-lg-6
-                                        div
-                                            .card.card-stats(style="min-height: 13rem")
+                                    .col-6.my-2.px-0
+                                        div.mx-1
+                                            .card.card-stats.h-100.mb-0
                                                 // Card body
-                                                .card-body(style="padding-left: 0")
+                                                .card-body.p-0
                                                     .row
-                                                        .col-lg-6
-                                                            //- if test.grade == "10"
-                                                            //-     img.mx-auto.d-block(src="/img/10.png" style="width: 16rem; margin: 0")
-                                                            //- if test.grade == "11"
-                                                            //-     img.mx-auto.d-block(src="/img/11.jpg" style="width: 16rem; margin: 0")
-                                                            //- if test.grade == "12"    
-                                                            //-     img.mx-auto.d-block(src="/img/12.jpg" style="width: 16rem; margin: 0")
-                                                        .col-lg-6
+                                                        .col-lg-6.p-0.p-md-2
+                                                            if test.grade == "10"
+                                                                img.mx-auto.my-auto.d-block.w-100(src="/img/cover/10.png")
+                                                            if test.grade == "11"
+                                                                img.mx-auto.my-auto.d-block.w-100(src="/img/cover/11.png")
+                                                            if test.grade == "12"
+                                                                img.mx-auto.my-auto.d-block.w-100(src="/img/cover/12.png")
+                                                        .col-lg-6.p-2
                                                             h3= test.name
                                                             i.fas.fa-graduation-cap
                                                             span= " Khối: " + test.grade
                                                             br
                                                             i.fas.fa-question-circle
-                                                            span= " Số câu: " + test.questions.length + " câu"
+                                                            span.d-none.d-md-inline= " Số câu:"  
+                                                            span= " " + test.questions.length + " câu"
                                                             br
                                                             i.fas.fa-stopwatch
-                                                            span= " Thời gian: " + test.time + " phút"
-                                                            br
+                                                            span.d-none.d-md-inline= " Thời gian:"
+                                                            span= " " + test.time + " phút"
                                                             br
                                                             if user && user.isAdmin
-                                                                a.btn.btn-primary.btn-icon.btn-sm(href='/tests/'+ test._id +'/view', title='Xem chi tiết')
+                                                                a.my-1.btn.btn-primary.btn-icon.btn-sm(href='/tests/'+ test._id +'/view', title='Xem chi tiết')
                                                                     i.fas.fa-eye
                                                                     span Xem Đề
-                                                            a.btn.btn-warning.btn-icon.btn-sm(href='/tests/'+ test._id +'/do', title='Làm đề')
+                                                            a.my-1.btn.btn-warning.btn-icon.btn-sm(href='/tests/'+ test._id +'/do', title='Làm đề')
                                                                 i.fas.fa-pencil
                                                                 span Làm Đề
 
