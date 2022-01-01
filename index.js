@@ -54,7 +54,7 @@ const courseRoutes = require('./routes/courses');
 const quesApiRoutes = require('./api/routes/question.route');
 const testApiRoutes = require('./api/routes/test.route');
 const resultApiRoutes = require('./api/routes/result.route');
-
+const courseApiRoutes = require('./api/routes/course.route')
 const authMiddlewares = require('./middlewares/auth.middleware');
 
 
@@ -106,6 +106,15 @@ if (process.env['NODE_ENV'] != 'development') {
 }
 
 
+app.use('/questions', questionRoutes);
+app.use('/tests', testRoutes);
+app.use('/courses', courseRoutes);
+app.use('/auth', authRoutes);
+app.use('/api/questions', quesApiRoutes);
+app.use('/api/tests', testApiRoutes);
+app.use('/api/results', resultApiRoutes);
+app.use('/api/courses', courseApiRoutes);
+
 
 
 app.use(function (req, res, next) {
@@ -132,13 +141,6 @@ app.get('/privacy-policy', (req, res) => {
     res.render('privacy-policy');
 })
 
-app.use('/questions', questionRoutes);
-app.use('/tests', testRoutes);
-app.use('/courses', courseRoutes);
-app.use('/auth', authRoutes);
-app.use('/api/questions', quesApiRoutes);
-app.use('/api/tests', testApiRoutes);
-app.use('/api/results', resultApiRoutes);
 
 // app.get('/user/me', authMiddlewares.authRequire, (req, res) => {
 

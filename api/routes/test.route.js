@@ -1,24 +1,19 @@
 const express = require('express');
 const router = express.Router();
-
-const Test = require('../../models/test.model');
-const Result = require('../../models/result.model');
+const controller = require('../controllers/test.controller');
 
 const authMiddlewares = require('../middlewares/auth.middleware');
 
-router.get('/:id/true-choices', async (req, res) => {
-    let matchedTest = await Test.findById(req.params.id).populate('questions');
-    if (!matchedTest) {
-      res.status(404).json({error: 'Không thấy bài kiểm tra tương ứng.'});
-      return;
-    }
-    
-    let trueChoicesIds = [];
-    matchedTest.questions.map(q => q.choices.filter(c => c.isTrue)).forEach(c => trueChoicesIds.push(...c.map(i => i._id)));
-    res.status(200).json({
-        result: trueChoicesIds,
-        isPublic: matchedTest.isPublic
-    });
-})
+
+// router.get('/:id/true-choices', controller.getCorrectAnswer);
+router.get('/:id/result',authMiddlewares.adminRequire,controller.getResult);
+router.get('/:id/view',authMiddlewares.adminRequire, controller.view);
+router.get('/:id/detail', authMiddlewares.authRequire ,controller.getDetail);
+router.get('/auto-create', controller.autoCreate);
+// CRUD
+router.get('/',controller.index);
+router.post('/create',authMiddlewares.adminRequire,controller.create);
+router.put('/:id/edit',authMiddlewares.adminRequire,controller.edit);
+router.delete('/:id/delete',authMiddlewares.adminRequire,controller.delete);
 
 module.exports = router;
