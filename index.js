@@ -17,6 +17,8 @@ app.set('view engine', 'pug');
 app.use(express.static('public'));
 // app.use(express.static('node_modules/@wiris/mathtype-ckeditor4'));
 
+// watch & get all
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
