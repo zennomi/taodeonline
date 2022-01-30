@@ -105,19 +105,8 @@ if (process.env['NODE_ENV'] != 'development') {
     })
 }
 
-
-app.use('/questions', questionRoutes);
-app.use('/tests', testRoutes);
-app.use('/courses', courseRoutes);
-app.use('/auth', authRoutes);
-app.use('/api/questions', quesApiRoutes);
-app.use('/api/tests', testApiRoutes);
-app.use('/api/results', resultApiRoutes);
-app.use('/api/courses', courseApiRoutes);
-
-
-
 app.use(function (req, res, next) {
+    console.log('hello');
     app.locals.basedir = './public';
     res.locals.domainName = process.env.DOMAIN_NAME;
     if (req.user) {
@@ -127,6 +116,15 @@ app.use(function (req, res, next) {
     if (req.path != '/auth' && req.path != '/history') res.locals.history = req.originalUrl;
     next();
 })
+
+app.use('/questions', questionRoutes);
+app.use('/tests', testRoutes);
+app.use('/courses', courseRoutes);
+app.use('/auth', authRoutes);
+app.use('/api/questions', quesApiRoutes);
+app.use('/api/tests', testApiRoutes);
+app.use('/api/results', resultApiRoutes);
+app.use('/api/courses', courseApiRoutes);
 
 app.get('/history', (req, res) => {
     if (req.cookies.history) res.redirect(req.cookies.history);
