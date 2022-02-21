@@ -19,8 +19,9 @@ app.use(express.static('public'));
 
 // watch & get all
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }))
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 app.use(cookieParser());
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -106,7 +107,6 @@ if (process.env['NODE_ENV'] != 'development') {
 }
 
 app.use(function (req, res, next) {
-    console.log('hello');
     app.locals.basedir = './public';
     res.locals.domainName = process.env.DOMAIN_NAME;
     if (req.user) {
